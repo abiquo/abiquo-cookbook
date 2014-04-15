@@ -1,0 +1,37 @@
+## ABIQUO SERVER ##
+
+# Api
+abiquo.server.api.location = <%= @apilocation %>
+
+# Rabbit
+abiquo.rabbitmq.username = guest
+abiquo.rabbitmq.password = guest
+abiquo.rabbitmq.host = 127.0.0.1
+abiquo.rabbitmq.port = 5672
+
+# Redis
+abiquo.redis.port = 6379
+abiquo.redis.host = 127.0.0.1
+
+# Remote Desktop
+abiquo.vncport.min = 5000
+abiquo.vncport.max = 6000
+
+
+## ABIQUO REMOTE SERVICES ##
+
+# Datacenter ID
+abiquo.datacenter.id = <%= node['abiquo']['datacenterId'] %>
+
+# Repository
+abiquo.appliancemanager.localRepositoryPath = <%= node['abiquo']['nfs']['mountpoint'] %>
+<% unless node['abiquo']['nfs']['location'].nil? %>
+abiquo.appliancemanager.repositoryLocation = <%= node['abiquo']['nfs']['location'] %>
+abiquo.virtualfactory.xenserver.repositoryLocation = <%= node['abiquo']['nfs']['location'] %>
+abiquo.virtualfactory.vmware.repositoryLocation = <%= node['abiquo']['nfs']['location'] %>
+<% end %>
+
+# Misc
+am.conversions.skip = true
+abiquo.virtualfactory.kvm.fullVirt = false
+

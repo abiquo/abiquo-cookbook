@@ -1,0 +1,35 @@
+<VirtualHost *:<%= node['apache']['listen_ports'].first %>>
+    RewriteEngine On
+    ProxyRequests Off
+    ProxyPreserveHost On
+    DocumentRoot "/var/www/html"
+ 
+    <Directory "/var/www/html/ui">
+        Options MultiViews
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+    </Directory>
+    RewriteRule ^/$ /ui/ [R]
+ 
+    <Location /api>
+        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/api
+        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/api
+    </Location>
+
+    <Location /am>
+        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/am
+        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/am
+    </Location>
+ 
+    <Location /m>
+        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/m
+        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/m
+    </Location>
+
+    <Location /legal>
+        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/legal
+        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/legal
+    </Location>
+ 
+</VirtualHost>
