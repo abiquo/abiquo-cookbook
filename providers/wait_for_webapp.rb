@@ -1,5 +1,6 @@
+
 # Cookbook Name:: abiquo
-# Recipe:: update
+# Provider:: wait_for_webapp
 #
 # Copyright 2014, Abiquo
 #
@@ -15,30 +16,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-service "abiquo-tomcat" do
-    provider Chef::Provider::Service::RedhatNoStatus
-    pattern "tomcat"
+def whyrun_supported?
+    true
 end
 
-return if node['abiquo']['configured']
-
-%w{mysql redis rabbitmq-server abiquo-tomcat}.each do |svc|
-    service svc do
-        action :stop
-    end
-end
-
-include_recipe "abiquo::repository"
-
-abiquo_packages = `yum list installed abiquo-* | grep abiquo | cut -d. -f1`.split
-abiquo_packages.each do |pkg|
-    package pkg do
-        action :upgrade
-    end
-end
-
-%w{mysql redis rabbitmq-server}.each do |svc|
-    service svc do
-        action :start
+action :wait do
+    converge_by("Waiting for #{@new_resource}") do
+        http = Net::HTTP.new(@new_resource.host, @new_resource.port)
+        http.read_timeout = @new_resource.read_timeout
+        http.open_timeout = @new_resource.open_timeout
+        http.start do |http|
+            request = Net::HTTP::Get.new("/#{@new_resource.webapp}")
+            response = http.request(request)
+            Chef::Log.debug "Request returned status: #{response.code}"
+        end
     end
 end

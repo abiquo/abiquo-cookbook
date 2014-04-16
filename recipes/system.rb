@@ -48,9 +48,3 @@ end
         action :install
     end
 end
-
-service "abiquo-tomcat" do
-    provider Chef::Provider::Service::RedhatNoStatus
-    supports :restart => true
-    pattern "tomcat"
-end

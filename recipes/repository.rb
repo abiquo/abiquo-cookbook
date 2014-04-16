@@ -66,17 +66,19 @@ yum_repository "abiquo-base" do
     action :create
 end
 
-unless node['abiquo']['nightly-repo'].nil?
-    yum_repository "abiquo-nightly" do
-        description "Abiquo nightly packages"
-        baseurl node['abiquo']['nightly-repo']
-        gpgcheck false
-        gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
-        action :create
-    end
+yum_repository "abiquo-nightly" do
+    description "Abiquo nightly packages"
+    baseurl node['abiquo']['nightly-repo']
+    gpgcheck false
+    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
+    action :create
+    not_if { node['abiquo']['nightly-repo'].nil? }
 end
 
 # Once the abiquo-release package is installed, detect the platform again
 ohai "reload" do
     action :reload
 end
+
+# In Abiquo the family is not set. Force it to the right value
+node.set['platform_family'] = 'rhel'

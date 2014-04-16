@@ -21,15 +21,18 @@ default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
 default['abiquo']['nfs']['location'] = nil
 # default['abiquo']['nfs']['location'] = "10.60.1.104:/volume1/nfs-devel"
 default['abiquo']['installdb'] = true
+default['abiquo']['license'] = nil
+# default['abiquo']['license'] = "license-code"
 
 # Use this property to configure the yum repository with the nightly packages
 default['abiquo']['nightly-repo'] = nil
 #default['abiquo']['nightly-repo'] = "http://10.60.20.42/master/rpm"
 
-# Configure abiquo-tomcat ports
+# Configure abiquo-tomcat 
 default['abiquo']['http-protocol'] = "http"
 default['abiquo']['tomcat-http-port'] = 8009
 default['abiquo']['tomcat-ajp-port'] = 8010
+default['abiquo']['wait-for-webapps'] = false
 
 # override the default JDK 6 version in the java cookbook
 override['java']['jdk_version'] = "7"

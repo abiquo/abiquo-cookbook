@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: update
+# Recipe:: database
 #
 # Copyright 2014, Abiquo
 #
@@ -15,30 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-service "abiquo-tomcat" do
-    provider Chef::Provider::Service::RedhatNoStatus
-    pattern "tomcat"
-end
-
+# Do not upgrade periodically
 return if node['abiquo']['configured']
 
-%w{mysql redis rabbitmq-server abiquo-tomcat}.each do |svc|
-    service svc do
-        action :stop
-    end
+execute "create-database" do
+    command '/usr/bin/mysql -e "CREATE DATABASE IF NOT EXISTS kinton"'
 end
 
-include_recipe "abiquo::repository"
-
-abiquo_packages = `yum list installed abiquo-* | grep abiquo | cut -d. -f1`.split
-abiquo_packages.each do |pkg|
-    package pkg do
-        action :upgrade
-    end
+execute "install-database" do
+    command "/usr/bin/mysql kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
 end
 
-%w{mysql redis rabbitmq-server}.each do |svc|
-    service svc do
-        action :start
-    end
+execute "install-license" do
+    command "/usr/bin/mysql kinton -e \"INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}');\""
+    not_if { node['abiquo']['license'].empty? }
 end

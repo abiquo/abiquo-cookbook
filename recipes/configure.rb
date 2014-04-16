@@ -32,17 +32,9 @@ unless node['abiquo']['nfs']['location'].nil?
     end
 end
 
-execute "create database" do
-    command '/usr/bin/mysql -e "CREATE DATABASE IF NOT EXISTS kinton"'
-    only_if { node['abiquo']['installdb'] }
-end
+include_recipe "abiquo::database" if node['abiquo']['installdb']
 
-execute "install database" do
-    command "/usr/bin/mysql kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
-    only_if { node['abiquo']['installdb'] }
-end
-
-ruby_block "configure ui" do
+ruby_block "configure-ui" do
     block do
         # Chef search_file_replace_line is not working. Update the json manually
         uiconfigfile = "/var/www/html/ui/config/client-config.json"
@@ -53,12 +45,22 @@ ruby_block "configure ui" do
     action :create
 end
 
+# Define the service with a custom name so we can subscribe just to the "restart" action
+# otherwise the "wait_for_webapp" resource will be notified too early (when tomcat is stopped)
+# and enqueued before the restart action is triggered
+service "abiquo-tomcat-restart" do
+    service_name "abiquo-tomcat"
+    provider Chef::Provider::Service::RedhatNoStatus
+    supports :restart => true
+    pattern "tomcat"
+end
+
 template "/opt/abiquo/tomcat/conf/server.xml" do
     source "server.xml.erb"
     owner "root"
     group "root"
     action :create
-    notifies :restart, "service[abiquo-tomcat]"
+    notifies :restart, "service[abiquo-tomcat-restart]"
 end
 
 template "/opt/abiquo/config/abiquo.properties" do
@@ -67,5 +69,21 @@ template "/opt/abiquo/config/abiquo.properties" do
     group "root"
     action :create
     variables(:apilocation => api_location)
-    notifies :restart, "service[abiquo-tomcat]"
+    notifies :restart, "service[abiquo-tomcat-restart]"
+end
+
+ruby_block "set-abiquo-configured" do
+    block do
+        node.set['abiquo']['configured'] = true
+    end
+end
+
+abiquo_wait_for_webapp "api" do
+    host "localhost"
+    port node['abiquo']['tomcat-http-port']
+    retries 3   # Retry if Tomcat is still not started
+    retry_delay 5
+    action :nothing
+    subscribes :wait, "service[abiquo-tomcat-restart]"
+    only_if { node['abiquo']['wait-for-webapps'] }
 end

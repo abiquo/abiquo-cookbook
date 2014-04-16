@@ -11,6 +11,7 @@ recipe 'abiquo::repository', 'Configures the Abiquo yum repositories'
 recipe 'abiquo::system', 'Installs the Abiquo system packages'
 recipe 'abiquo::configure', 'Configures and starts the Abiquo platform'
 recipe 'abiquo::update', 'Updates the platform to the latest packages'
+recipe 'abiquo::database', 'Creates the Abiquo database'
 
 supports 'centos', '>= 6.0'
 
