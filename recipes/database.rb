@@ -28,5 +28,5 @@ end
 
 execute "install-license" do
     command "/usr/bin/mysql kinton -e \"INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}');\""
-    not_if { node['abiquo']['license'].empty? }
+    not_if { node['abiquo']['license'].nil? || node['abiquo']['license'].empty? } 
 end
