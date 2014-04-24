@@ -16,7 +16,7 @@
 # limitations under the License.
 
 api_port = node['abiquo']['http-protocol'] == 'https'? 443 : node['apache']['listen_ports'].first
-api_location = "#{node['abiquo']['http-protocol']}://#{node['fqdn']}:#{api_port}/api"
+api_location = "#{node['abiquo']['http-protocol']}://#{node['set_fqdn']}:#{api_port}/api"
 
 unless node['abiquo']['nfs']['location'].nil?
     # Some templates come with this share already configured
