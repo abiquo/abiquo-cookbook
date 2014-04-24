@@ -25,7 +25,7 @@ file node['abiquo']['ssl']['certificatefile'] do
     owner 'root'
     group 'root'
     mode 0644
-    content ::File.open("#{node['selfsigned_certificate']['destination']}/server.crt").read
+    content lazy { ::File.open("#{node['selfsigned_certificate']['destination']}/server.crt").read }
     action :create
 end
 
@@ -33,6 +33,6 @@ file node['abiquo']['ssl']['keyfile'] do
     owner 'root'
     group 'root'
     mode 0644
-    content ::File.open("#{node['selfsigned_certificate']['destination']}/server.key").read
+    content lazy { ::File.open("#{node['selfsigned_certificate']['destination']}/server.key").read }
     action :create
 end
