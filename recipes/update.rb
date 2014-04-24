@@ -15,12 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-service "abiquo-tomcat" do
-    provider Chef::Provider::Service::RedhatNoStatus
-    pattern "tomcat"
-end
-
-return if node['abiquo']['configured']
+include_recipe "abiquo::stop"
 
 %w{mysql redis rabbitmq-server abiquo-tomcat}.each do |svc|
     service svc do
@@ -37,8 +32,4 @@ abiquo_packages.each do |pkg|
     end
 end
 
-%w{mysql redis rabbitmq-server}.each do |svc|
-    service svc do
-        action :start
-    end
-end
+include_recipe "abiquo::start"

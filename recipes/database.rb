@@ -15,9 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Do not upgrade periodically
-return if node['abiquo']['configured']
-
 execute "create-database" do
     command '/usr/bin/mysql -e "CREATE DATABASE IF NOT EXISTS kinton"'
 end

@@ -72,12 +72,6 @@ template "/opt/abiquo/config/abiquo.properties" do
     notifies :restart, "service[abiquo-tomcat-restart]"
 end
 
-ruby_block "set-abiquo-configured" do
-    block do
-        node.set['abiquo']['configured'] = true
-    end
-end
-
 abiquo_wait_for_webapp "api" do
     host "localhost"
     port node['abiquo']['tomcat-http-port']

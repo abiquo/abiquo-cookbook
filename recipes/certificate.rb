@@ -15,15 +15,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "java-management::truststore"
+include_recipe "selfsigned_certificate"
 
-cert_data = data_bag_item(node['java-management']['truststore']['data_bag'], node['abiquo']['ssl']['certificatename'])
+java_management_truststore_certificate "abiquo" do
+    file "#{node['selfsigned_certificate']['destination']}/server.crt"
+end
 
 file node['abiquo']['ssl']['certificatefile'] do
     owner 'root'
     group 'root'
     mode 0644
-    content cert_data['certificate']
+    content ::File.open("#{node['selfsigned_certificate']['destination']}/server.crt").read
     action :create
 end
 
@@ -31,6 +33,6 @@ file node['abiquo']['ssl']['keyfile'] do
     owner 'root'
     group 'root'
     mode 0644
-    content cert_data['key']
+    content ::File.open("#{node['selfsigned_certificate']['destination']}/server.key").read
     action :create
 end
