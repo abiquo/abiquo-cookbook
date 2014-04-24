@@ -19,6 +19,9 @@ include_recipe "selfsigned_certificate"
 
 java_management_truststore_certificate "abiquo" do
     file "#{node['selfsigned_certificate']['destination']}/server.crt"
+    keystore node['abiquo']['ssl']['keystore']
+    keytool node['abiquo']['ssl']['keytool']
+    storepass node['abiquo']['ssl']['storepass']
 end
 
 file node['abiquo']['ssl']['certificatefile'] do

@@ -37,6 +37,9 @@ default['abiquo']['wait-for-webapps'] = false
 # SSL configuration
 default['abiquo']['ssl']['certificatefile'] = "/etc/pki/tls/certs/ca.crt"
 default['abiquo']['ssl']['keyfile'] = "/etc/pki/tls/private/ca.key"
+default['abiquo']['ssl']['keystore'] = "/usr/java/default/jre/lib/security/cacerts"
+default['abiquo']['ssl']['keytool'] = "/usr/java/default/jre/bin/keytool"
+default['abiquo']['ssl']['storepass'] = "changeit"
 
 
 # override the default JDK 6 version in the java cookbook
