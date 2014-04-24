@@ -24,6 +24,10 @@ default['abiquo']['installdb'] = true
 default['abiquo']['license'] = nil
 # default['abiquo']['license'] = "license-code"
 
+# Determines if the "api location" property will use the internal
+# or the external HTTP port (the Tomcat or the Apache one)
+default['abiquo']['api']['internal'] = false
+
 # Use this property to configure the yum repository with the nightly packages
 default['abiquo']['nightly-repo'] = nil
 #default['abiquo']['nightly-repo'] = "http://10.60.20.42/master/rpm"

@@ -15,7 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-api_port = node['abiquo']['http-protocol'] == 'https'? 443 : node['apache']['listen_ports'].first
+if node['abiquo']['api']['internal']
+    api_port = node['abiquo']['tomcat-http-port']
+elsif node['abiquo']['http-protocol'] == 'https'
+    api_port = 443
+else
+    api_port = node['apache']['listen_ports'].first
+end
 api_location = "#{node['abiquo']['http-protocol']}://#{node['ipaddress']}:#{api_port}/api"
 
 unless node['abiquo']['nfs']['location'].nil?
