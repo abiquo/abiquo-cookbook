@@ -30,6 +30,7 @@ file node['abiquo']['ssl']['certificatefile'] do
     mode 0644
     content lazy { ::File.open("#{node['selfsigned_certificate']['destination']}/server.crt").read }
     action :create
+    notifies :run, "execute[reload-apache]"
 end
 
 file node['abiquo']['ssl']['keyfile'] do
@@ -38,4 +39,11 @@ file node['abiquo']['ssl']['keyfile'] do
     mode 0644
     content lazy { ::File.open("#{node['selfsigned_certificate']['destination']}/server.key").read }
     action :create
+    notifies :run, "execute[reload-apache]"
+end
+
+# TODO: Remove this block once the upgrade recipes work with the apache2 cookbook
+execute "reload-apache" do
+    command "service httpd reload"
+    action :nothing
 end

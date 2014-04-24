@@ -16,7 +16,6 @@
 # limitations under the License.
 
 api_port = node['abiquo']['http-protocol'] == 'https'? 443 : node['apache']['listen_ports'].first
-api_location = "#{node['abiquo']['http-protocol']}://#{node['set_fqdn']}:#{api_port}/api"
 
 unless node['abiquo']['nfs']['location'].nil?
     # Some templates come with this share already configured
@@ -39,7 +38,7 @@ ruby_block "configure-ui" do
         # Chef search_file_replace_line is not working. Update the json manually
         uiconfigfile = "/var/www/html/ui/config/client-config.json"
         uiconfig = JSON.parse(File.read(uiconfigfile));
-        uiconfig['config.endpoint'] = api_location
+        uiconfig['config.endpoint'] = "#{node['abiquo']['http-protocol']}://#{node['fqdn']}:#{api_port}/api"
         File.write(uiconfigfile, JSON.pretty_generate(uiconfig))
     end
     action :create
@@ -68,7 +67,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     owner "root"
     group "root"
     action :create
-    variables(:apilocation => api_location)
+    variables lazy { { :apilocation => "#{node['abiquo']['http-protocol']}://#{node['fqdn']}:#{api_port}/api" } }
     notifies :restart, "service[abiquo-tomcat-restart]"
 end
 
