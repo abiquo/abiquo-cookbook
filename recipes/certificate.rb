@@ -17,7 +17,7 @@
 
 include_recipe "java-management::truststore"
 
-cert_data = data_bag_item(node['java-management']['truststore']['data_bag'], 'abiquo')
+cert_data = data_bag_item(node['java-management']['truststore']['data_bag'], node['abiquo']['ssl']['certificatename'])
 
 file node['abiquo']['ssl']['certificatefile'] do
     owner 'root'
