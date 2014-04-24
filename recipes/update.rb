@@ -15,14 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::stop"
-
-%w{mysql redis rabbitmq-server abiquo-tomcat}.each do |svc|
-    service svc do
-        action :stop
-    end
-end
-
 include_recipe "abiquo::repository"
 
 abiquo_packages = `yum list installed abiquo-* | grep abiquo | cut -d. -f1`.split
@@ -31,5 +23,3 @@ abiquo_packages.each do |pkg|
         action :upgrade
     end
 end
-
-include_recipe "abiquo::start"
