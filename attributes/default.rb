@@ -34,5 +34,9 @@ default['abiquo']['tomcat-http-port'] = 8009
 default['abiquo']['tomcat-ajp-port'] = 8010
 default['abiquo']['wait-for-webapps'] = false
 
+# SSL configuration
+default['abiquo']['ssl']['certificatefile'] = "/etc/pki/tls/certs/ca.crt"
+default['abiquo']['ssl']['keyfile'] = "/etc/pki/tls/private/ca.crt"
+
 # override the default JDK 6 version in the java cookbook
 override['java']['jdk_version'] = "7"

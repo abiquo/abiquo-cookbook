@@ -12,10 +12,12 @@ recipe 'abiquo::system', 'Installs the Abiquo system packages'
 recipe 'abiquo::configure', 'Configures and starts the Abiquo platform'
 recipe 'abiquo::update', 'Updates the platform to the latest packages'
 recipe 'abiquo::database', 'Creates the Abiquo database'
+recipe 'abiquo::certificate', 'Installs a custom SSL certificate in the Apache'
 
 supports 'centos', '>= 6.0'
 
 depends 'apache2'
 depends 'java'
+depends 'java-management'
 depends 'redisio'
 depends 'yum'
