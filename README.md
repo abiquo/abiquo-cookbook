@@ -1,7 +1,11 @@
 Abiquo Cookbook
 ===============
 
-This is a cookbook to install the Abiquo platform. It is intended for 3.0 or later versions.
+This cookbook provides several recipes to install an upgrade an Abiquo platform.
+It targets Abiquo 3.0 or later releases.
+
+The cookbook also provides recipes to install the latest nightly builds, so it
+can be used along with a CI system.
 
 # Requirements
 
@@ -49,8 +53,8 @@ Attribute | Description | Type | Default
 ['tomcat-http-port'] | The port where the Tomcat listens to HTTP traffic | Integer | 8009
 ['tomcat-ajp-port'] | The port where the Tomcat listens to AJP traffic | Integer | 8010
 ['wait-for-webapps'] | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
-['ssl'][´certificatefile'] | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
-['ssl'][´keyfile'] | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
+['ssl']['certificatefile'] | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
+['ssl']['keyfile'] | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
 ['ssl']['keystore'] | Path to the trust store for the JVM | String | "/usr/java/default/jre/lib/security/cacerts"
 ['ssl']['keytool'] | Path to the keytool binary | String | "/usr/java/default/jre/bin/keytool"
 ['ssl']['storepass'] | The password for the JVM trust store | String | "changeit"
@@ -60,6 +64,14 @@ Attribute | Description | Type | Default
 The Abiquo cookbook provides the following LWRPs:
 
 * `abiquo_wait_for_webapp` - Waits until a configured webapp is started
+
+### Parameters
+
+* `host` - The address where the webapp is running
+* `port` - The port where the webapp is listening
+* `webapp` - The name of the webapp
+* `open_timeout` - The timeout to open a connection to the webapp
+* `read_timeout` - The timeout to read from a connection to the webapp
 
 ### Example
 
