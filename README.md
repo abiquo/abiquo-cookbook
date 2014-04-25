@@ -63,7 +63,9 @@ Attribute | Description | Type | Default
 
 The Abiquo cookbook provides the following LWRPs:
 
-* `abiquo_wait_for_webapp` - Waits until a configured webapp is started
+## abiquo\_wait\_for\_webapp
+
+This LWRP will make the Chef run wait until the configured webapp is started.
 
 ### Parameters
 
