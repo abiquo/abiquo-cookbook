@@ -30,5 +30,6 @@ action :wait do
             response = http.request(request)
             Chef::Log.debug "Request returned status: #{response.code}"
         end
+        new_resource.updated_by_last_action(true)
     end
 end
