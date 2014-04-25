@@ -1,0 +1,25 @@
+# Rabbit
+abiquo.rabbitmq.username = guest
+abiquo.rabbitmq.password = guest
+abiquo.rabbitmq.host = <%= node['abiquo']['rabbitmqhost'] %>
+abiquo.rabbitmq.port = 5672
+
+# Redis
+abiquo.redis.port = 6379
+abiquo.redis.host = <%= node['abiquo']['redishost'] %>
+
+# Datacenter ID
+abiquo.datacenter.id = <%= node['abiquo']['datacenterId'] %>
+
+# Repository
+abiquo.appliancemanager.localRepositoryPath = <%= node['abiquo']['nfs']['mountpoint'] %>
+<% unless node['abiquo']['nfs']['location'].nil? %>
+abiquo.appliancemanager.repositoryLocation = <%= node['abiquo']['nfs']['location'] %>
+abiquo.virtualfactory.xenserver.repositoryLocation = <%= node['abiquo']['nfs']['location'] %>
+abiquo.virtualfactory.vmware.repositoryLocation = <%= node['abiquo']['nfs']['location'] %>
+<% end %>
+
+# Misc
+am.conversions.skip = true
+abiquo.virtualfactory.kvm.fullVirt = <%= node['abiquo']['fullvirt'] %>
+

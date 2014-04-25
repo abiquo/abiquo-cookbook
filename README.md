@@ -43,21 +43,24 @@ The following attributes are under the `node['abiquo']` namespace.
 
 Attribute | Description | Type | Default
 ----------|-------------|------|--------
-['datacenterId'] | The value for the datacenter id property | String | Abiquo
-['nfs']['mountpoint'] | The path where the image repository is mounted | String | "/opt/vm\_repository"
-['nfs']['location'] | If set, the NFS repository to mount | String | nil
-['installdb'] | Wether to install (and override) the database or not | Boolean | true
-['license'] | The Abiquo license to install | String | nil
-['nightly-repo'] | A yum repository with nightly builds | String | nil
-['http-protocol'] | The protocol used to connect to the API ("http or "https") | String | "http"
-['tomcat-http-port'] | The port where the Tomcat listens to HTTP traffic | Integer | 8009
-['tomcat-ajp-port'] | The port where the Tomcat listens to AJP traffic | Integer | 8010
-['wait-for-webapps'] | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
-['ssl']['certificatefile'] | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
-['ssl']['keyfile'] | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
-['ssl']['keystore'] | Path to the trust store for the JVM | String | "/usr/java/default/jre/lib/security/cacerts"
-['ssl']['keytool'] | Path to the keytool binary | String | "/usr/java/default/jre/bin/keytool"
-['ssl']['storepass'] | The password for the JVM trust store | String | "changeit"
+`['datacenterId']` | The value for the datacenter id property | String | Abiquo
+`['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
+`['nfs']['location']` | If set, the NFS repository to mount | String | nil
+`['installdb']` | Wether to install (and override) the database or not | Boolean | true
+`['license']` | The Abiquo license to install | String | nil
+`['nightly-repo']` | A yum repository with nightly builds | String | nil
+`['rabbitmqhost']` | The address of the RabbitMQ server | String | "127.0.0.1"
+`['redishost']` | The address of the Redis server | String | "127.0.0.1"
+`['fullivirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
+`['http-protocol']` | The protocol used to connect to the API ("http or "https") | String | "http"
+`['tomcat-http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
+`['tomcat-ajp-port']` | The port where the Tomcat listens to AJP traffic | Integer | 8010
+`['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
+`['ssl']['certificatefile']` | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
+`['ssl']['keyfile']` | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
+`['ssl']['keystore']` | Path to the trust store for the JVM | String | "/usr/java/default/jre/lib/security/cacerts"
+`['ssl']['keytool']` | Path to the keytool binary | String | "/usr/java/default/jre/bin/keytool"
+`['ssl']['storepass']` | The password for the JVM trust store | String | "changeit"
 
 # Resources and providers
 
@@ -77,7 +80,7 @@ This LWRP will make the Chef run wait until the configured webapp is started.
 
 ### Example
 
-    abiquo\_wait\_for\_webapp "api" do
+    abiquo_wait_for_webapp "api" do
         host "localhost"
         port 8009
         retries 3   # Retry if Tomcat is still not started

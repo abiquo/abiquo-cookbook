@@ -2,7 +2,7 @@ name             'abiquo'
 maintainer       'Abiquo'
 maintainer_email 'ignasi.barrera@abiquo.com'
 license          'Apache 2.0'
-description      'Installs and configures an Abiquo 3.0 Monolithic'
+description      'Installs and configures an Abiquo 3.0 platform'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.0'
 
@@ -15,6 +15,7 @@ recipe 'abiquo::database', 'Creates the Abiquo database'
 recipe 'abiquo::certificate', 'Installs a custom SSL certificate in the Apache'
 recipe 'abiquo::stop', 'Stops all Abiquo services'
 recipe 'abiquo::start', 'Starts all Abiquo services'
+recipe 'abiquo::remoteservices', 'Installs and configures the Abiquo Remote Services'
 
 supports 'centos', '>= 6.0'
 

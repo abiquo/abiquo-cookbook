@@ -27,6 +27,10 @@ default['abiquo']['license'] = nil
 # Use this property to configure the yum repository with the nightly packages
 default['abiquo']['nightly-repo'] = nil
 #default['abiquo']['nightly-repo'] = "http://10.60.20.42/master/rpm"
+#
+default['abiquo']['redishost'] = "127.0.0.1"
+default['abiquo']['rabbitmqhost'] = "127.0.0.1"
+default['abiquo']['fullvirt'] = false
 
 # Configure abiquo-tomcat 
 default['abiquo']['http-protocol'] = "http"
@@ -40,6 +44,7 @@ default['abiquo']['ssl']['keyfile'] = "/etc/pki/tls/private/ca.key"
 default['abiquo']['ssl']['keystore'] = "/usr/java/default/jre/lib/security/cacerts"
 default['abiquo']['ssl']['keytool'] = "/usr/java/default/jre/bin/keytool"
 default['abiquo']['ssl']['storepass'] = "changeit"
+
 
 
 # override the default JDK 6 version in the java cookbook

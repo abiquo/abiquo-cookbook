@@ -6,12 +6,12 @@ abiquo.server.api.location = <%= @apilocation %>
 # Rabbit
 abiquo.rabbitmq.username = guest
 abiquo.rabbitmq.password = guest
-abiquo.rabbitmq.host = 127.0.0.1
+abiquo.rabbitmq.host = <%= node['abiquo']['rabbitmqhost'] %>
 abiquo.rabbitmq.port = 5672
 
 # Redis
 abiquo.redis.port = 6379
-abiquo.redis.host = 127.0.0.1
+abiquo.redis.host = <%= node['abiquo']['redishost'] %>
 
 # Remote Desktop
 abiquo.vncport.min = 5000
@@ -33,5 +33,5 @@ abiquo.virtualfactory.vmware.repositoryLocation = <%= node['abiquo']['nfs']['loc
 
 # Misc
 am.conversions.skip = true
-abiquo.virtualfactory.kvm.fullVirt = false
+abiquo.virtualfactory.kvm.fullVirt = <%= node['abiquo']['fullvirt'] %>
 

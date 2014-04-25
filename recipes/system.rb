@@ -43,7 +43,7 @@ web_app "abiquo" do
     template "abiquo.conf.erb"
 end
 
-%w{core api am cpp m nodecollector remote-services server sosreport-plugins ssm ui v2v virtualfactory vsm}.each do |pkg|
+%w{monolithic sosreport-plugins}.each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
