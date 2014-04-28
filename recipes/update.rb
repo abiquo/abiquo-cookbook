@@ -15,8 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::repository"
-
 abiquo_packages = `yum list installed abiquo-* | grep abiquo | cut -d. -f1`.split
 abiquo_packages.each do |pkg|
     package pkg do

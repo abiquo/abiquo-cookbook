@@ -29,6 +29,7 @@ Generic recipes to be used to deploy an Abiquo platform from scratch:
 * `recipe[abiquo::system]` - Installs the Abiquo base system
 * `recipe[abiquo::configure]` - Configures the Abiquo platform
 * `recipe[abiquo::database]` - Installs the Abiquo database
+* `recipe[abiquo::remoteservices]` - Installs the Abiquo Remote Services
 
 Specific recipes to upgrade existing Abiquo installations:
 
@@ -96,10 +97,15 @@ To install an Abiquo platform from scratch, include the following recipes in the
 
 * `recipe[abiquo]`
 
-To upgrade an existing Abiquo platform, include the following recipes (it is a good idea to create a role for this):
+To install the Abiquo Remote Services from scratch, include the following recipes in the run list:
 
 * `recipe[abiquo::repository]`
+* `recipe[abiquo::remoteservices]`
+
+To upgrade an existing Abiquo platform, include the following recipes (it is a good idea to create a role for this):
+
 * `recipe[abiquo::stop]`
+* `recipe[abiquo::repository]`
 * `recipe[abiquo::update]`
 * `recipe[abiquo::start]`
 * `recipe[abiquo::configure]`
