@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setu_remoteservices
+# Recipe:: setup_remoteservices
 #
 # Copyright 2014, Abiquo
 #
