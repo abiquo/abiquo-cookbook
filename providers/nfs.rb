@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Provider:: wait_for_webapp
+# Provider:: nfs
 #
 # Copyright 2014, Abiquo
 #
@@ -19,16 +19,20 @@ def whyrun_supported?
     true
 end
 
-action :wait do
-    converge_by("Waiting for #{@new_resource.name}") do
-        http = Net::HTTP.new(@new_resource.host, @new_resource.port)
-        http.read_timeout = @new_resource.read_timeout
-        http.open_timeout = @new_resource.open_timeout
-        http.start do |http|
-            request = Net::HTTP::Get.new("/#{@new_resource.webapp}")
-            response = http.request(request)
-            Chef::Log.debug "Request returned status: #{response.code}"
+action :configure do
+    converge_by("Configuring NFS #{@new_resource.share}") do
+        # Some templates come with an old share already configured
+        oldshare = @new_resource.oldshare
+        mount @new_resource.mountpoint do
+            device oldshare
+            fstype "nfs"
+            action [:umount, :disable]
+            not_if { @new_resource.oldshare.nil? }
         end
-        new_resource.updated_by_last_action(true)
+        mount @new_resource.mountpoint do
+            device @new_resource.share
+            fstype "nfs"
+            action [:enable, :mount]
+        end
     end
 end

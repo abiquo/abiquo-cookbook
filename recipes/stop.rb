@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: update
+# Recipe:: stop
 #
 # Copyright 2014, Abiquo
 #
@@ -15,22 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Chef::Recipe.send(:include, Abiquo::Packages)
+
 service "abiquo-tomcat" do
     provider Chef::Provider::Service::RedhatNoStatus
     pattern "tomcat"
 end
 
-abiquo_packages = `yum list installed 'abiquo-*' | grep abiquo | cut -d. -f1`.split
-
-if abiquo_packages.include?("abiquo-api")
-    %w{mysql rabbitmq-server}.each do |svc|
-        service svc do
-            action :stop
-        end
-    end
-end
-
-%w{abiquo-tomcat redis}.each do |svc|
+installed_services.each do |svc|
     service svc do
         action :stop
     end

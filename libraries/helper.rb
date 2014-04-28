@@ -15,6 +15,7 @@
 require 'chef/platform'
 
 module Abiquo
+
     module Platform
         [:service, :cron, :package, :mdadm, :ifconfig].each do |resource_type|
             Chef::Platform.set(
@@ -23,5 +24,20 @@ module Abiquo
                 :provider => Chef::Platform.find_provider(:centos, :default, resource_type)
             )
         end
+    end
+
+    module Packages
+        
+        def installed_packages
+            `yum list installed 'abiquo-*' | grep abiquo | cut -d. -f1`.split
+        end
+
+        def installed_services
+            services = ["abiquo-tomcat", "redis"]
+            if installed_packages.include?("abiquo-api")
+                services << "mysql" << "rabbitmq-server"
+            end
+        end
+
     end
 end

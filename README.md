@@ -2,10 +2,10 @@ Abiquo Cookbook
 ===============
 
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
-It targets Abiquo 3.0 or later releases.
+It allows to provision an Abiquo Monolithic and the Remote services from scratch, 
+as long as upgrading an existing Abiquo installation using the latest nightly builds.
 
-The cookbook also provides recipes to install the latest nightly builds, so it
-can be used along with a CI system.
+It targets Abiquo 3.0 or later releases.
 
 # Requirements
 
@@ -88,6 +88,25 @@ This LWRP will make the Chef run wait until the configured webapp is started.
         retries 3   # Retry if Tomcat is still not started
         retry_delay 5
         action :wait
+    end
+
+## abiquo\_nfs
+
+This LWRP allows to configure the Abiquo image repository, taking care of removing any
+existing repository configuration that could already exist.
+
+### Parameters
+
+* `mountpoint` - The path where the repository will be mounted
+* `share` - The NFS share to be configured
+* `oldshare` - The name of an already configured share, if it has to be removed first.
+
+### Example
+
+    abiquo_nfs "/opt/vm_repository" do
+        share "10.60.1.104:/volume1/nfs-devel"
+        oldshare "10.60.1.72:/opt/vm_repository"
+        action :configure
     end
 
 # Usage

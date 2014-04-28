@@ -15,18 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-unless node['abiquo']['nfs']['location'].nil?
-    # Some templates come with this share already configured
-    mount node['abiquo']['nfs']['mountpoint'] do
-        device "10.60.1.72:/opt/vm_repository"
-        fstype "nfs"
-        action [:umount, :disable]
-    end
-    mount node['abiquo']['nfs']['mountpoint'] do
-        device node['abiquo']['nfs']['location']
-        fstype "nfs"
-        action [:enable, :mount]
-    end
+abiquo_nfs node['abiquo']['nfs']['mountpoint'] do
+    share node['abiquo']['nfs']['location']
+    oldshare "10.60.1.72:/opt/vm_repository"
+    action :configure
+    not_if { node['abiquo']['nfs']['location'].nil? }
 end
 
 template "/opt/abiquo/tomcat/conf/server.xml" do
