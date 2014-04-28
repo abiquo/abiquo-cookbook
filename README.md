@@ -26,10 +26,11 @@ Generic recipes to be used to deploy an Abiquo platform from scratch:
 
 * `recipe[abiquo]` - Installs an Abiquo Monolithic
 * `recipe[abiquo::repository]` - Configures the Abiquo yum repositories
-* `recipe[abiquo::system]` - Installs the Abiquo base system
-* `recipe[abiquo::configure]` - Configures the Abiquo platform
+* `recipe[abiquo::install_monolithic]` - Installs an Abiquo Monolithic
+* `recipe[abiquo::install_remoteservices]` - Installs the Abiquo Remote Services
+* `recipe[abiquo::setup_server]` - Configures the Abiquo Server
+* `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
 * `recipe[abiquo::database]` - Installs the Abiquo database
-* `recipe[abiquo::remoteservices]` - Installs the Abiquo Remote Services
 
 Specific recipes to upgrade existing Abiquo installations:
 
@@ -47,7 +48,7 @@ Attribute | Description | Type | Default
 `['datacenterId']` | The value for the datacenter id property | String | Abiquo
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
-`['installdb']` | Wether to install (and override) the database or not | Boolean | true
+`['installdb']` | Install (and override) the database or not | Boolean | true
 `['license']` | The Abiquo license to install | String | nil
 `['nightly-repo']` | A yum repository with nightly builds | String | nil
 `['rabbitmqhost']` | The address of the RabbitMQ server | String | "127.0.0.1"
@@ -100,7 +101,8 @@ To install an Abiquo platform from scratch, include the following recipes in the
 To install the Abiquo Remote Services from scratch, include the following recipes in the run list:
 
 * `recipe[abiquo::repository]`
-* `recipe[abiquo::remoteservices]`
+* `recipe[abiquo::install_remoteservices]`
+* `recipe[abiquo::setup_remoteservices]`
 
 To upgrade an existing Abiquo platform, include the following recipes (it is a good idea to create a role for this):
 
@@ -108,7 +110,7 @@ To upgrade an existing Abiquo platform, include the following recipes (it is a g
 * `recipe[abiquo::repository]`
 * `recipe[abiquo::update]`
 * `recipe[abiquo::start]`
-* `recipe[abiquo::configure]`
+* `recipe[abiquo::setup_server]` or `recipe[abiquo::setup_remoteservices]`
 
 # License and Authors
 

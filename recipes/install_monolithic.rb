@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: system
+# Recipe:: install_monolithic
 #
 # Copyright 2014, Abiquo
 #

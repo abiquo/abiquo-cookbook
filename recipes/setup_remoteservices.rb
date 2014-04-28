@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: configure
+# Recipe:: setu_remoteservices
 #
 # Copyright 2014, Abiquo
 #
@@ -15,8 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-api_port = node['abiquo']['http-protocol'] == 'https'? 443 : node['apache']['listen_ports'].first
-
 unless node['abiquo']['nfs']['location'].nil?
     # Some templates come with this share already configured
     mount node['abiquo']['nfs']['mountpoint'] do
@@ -31,52 +29,28 @@ unless node['abiquo']['nfs']['location'].nil?
     end
 end
 
-include_recipe "abiquo::database" if node['abiquo']['installdb']
-
-ruby_block "configure-ui" do
-    block do
-        # Chef search_file_replace_line is not working. Update the json manually
-        uiconfigfile = "/var/www/html/ui/config/client-config.json"
-        uiconfig = JSON.parse(File.read(uiconfigfile));
-        uiconfig['config.endpoint'] = "#{node['abiquo']['http-protocol']}://#{node['fqdn']}:#{api_port}/api"
-        File.write(uiconfigfile, JSON.pretty_generate(uiconfig))
-    end
-    action :create
-end
-
-# Define the service with a custom name so we can subscribe just to the "restart" action
-# otherwise the "wait_for_webapp" resource will be notified too early (when tomcat is stopped)
-# and enqueued before the restart action is triggered
-service "abiquo-tomcat-restart" do
-    service_name "abiquo-tomcat"
-    provider Chef::Provider::Service::RedhatNoStatus
-    supports :restart => true
-    pattern "tomcat"
-end
-
 template "/opt/abiquo/tomcat/conf/server.xml" do
     source "server.xml.erb"
     owner "root"
     group "root"
     action :create
-    notifies :restart, "service[abiquo-tomcat-restart]"
+    notifies :restart, "service[abiquo-tomcat]"
 end
 
 template "/opt/abiquo/config/abiquo.properties" do
-    source "abiquo-monolithic.properties.erb"
+    source "abiquo-rs.properties.erb"
     owner "root"
     group "root"
     action :create
-    variables lazy { { :apilocation => "#{node['abiquo']['http-protocol']}://#{node['fqdn']}:#{api_port}/api" } }
-    notifies :restart, "service[abiquo-tomcat-restart]"
+    notifies :restart, "service[abiquo-tomcat]"
 end
 
-abiquo_wait_for_webapp "api" do
+abiquo_wait_for_webapp "virtualfactory" do
     host "localhost"
     port node['abiquo']['tomcat-http-port']
     retries 3   # Retry if Tomcat is still not started
     retry_delay 5
     action :nothing
-    subscribes :wait, "service[abiquo-tomcat-restart]"
+    subscribes :wait, "service[abiquo-tomcat]"
     only_if { node['abiquo']['wait-for-webapps'] }
 end

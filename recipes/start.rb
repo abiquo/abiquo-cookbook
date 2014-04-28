@@ -20,7 +20,17 @@ service "abiquo-tomcat" do
     pattern "tomcat"
 end
 
-%w{mysql redis rabbitmq-server abiquo-tomcat}.each do |svc|
+abiquo_packages = `yum list installed 'abiquo-*' | grep abiquo | cut -d. -f1`.split
+
+if abiquo_packages.include?("abiquo-api")
+    %w{mysql rabbitmq-server}.each do |svc|
+        service svc do
+            action :start
+        end
+    end
+end
+
+%w{redis abiquo-tomcat}.each do |svc|
     service svc do
         action :start
     end

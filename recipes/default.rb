@@ -16,5 +16,5 @@
 # limitations under the License.
 
 include_recipe "abiquo::repository"
-include_recipe "abiquo::system"
-include_recipe "abiquo::configure"
+include_recipe "abiquo::install_monolithic"
+include_recipe "abiquo::setup_server"

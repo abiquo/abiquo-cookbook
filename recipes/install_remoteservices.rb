@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: update
+# Recipe:: install_remoteservices
 #
 # Copyright 2014, Abiquo
 #
@@ -15,9 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-abiquo_packages = `yum list installed 'abiquo-*' | grep abiquo | cut -d. -f1`.split
-abiquo_packages.each do |pkg|
-    package pkg do
-        action :upgrade
+include_recipe "java"
+include_recipe "redisio::install"
+include_recipe "redisio::enable"
+
+%w{remote-services v2v sosreport-plugins}.each do |pkg|
+    package "abiquo-#{pkg}" do
+        action :install
     end
+end
+
+service "abiquo-tomcat" do
+    provider Chef::Provider::Service::RedhatNoStatus
+    supports :restart => true
+    pattern "tomcat"
 end
