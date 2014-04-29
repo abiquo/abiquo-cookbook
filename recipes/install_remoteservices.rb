@@ -15,6 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+package "dhclient" do
+    ignore_failure true
+    action :purge
+end
+
 include_recipe "java"
 include_recipe "redisio::install"
 include_recipe "redisio::enable"
