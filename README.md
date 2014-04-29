@@ -14,10 +14,12 @@ It targets Abiquo 3.0 or later releases.
 This cookbook depends on the following cookbooks:
 
 * apache2
+* iptables
 * java
 * java-management
 * redisio
 * selfsigned\_certificate
+* selinux
 * yum
 
 # Recipes
