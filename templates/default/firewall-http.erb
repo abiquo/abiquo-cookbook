@@ -1,0 +1,2 @@
+# Enable the Apache port
+-A FWR -p tcp -m tcp --dport <%= node['abiquo']['http-protocol'] == 'https'? 443 : node['apache']['listen_ports'].first %> -j ACCEPT

@@ -30,6 +30,13 @@ include_recipe "redisio::enable"
     end
 end
 
+selinux_state "SELinux Permissive" do
+      action :permissive
+end
+
+include_recipe "iptables"
+iptables_rule "firewall-tomcat"
+
 service "abiquo-tomcat" do
     provider Chef::Provider::Service::RedhatNoStatus
     supports :restart => true

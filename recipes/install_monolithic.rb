@@ -48,3 +48,11 @@ end
         action :install
     end
 end
+
+selinux_state "SELinux Permissive" do
+      action :permissive
+end
+
+include_recipe "iptables"
+iptables_rule "firewall-http"
+iptables_rule "firewall-tomcat"
