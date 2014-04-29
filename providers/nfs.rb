@@ -20,19 +20,19 @@ def whyrun_supported?
 end
 
 action :configure do
-    converge_by("Configuring NFS #{@new_resource.share}") do
+    converge_by("Configuring NFS #{new_resource.share}") do
         # Some templates come with an old share already configured
-        oldshare = @new_resource.oldshare
-        mount @new_resource.mountpoint do
-            device oldshare
+        mount new_resource.mountpoint do
+            device new_resource.oldshare
             fstype "nfs"
             action [:umount, :disable]
-            not_if { @new_resource.oldshare.nil? }
+            not_if { new_resource.oldshare.nil? }
         end
-        mount @new_resource.mountpoint do
-            device @new_resource.share
+        mounted = mount new_resource.mountpoint do
+            device new_resource.share
             fstype "nfs"
             action [:enable, :mount]
         end
+        new_resource.updated_by_last_action(mounted.updated_by_last_action?)
     end
 end

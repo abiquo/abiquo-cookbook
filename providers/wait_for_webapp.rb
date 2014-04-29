@@ -20,12 +20,12 @@ def whyrun_supported?
 end
 
 action :wait do
-    converge_by("Waiting for #{@new_resource.name}") do
-        http = Net::HTTP.new(@new_resource.host, @new_resource.port)
-        http.read_timeout = @new_resource.read_timeout
-        http.open_timeout = @new_resource.open_timeout
+    converge_by("Waiting for #{new_resource.name}") do
+        http = Net::HTTP.new(new_resource.host, new_resource.port)
+        http.read_timeout = new_resource.read_timeout
+        http.open_timeout = new_resource.open_timeout
         http.start do |http|
-            request = Net::HTTP::Get.new("/#{@new_resource.webapp}")
+            request = Net::HTTP::Get.new("/#{new_resource.webapp}")
             response = http.request(request)
             Chef::Log.debug "Request returned status: #{response.code}"
         end
