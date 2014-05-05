@@ -1,0 +1,18 @@
+# AIM configuration file
+
+[server]
+port = 8889
+
+[monitor]
+uri = "qemu+unix:///system"
+
+[rimp]
+repository = <%= node['abiquo']['nfs']['mountpoint'] %>
+datastore = /var/lib/virt
+autoBackup = false
+autoRestore = false
+datastoreValidTypes = ext2,ext3,ext4,nfs,nfs4,xfs,smbf,gfs
+
+[vlan]
+ifconfigCmd = /sbin/ifconfig
+brctlCmd = /usr/sbin/brctl
