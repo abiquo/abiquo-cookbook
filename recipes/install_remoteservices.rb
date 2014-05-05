@@ -31,7 +31,7 @@ include_recipe "redisio::enable"
 end
 
 selinux_state "SELinux Permissive" do
-      action :permissive
+    action :permissive
 end
 
 include_recipe "iptables"

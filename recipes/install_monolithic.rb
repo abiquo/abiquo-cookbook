@@ -50,7 +50,7 @@ end
 end
 
 selinux_state "SELinux Permissive" do
-      action :permissive
+    action :permissive
 end
 
 include_recipe "iptables"
