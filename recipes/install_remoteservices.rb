@@ -37,6 +37,10 @@ end
 include_recipe "iptables"
 iptables_rule "firewall-tomcat"
 
+service "rpcbind" do
+    action [:enable, :start]
+end
+
 service "abiquo-tomcat" do
     provider Chef::Provider::Service::RedhatNoStatus
     supports :restart => true
