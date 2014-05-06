@@ -25,8 +25,17 @@ end
     end
 end
 
+link "/usr/bin/qemu-system-x86_64" do
+    to "/usr/bin/qemu-kvm"
+    not_if { ::File.exists?("/usr/bin/qemu-system-x86_64") }
+end
+
 selinux_state "SELinux Permissive" do
     action :permissive
 end
 
 include_recipe "iptables::disabled"
+
+service "rpcbind" do
+    action [:enable, :start]
+end

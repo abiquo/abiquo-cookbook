@@ -27,6 +27,8 @@ service "abiquo-aim" do
     supports :restart => true
     pattern "abiquo-aim"
     action [:enable, :start]
+    # The abiquo-aim script hardly ever returns 0 :(
+    ignore_failure true
 end
 
 template "/etc/sysconfig/libvirt-guests" do

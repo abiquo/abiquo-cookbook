@@ -33,9 +33,14 @@ module Abiquo
         end
 
         def installed_services
-            services = ["abiquo-tomcat", "redis"]
-            if installed_packages.include?("abiquo-api")
-                services << "mysql" << "rabbitmq-server"
+            services = []
+            if installed_packages.include?("abiquo-aim")
+                services << "abiquo-aim"
+            else
+                services << "abiquo-tomcat" << "redis"
+                if installed_packages.include?("abiquo-api")
+                    services << "mysql" << "rabbitmq-server"
+                end
             end
         end
 

@@ -56,3 +56,7 @@ end
 include_recipe "iptables"
 iptables_rule "firewall-http"
 iptables_rule "firewall-tomcat"
+
+service "rpcbind" do
+    action [:enable, :start]
+end
