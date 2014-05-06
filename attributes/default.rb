@@ -15,6 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# The profile to install: monolithic, remoteservices or kvm
+default['abiquo']['profile'] = "monolithic"
+
 # Common properties
 default['abiquo']['datacenterId'] = "Abiquo"
 default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"

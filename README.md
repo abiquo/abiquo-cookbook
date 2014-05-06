@@ -2,8 +2,9 @@ Abiquo Cookbook
 ===============
 
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
-It allows to provision an Abiquo Monolithic and the Remote services from scratch, 
-as long as upgrading an existing Abiquo installation using the latest nightly builds.
+It allows to provision an Abiquo Monolithic, the Remote Services and a KVM hypervisor
+from scratch, as long as upgrading an existing Abiquo installation using the latest
+nightly builds.
 
 It targets Abiquo 3.0 or later releases.
 
@@ -26,19 +27,22 @@ This cookbook depends on the following cookbooks:
 
 Generic recipes to be used to deploy an Abiquo platform from scratch:
 
-* `recipe[abiquo]` - Installs an Abiquo Monolithic
+* `recipe[abiquo]` - Installs an Abiquo Platform
+* `recipe[abiquo::upgrade]` - Upgrades an Abiquo Platform
 * `recipe[abiquo::repository]` - Configures the Abiquo yum repositories
 * `recipe[abiquo::install_monolithic]` - Installs an Abiquo Monolithic
 * `recipe[abiquo::install_remoteservices]` - Installs the Abiquo Remote Services
-* `recipe[abiquo::setup_server]` - Configures the Abiquo Server
+* `recipe[abiquo::install_kvm]` - Installs the KVM hypervisor
+* `recipe[abiquo::setup_monolithic]` - Configures the Abiquo Server
 * `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
+* `recipe[abiquo::setup_kvm]` - Configures the KVM hypervisor
 * `recipe[abiquo::database]` - Installs the Abiquo database
 
 Specific recipes to upgrade existing Abiquo installations:
 
 * `recipe[abiquo::stop]` - Stops all Abiquo services
 * `recipe[abiquo::start]` - Starts all Abiquo services
-* `recipe[abiquo::update]` - Updates all Abiquo packages
+* `recipe[abiquo::update_packages]` - Updates all Abiquo packages
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
 
 # Attributes
@@ -47,7 +51,8 @@ The following attributes are under the `node['abiquo']` namespace.
 
 Attribute | Description | Type | Default
 ----------|-------------|------|--------
-`['datacenterId']` | The value for the datacenter id property | String | Abiquo
+`['profile']` | The profile to install: "monolithic", "remoteservices" or "kvm" | String | "monolithic"
+`['datacenterId']` | The value for the datacenter id property | String | "Abiquo"
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['installdb']` | Install (and override) the database or not | Boolean | true
@@ -113,25 +118,12 @@ existing repository configuration that could already exist.
 
 # Usage
 
-The cookbook is pretty straightforwatd to use.
+The cookbook is pretty straightforwatd to use. Just set the `node['abiquo']['profile']` attribute
+according to the profile you want to install or upgrade and and include one of the following recipes
+in the run list:
 
-To install an Abiquo platform from scratch, include the following recipes in the run list:
-
-* `recipe[abiquo]`
-
-To install the Abiquo Remote Services from scratch, include the following recipes in the run list:
-
-* `recipe[abiquo::repository]`
-* `recipe[abiquo::install_remoteservices]`
-* `recipe[abiquo::setup_remoteservices]`
-
-To upgrade an existing Abiquo platform, include the following recipes (it is a good idea to create a role for this):
-
-* `recipe[abiquo::stop]`
-* `recipe[abiquo::repository]`
-* `recipe[abiquo::update]`
-* `recipe[abiquo::start]`
-* `recipe[abiquo::setup_server]` or `recipe[abiquo::setup_remoteservices]`
+* `recipe[abiquo]` - To perform an installation from scratch
+* `recipe[abiquo::upgrade]` - To upgrade an existing installation
 
 # License and Authors
 
