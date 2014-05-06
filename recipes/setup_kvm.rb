@@ -22,15 +22,6 @@ abiquo_nfs node['abiquo']['nfs']['mountpoint'] do
     not_if { node['abiquo']['nfs']['location'].nil? }
 end
 
-service "abiquo-aim" do
-    provider Chef::Provider::Service::RedhatNoStatus
-    supports :restart => true
-    pattern "abiquo-aim"
-    action [:enable, :start]
-    # The abiquo-aim script hardly ever returns 0 :(
-    ignore_failure true
-end
-
 template "/etc/sysconfig/libvirt-guests" do
     source "libvirt-guests.erb"
     owner "root"
@@ -45,4 +36,13 @@ template "/etc/abiquo-aim.ini" do
     group "root"
     action :create
     notifies :restart, "service[abiquo-aim]"
+end
+
+service "abiquo-aim" do
+    provider Chef::Provider::Service::RedhatNoStatus
+    supports :restart => true
+    pattern "abiquo-aim"
+    action [:enable, :start]
+    # The abiquo-aim script hardly ever returns 0 :(
+    ignore_failure true
 end
