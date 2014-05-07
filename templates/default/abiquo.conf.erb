@@ -1,9 +1,18 @@
-<VirtualHost *:<%= node['apache']['listen_ports'].first %>>
+<% node['apache']['listen_ports'].each do |port| -%>
+<% if port != "443" -%>
+<VirtualHost *:<%= port %>>
+    RewriteEngine On
+    RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [L,R=301]
+    </VirtualHost>
+<% end %>
+<% end %>
+
+<VirtualHost *:443>
     RewriteEngine On
     ProxyRequests Off
     ProxyPreserveHost On
     DocumentRoot "/var/www/html"
- 
+
     <Directory "/var/www/html/ui">
         Options MultiViews
         AllowOverride None
@@ -11,7 +20,7 @@
         Allow from all
     </Directory>
     RewriteRule ^/$ /ui/ [R]
- 
+
     <Location /api>
         ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/api
         ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/api
@@ -31,5 +40,10 @@
         ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/legal
         ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/legal
     </Location>
- 
+
+    SSLEngine on
+    SSLProtocol all -SSLv2
+    SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+    SSLCertificateFile <%= node['abiquo']['ssl']['certificatefile'] %>
+    SSLCertificateKeyFile <%= node['abiquo']['ssl']['keyfile'] %>
 </VirtualHost>

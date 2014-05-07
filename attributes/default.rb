@@ -36,7 +36,6 @@ default['abiquo']['rabbitmqhost'] = "127.0.0.1"
 default['abiquo']['fullvirt'] = false
 
 # Configure abiquo-tomcat 
-default['abiquo']['http-protocol'] = "http"
 default['abiquo']['tomcat-http-port'] = 8009
 default['abiquo']['tomcat-ajp-port'] = 8010
 default['abiquo']['wait-for-webapps'] = false

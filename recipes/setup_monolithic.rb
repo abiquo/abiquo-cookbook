@@ -15,8 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-api_port = node['abiquo']['http-protocol'] == 'https'? 443 : node['apache']['listen_ports'].first
-
 abiquo_nfs node['abiquo']['nfs']['mountpoint'] do
     share node['abiquo']['nfs']['location']
     oldshare "10.60.1.72:/opt/vm_repository"
@@ -31,7 +29,7 @@ ruby_block "configure-ui" do
         # Chef search_file_replace_line is not working. Update the json manually
         uiconfigfile = "/var/www/html/ui/config/client-config.json"
         uiconfig = JSON.parse(File.read(uiconfigfile));
-        uiconfig['config.endpoint'] = "#{node['abiquo']['http-protocol']}://#{node['fqdn']}:#{api_port}/api"
+        uiconfig['config.endpoint'] = "https://#{node['fqdn']}/api"
         File.write(uiconfigfile, JSON.pretty_generate(uiconfig))
     end
     action :create
@@ -60,7 +58,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     owner "root"
     group "root"
     action :create
-    variables lazy { { :apilocation => "#{node['abiquo']['http-protocol']}://#{node['fqdn']}:#{api_port}/api" } }
+    variables lazy { { :apilocation => "https://#{node['fqdn']}/api" } }
     notifies :restart, "service[abiquo-tomcat-restart]"
 end
 

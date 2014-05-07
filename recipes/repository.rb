@@ -15,8 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Chef::Recipe.send(:include, Abiquo::Packages)
-
 # Cleanup the repos if the Abiquo ones are not present
 unless ::File.exists?("/etc/yum.repos.d/abiquo-base")
     directory "/etc/yum.repos.d" do

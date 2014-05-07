@@ -36,17 +36,19 @@ include_recipe "java"
 include_recipe "redisio::install"
 include_recipe "redisio::enable"
 
-apache_module "proxy"
-apache_module "proxy_ajp"
-
-web_app "abiquo" do
-    template "abiquo.conf.erb"
-end
-
 %w{monolithic sosreport-plugins}.each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
+end
+
+include_recipe "apache2"
+include_recipe "apache2::mod_proxy_ajp"
+include_recipe "apache2::mod_ssl"
+include_recipe "abiquo::certificate"
+
+web_app "abiquo" do
+    template "abiquo.conf.erb"
 end
 
 selinux_state "SELinux Permissive" do
@@ -54,7 +56,7 @@ selinux_state "SELinux Permissive" do
 end
 
 include_recipe "iptables"
-iptables_rule "firewall-http"
+include_recipe "apache2::iptables"
 iptables_rule "firewall-tomcat"
 
 service "rpcbind" do
