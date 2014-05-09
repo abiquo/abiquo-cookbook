@@ -61,7 +61,6 @@ Attribute | Description | Type | Default
 `['rabbitmqhost']` | The address of the RabbitMQ server | String | "127.0.0.1"
 `['redishost']` | The address of the Redis server | String | "127.0.0.1"
 `['fullivirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
-`['http-protocol']` | The protocol used to connect to the API ("http or "https") | String | "http"
 `['tomcat-http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
 `['tomcat-ajp-port']` | The port where the Tomcat listens to AJP traffic | Integer | 8010
 `['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
@@ -124,6 +123,9 @@ in the run list:
 
 * `recipe[abiquo]` - To perform an installation from scratch
 * `recipe[abiquo::upgrade]` - To upgrade an existing installation
+
+When installing the Abiquo Monolithic profile, you may also want to set the `node['selfsigned_certificate']['cn']`
+attribute to match the hostname of the node. You can also use it together with the [hostname](http://community.opscode.com/cookbooks/hostname) cookbook to make sure the node will have it properly configured.
 
 # License and Authors
 
