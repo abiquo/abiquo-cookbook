@@ -27,9 +27,12 @@ module Abiquo
     end
 
     module Packages
+
+        include Chef::Mixin::ShellOut
         
         def installed_packages
-            `yum list installed 'abiquo-*' | grep abiquo | cut -d. -f1`.split
+            cmd = shell_out!("repoquery --installed 'abiquo-*' --qf '%{name}'")
+            cmd.stdout.split
         end
 
         def installed_services
@@ -42,6 +45,7 @@ module Abiquo
                     services << "mysql" << "rabbitmq-server"
                 end
             end
+            services
         end
 
     end
