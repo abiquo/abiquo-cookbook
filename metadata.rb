@@ -31,3 +31,5 @@ depends 'redisio'
 depends 'selfsigned_certificate'
 depends 'selinux'
 depends 'yum'
+
+suggests 'hostname'

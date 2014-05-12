@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: default
+# Recipe:: upgrade
 #
 # Copyright 2014, Abiquo
 #
