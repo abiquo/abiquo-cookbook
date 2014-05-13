@@ -8,10 +8,11 @@
 <% end %>
 
 <VirtualHost *:443>
+    DocumentRoot "/var/www/html"
     RewriteEngine On
     ProxyRequests Off
     ProxyPreserveHost On
-    DocumentRoot "/var/www/html"
+    ProxyTimeout <%= node['apache']['timeout'] %>
 
     <Directory "/var/www/html/ui">
         Options MultiViews
