@@ -15,38 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Cleanup the repos if the Abiquo ones are not present
-unless ::File.exists?("/etc/yum.repos.d/abiquo-base")
-    directory "/etc/yum.repos.d" do
-        recursive true
+# Remove all existing Abiquo repositories
+Dir.glob("/etc/yum.repos.d/*abiquo*", File::FNM_CASEFOLD).each do |repo|
+    file repo do
         action :delete
-        ignore_failure true
     end
-
-    directory "/etc/yum.repos.d" do
-        owner "root"
-        group "root"
-        action :create
-    end
-end
-
-yum_repository "centos-base" do
-    description "CentOS 6 - Base"
-    baseurl "http://mirror.abiquo.com/mirror.centos.org/centos-6/6/os/x86_64/"
-    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
-    action :create
-end
-
-yum_repository "centos-updates" do
-    description "CentOS 6 - Updates"
-    baseurl "http://mirror.abiquo.com/mirror.centos.org/centos-6/6/updates/x86_64/"
-    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
-    action :create
 end
 
 yum_repository "abiquo-base" do
-    description "Abiquo 3.0 - Base"
-    baseurl "http://mirror.abiquo.com/abiquo/3.0/os/x86_64"
+    description "Abiquo base repository"
+    baseurl node['abiquo']['yum']['repository']
     gpgcheck false
     gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
     action :create
@@ -57,8 +35,8 @@ package "abiquo-release-ee" do
 end
 
 yum_repository "abiquo-base" do
-    description "Abiquo 3.0 - Base"
-    baseurl "http://mirror.abiquo.com/abiquo/3.0/os/x86_64"
+    description "Abiquo base repository"
+    baseurl node['abiquo']['yum']['repository']
     gpgcheck true
     gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
     action :create

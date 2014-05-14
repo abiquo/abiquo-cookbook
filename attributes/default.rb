@@ -27,9 +27,10 @@ default['abiquo']['installdb'] = true
 default['abiquo']['license'] = nil
 # default['abiquo']['license'] = "license-code"
 
+default['abiquo']['yum']['repository'] = "http://mirror.abiquo.com/abiquo/3.0/os/x86_64"
 # Use this property to configure the yum repository with the nightly packages
-default['abiquo']['nightly-repo'] = nil
-#default['abiquo']['nightly-repo'] = "http://10.60.20.42/master/rpm"
+default['abiquo']['yum']['nightly-repo'] = nil
+#default['abiquo']['yum']['nightly-repo'] = "http://10.60.20.42/master/rpm"
 
 default['abiquo']['redishost'] = "127.0.0.1"
 default['abiquo']['rabbitmqhost'] = "127.0.0.1"

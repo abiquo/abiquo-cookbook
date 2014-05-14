@@ -57,7 +57,8 @@ Attribute | Description | Type | Default
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['installdb']` | Install (and override) the database or not | Boolean | true
 `['license']` | The Abiquo license to install | String | nil
-`['nightly-repo']` | A yum repository with nightly builds | String | nil
+`['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.0/os/x86\_64"
+`['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
 `['rabbitmqhost']` | The address of the RabbitMQ server | String | "127.0.0.1"
 `['redishost']` | The address of the Redis server | String | "127.0.0.1"
 `['fullivirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
