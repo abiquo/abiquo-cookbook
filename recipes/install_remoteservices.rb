@@ -45,5 +45,5 @@ service "abiquo-tomcat" do
     provider Chef::Provider::Service::RedhatNoStatus
     supports :restart => true
     pattern "tomcat"
-    start_command "service abiquo-tomcat jpda" if ['abiquo']['tomcat-jpda']
+    start_command "service abiquo-tomcat jpda" if node['abiquo']['tomcat-jpda']
 end

@@ -20,7 +20,7 @@ Chef::Recipe.send(:include, Abiquo::Packages)
 service "abiquo-tomcat" do
     provider Chef::Provider::Service::RedhatNoStatus
     pattern "tomcat"
-    start_command "service abiquo-tomcat jpda" if ['abiquo']['tomcat-jpda']
+    start_command "service abiquo-tomcat jpda" if node['abiquo']['tomcat-jpda']
 end
 
 # Make the abiquo-tomcat the last to start

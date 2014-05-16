@@ -62,6 +62,7 @@ Attribute | Description | Type | Default
 `['rabbitmqhost']` | The address of the RabbitMQ server | String | "127.0.0.1"
 `['redishost']` | The address of the Redis server | String | "127.0.0.1"
 `['fullivirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
+`['tomcat-jpda']` | If the Abiquo Tomcat should be started with the JPDA configuration | Boolean | false
 `['tomcat-http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
 `['tomcat-ajp-port']` | The port where the Tomcat listens to AJP traffic | Integer | 8010
 `['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
