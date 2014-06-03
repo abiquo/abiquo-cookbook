@@ -40,9 +40,6 @@ end
 # and enqueued before the restart action is triggered
 service "abiquo-tomcat-restart" do
     service_name "abiquo-tomcat"
-    provider Chef::Provider::Service::RedhatNoStatus
-    supports :restart => true
-    pattern "tomcat"
     start_command "service abiquo-tomcat jpda" if node['abiquo']['tomcat-jpda']
 end
 

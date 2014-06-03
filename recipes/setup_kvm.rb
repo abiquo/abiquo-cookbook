@@ -39,10 +39,7 @@ template "/etc/abiquo-aim.ini" do
 end
 
 service "abiquo-aim" do
-    provider Chef::Provider::Service::RedhatNoStatus
-    supports :restart => true
-    pattern "abiquo-aim"
-    action [:enable, :start]
     # The abiquo-aim script hardly ever returns 0 :(
     ignore_failure true
+    action [:enable, :start]
 end
