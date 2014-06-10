@@ -26,7 +26,7 @@ yum_repository "abiquo-base" do
     description "Abiquo base repository"
     baseurl node['abiquo']['yum']['repository']
     gpgcheck false
-    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
+    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
     action :create
 end
 
@@ -38,7 +38,7 @@ yum_repository "abiquo-base" do
     description "Abiquo base repository"
     baseurl node['abiquo']['yum']['repository']
     gpgcheck true
-    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
+    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
     action :create
 end
 
@@ -46,7 +46,7 @@ yum_repository "abiquo-nightly" do
     description "Abiquo nightly packages"
     baseurl node['abiquo']['nightly-repo']
     gpgcheck false
-    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6"
+    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
     action :create
     not_if { node['abiquo']['nightly-repo'].nil? }
 end
