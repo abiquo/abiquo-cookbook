@@ -47,10 +47,11 @@ package "abiquo-release-ee" do
 end
 
 # The abiquo-release-ee package installs this repo. As we are in control
-# of the created repos, we just delete it, to avoid having it conflict with
+# of the created repos, we just disable it, to avoid having it conflict with
 # the configured ones.
 yum_repository "Abiquo-Base" do
-    action :delete
+    enabled false
+    action :create
 end
 
 # Once the abiquo-release package is installed, detect the platform again
