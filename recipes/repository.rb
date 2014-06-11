@@ -25,18 +25,6 @@ end
 yum_repository "abiquo-base" do
     description "Abiquo base repository"
     baseurl node['abiquo']['yum']['repository']
-    gpgcheck false
-    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
-    action :create
-end
-
-package "abiquo-release-ee" do
-    action :install
-end
-
-yum_repository "abiquo-base" do
-    description "Abiquo base repository"
-    baseurl node['abiquo']['yum']['repository']
     gpgcheck true
     gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
     action :create
@@ -49,6 +37,20 @@ yum_repository "abiquo-nightly" do
     gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
     action :create
     not_if { node['abiquo']['nightly-repo'].nil? }
+end
+
+# This package contains the gpgkey file, so the signature cannot
+# be validated when installing it.
+package "abiquo-release-ee" do
+    options "--nogpgcheck"
+    action :install
+end
+
+# The abiquo-release-ee package installs this repo. As we are in control
+# of the created repos, we just delete it, to avoid having it conflict with
+# the configured ones.
+yum_repository "Abiquo-Base" do
+    action :delete
 end
 
 # Once the abiquo-release package is installed, detect the platform again

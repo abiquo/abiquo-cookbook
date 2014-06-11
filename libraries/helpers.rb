@@ -27,7 +27,6 @@ module Abiquo
     end
 
     module Packages
-
         include Chef::Mixin::ShellOut
         
         def installed_packages
@@ -47,6 +46,5 @@ module Abiquo
             end
             services
         end
-
     end
 end
