@@ -42,6 +42,13 @@ include_recipe "redisio::enable"
     end
 end
 
+# The abiquo-release-ee package installs this repo. As we are in control
+# of the created repos, we just delete it, to avoid having it conflict with
+# the configured ones.
+yum_repository "Abiquo-Base" do
+    action :delete
+end
+
 include_recipe "apache2"
 include_recipe "apache2::mod_proxy_ajp"
 include_recipe "apache2::mod_ssl"

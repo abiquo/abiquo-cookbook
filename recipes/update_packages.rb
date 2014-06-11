@@ -21,4 +21,12 @@ installed_packages.each do |pkg|
     package pkg do
         action :upgrade
     end
+
+    # The abiquo-release-ee package installs this repo. As we are in control
+    # of the created repos, we just delete it, to avoid having it conflict with
+    # the configured ones.
+    yum_repository "Abiquo-Base" do
+        action :delete
+        only_if { pkg.eql? "abiquo-release-ee" }
+    end
 end
