@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include_recipe "abiquo::install_jce"
+
 abiquo_nfs node['abiquo']['nfs']['mountpoint'] do
     share node['abiquo']['nfs']['location']
     oldshare "10.60.1.72:/opt/vm_repository"

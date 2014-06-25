@@ -37,6 +37,7 @@ Generic recipes to be used to deploy an Abiquo platform from scratch:
 * `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
 * `recipe[abiquo::setup_kvm]` - Configures the KVM hypervisor
 * `recipe[abiquo::database]` - Installs the Abiquo database
+* `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
 
 Specific recipes to upgrade existing Abiquo installations:
 

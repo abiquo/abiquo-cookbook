@@ -20,6 +20,7 @@ recipe 'abiquo::database', 'Creates the Abiquo database'
 recipe 'abiquo::certificate', 'Installs a custom SSL certificate in the Apache'
 recipe 'abiquo::stop', 'Stops all Abiquo services'
 recipe 'abiquo::start', 'Starts all Abiquo services'
+recipe 'abiquo::install_jce', 'Installs the JCE unlimited strength jurisdiction policy files'
 
 supports 'centos', '>= 6.0'
 
