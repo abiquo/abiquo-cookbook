@@ -26,6 +26,12 @@ execute "clean-yum-cache" do
     command "yum clean all"
 end
 
+directory "/var/cache/yum" do
+    ignore_failure true
+    recursive true
+    action :delete
+end
+
 yum_repository "abiquo-base" do
     description "Abiquo base repository"
     baseurl node['abiquo']['yum']['repository']
