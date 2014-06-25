@@ -22,6 +22,10 @@ Dir.glob("/etc/yum.repos.d/*abiquo*", File::FNM_CASEFOLD).each do |repo|
     end
 end
 
+execute "clean-yum-cache" do
+    command "yum clean all"
+end
+
 yum_repository "abiquo-base" do
     description "Abiquo base repository"
     baseurl node['abiquo']['yum']['repository']
