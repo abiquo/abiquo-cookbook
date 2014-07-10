@@ -20,10 +20,16 @@ package "mysql-libs" do
     action :purge
 end
 
-%w{MariaDB-server MariaDB-client rabbitmq-server}.each do |pkg|
+%w{MariaDB-server MariaDB-client}.each do |pkg|
     package pkg do
+        # This is not an Abiquo nor a CentOS package
+        options "--nogpgcheck"
         action :install
     end
+end
+
+package "rabbitmq-server" do
+    action :install
 end
 
 %w{mysql rabbitmq-server}.each do |svc|
