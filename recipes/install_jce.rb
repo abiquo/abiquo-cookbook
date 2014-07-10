@@ -15,16 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-# TODO: Change this recipe to download the files from the Oracle
-# site instead of having them in the cookbook itself
-
 cookbook_file "#{node['java']['java_home']}/lib/security/local_policy.jar" do
-    source "local_policy.jar"
+    source "java#{node['java']['jdk_version']}/local_policy.jar"
     action :create
 end
 
 cookbook_file "#{node['java']['java_home']}/lib/security/US_export_policy.jar" do
-    source "US_export_policy.jar"
+    source "java#{node['java']['jdk_version']}/US_export_policy.jar"
     action :create
 end

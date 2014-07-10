@@ -50,4 +50,6 @@ default['abiquo']['ssl']['keytool'] = "/usr/java/default/jre/bin/keytool"
 default['abiquo']['ssl']['storepass'] = "changeit"
 
 # override the default JDK 6 version in the java cookbook
-override['java']['jdk_version'] = "7"
+override['java']['jdk_version'] = "8"
+override['java']['install_flavor'] = "oracle"
+override['java']['oracle']['accept_oracle_download_terms'] = true
