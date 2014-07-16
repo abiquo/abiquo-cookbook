@@ -42,11 +42,11 @@ end
 
 yum_repository "abiquo-nightly" do
     description "Abiquo nightly packages"
-    baseurl node['abiquo']['nightly-repo']
+    baseurl node['abiquo']['yum']['nightly-repo']
     gpgcheck false
     gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
     action :create
-    not_if { node['abiquo']['nightly-repo'].nil? }
+    not_if { node['abiquo']['yum']['nightly-repo'].nil? }
 end
 
 # This package contains the gpgkey file, so the signature cannot
