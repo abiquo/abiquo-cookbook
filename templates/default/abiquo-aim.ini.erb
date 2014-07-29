@@ -1,7 +1,7 @@
 # AIM configuration file
 
 [server]
-port = 8889
+port = <%= node['abiquo']['aim']['port'] %>
 
 [monitor]
 uri = "qemu+unix:///system"

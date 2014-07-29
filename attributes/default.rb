@@ -27,20 +27,30 @@ default['abiquo']['installdb'] = true
 default['abiquo']['license'] = nil
 # default['abiquo']['license'] = "license-code"
 
+# Repository configuration
 default['abiquo']['yum']['repository'] = "http://mirror.abiquo.com/abiquo/3.0/os/x86_64"
 # Use this property to configure the yum repository with the nightly packages
 default['abiquo']['yum']['nightly-repo'] = nil
 #default['abiquo']['yum']['nightly-repo'] = "http://10.60.20.42/master/rpm"
 
-default['abiquo']['redishost'] = "127.0.0.1"
-default['abiquo']['rabbitmqhost'] = "127.0.0.1"
-default['abiquo']['fullvirt'] = false
+# RabbitMQ configuration
+default['abiquo']['rabbitmq']['host'] = "127.0.0.1"
+default['abiquo']['rabbitmq']['user'] = "guest"
+default['abiquo']['rabbitmq']['password'] = "guest"
+default['abiquo']['rabbitmq']['port'] = 5672
 
-# Configure abiquo-tomcat 
-default['abiquo']['tomcat-jpda'] = false
+# Redis configuration
+default['abiquo']['redis']['host'] = "127.0.0.1"
+default['abiquo']['redis']['port'] = 6379 
+
+# Tomcat configuration 
 default['abiquo']['tomcat-http-port'] = 8009
 default['abiquo']['tomcat-ajp-port'] = 8010
 default['abiquo']['wait-for-webapps'] = false
+
+# Configure abiquo KVM
+default['abiquo']['fullvirt'] = false
+default['abiquo']['aim']['port'] = 8889
 
 # SSL configuration
 default['abiquo']['ssl']['certificatefile'] = "/etc/pki/tls/certs/ca.crt"

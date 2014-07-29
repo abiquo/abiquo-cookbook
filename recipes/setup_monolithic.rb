@@ -42,7 +42,6 @@ end
 # and enqueued before the restart action is triggered
 service "abiquo-tomcat-restart" do
     service_name "abiquo-tomcat"
-    start_command "service abiquo-tomcat jpda" if node['abiquo']['tomcat-jpda']
 end
 
 template "/opt/abiquo/tomcat/conf/server.xml" do

@@ -17,10 +17,6 @@
 
 Chef::Recipe.send(:include, Abiquo::Packages)
 
-service "abiquo-tomcat" do
-    start_command "service abiquo-tomcat jpda" if node['abiquo']['tomcat-jpda']
-end
-
 installed_services.each do |svc|
     service svc do
         action :stop

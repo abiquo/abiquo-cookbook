@@ -60,9 +60,14 @@ Attribute | Description | Type | Default
 `['license']` | The Abiquo license to install | String | nil
 `['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.0/os/x86\_64"
 `['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
-`['rabbitmqhost']` | The address of the RabbitMQ server | String | "127.0.0.1"
-`['redishost']` | The address of the Redis server | String | "127.0.0.1"
+`['rabbitmq']['host']` | The address of the RabbitMQ server | String | "127.0.0.1"
+`['rabbitmq']['port']` | The port of the RabbitMQ server | Integer | 5672
+`['rabbitmq']['user']` | The username of the RabbitMQ server | String | "guest"
+`['rabbitmq']['password']` | The password of the RabbitMQ server | String | "guest"
+`['redis']['host']` | The address of the Redis server | String | "127.0.0.1"
+`['redis']['port']` | The port of the Redis server | Integer | 6379
 `['fullivirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
+`['aim']['port']` | In a KVM, the port where the Abiquo AIM agent will listen | Integer | 8889
 `['tomcat-jpda']` | If the Abiquo Tomcat should be started with the JPDA configuration | Boolean | false
 `['tomcat-http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
 `['tomcat-ajp-port']` | The port where the Tomcat listens to AJP traffic | Integer | 8010

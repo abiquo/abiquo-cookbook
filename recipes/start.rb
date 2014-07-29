@@ -17,10 +17,6 @@
 
 Chef::Recipe.send(:include, Abiquo::Packages)
 
-service "abiquo-tomcat" do
-    start_command "service abiquo-tomcat jpda" if node['abiquo']['tomcat-jpda']
-end
-
 # Make the abiquo-tomcat the last to start
 installed_services.reverse.each do |svc|
     service svc do

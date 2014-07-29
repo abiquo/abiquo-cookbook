@@ -60,7 +60,8 @@ end
 # of the created repos, we just delete it, to avoid having it conflict with
 # the configured ones.
 yum_repository "Abiquo-Base" do
-    action :delete
+    action :nothing
+    subscribes :delete, "package[abiquo-release-ee]", :immediately
 end
 
 # Once the abiquo-release package is installed, detect the platform again
