@@ -22,10 +22,12 @@ default['abiquo']['profile'] = "monolithic"
 default['abiquo']['datacenterId'] = "Abiquo"
 default['abiquo']['installdb'] = true
 default['abiquo']['license'] = nil
+
+# NFS repository configuration
 default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
 default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0.1:/opt/vm_repository"
 
-# Repository configuration
+# Yum repository configuration
 default['abiquo']['yum']['repository'] = "http://mirror.abiquo.com/abiquo/3.0/os/x86_64"
 default['abiquo']['yum']['nightly-repo'] = nil
 
