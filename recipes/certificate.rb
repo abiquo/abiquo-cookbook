@@ -17,27 +17,10 @@
 
 include_recipe "selfsigned_certificate"
 
+service "apache2" do
+    action :reload
+end
+
 java_management_truststore_certificate "abiquo" do
-    file "#{node['selfsigned_certificate']['destination']}/server.crt"
-    keystore "#{node['java']['java_home']}/jre/lib/security/cacerts"
-    keytool "#{node['java']['java_home']}/jre/bin/keytool"
-    storepass node['abiquo']['ssl']['storepass']
-end
-
-file node['abiquo']['ssl']['certificatefile'] do
-    owner 'root'
-    group 'root'
-    mode 0644
-    content lazy { ::File.open("#{node['selfsigned_certificate']['destination']}/server.crt").read }
-    action :create
-    notifies :reload, "service[apache2]"
-end
-
-file node['abiquo']['ssl']['keyfile'] do
-    owner 'root'
-    group 'root'
-    mode 0644
-    content lazy { ::File.open("#{node['selfsigned_certificate']['destination']}/server.key").read }
-    action :create
-    notifies :reload, "service[apache2]"
+    file "#{node['selfsigned_certificate']['destination']}server.crt"
 end

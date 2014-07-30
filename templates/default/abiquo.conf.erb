@@ -46,6 +46,6 @@
     SSLEngine on
     SSLProtocol all -SSLv2
     SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
-    SSLCertificateFile <%= node['abiquo']['ssl']['certificatefile'] %>
-    SSLCertificateKeyFile <%= node['abiquo']['ssl']['keyfile'] %>
+    SSLCertificateFile <%= node['selfsigned_certificate']['destination'] %>server.crt
+    SSLCertificateKeyFile <%= node['selfsigned_certificate']['destination'] %>server.key
 </VirtualHost>

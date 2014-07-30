@@ -33,11 +33,6 @@ end
     end
 end
 
-service "abiquo-tomcat" do
-    ignore_failure true
-    action :stop
-end
-
 selinux_state "SELinux Permissive" do
     action :permissive
 end
@@ -46,5 +41,7 @@ include_recipe "iptables"
 iptables_rule "firewall-tomcat"
 
 %w{rpcbind redis}.each do |svc|
-    action [:enable, :start]
+    service svc do
+        action [:enable, :start]
+    end
 end

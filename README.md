@@ -73,9 +73,6 @@ Attribute | Description | Type | Default
 `['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
 `['ssl']['certificatefile']` | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
 `['ssl']['keyfile']` | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
-`['ssl']['keystore']` | Path to the trust store for the JVM | String | "/usr/java/default/jre/lib/security/cacerts"
-`['ssl']['keytool']` | Path to the keytool binary | String | "/usr/java/default/jre/bin/keytool"
-`['ssl']['storepass']` | The password for the JVM trust store | String | "changeit"
 
 # Resources and providers
 

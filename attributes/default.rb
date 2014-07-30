@@ -50,11 +50,6 @@ default['abiquo']['wait-for-webapps'] = false
 default['abiquo']['fullvirt'] = false
 default['abiquo']['aim']['port'] = 8889
 
-# SSL configuration
-default['abiquo']['ssl']['certificatefile'] = "/etc/pki/tls/certs/ca.crt"
-default['abiquo']['ssl']['keyfile'] = "/etc/pki/tls/private/ca.key"
-default['abiquo']['ssl']['storepass'] = "changeit"
-
 # Override the Apache proxy configuration
 override['apache']['proxy']['order'] = "allow,deny"
 override['apache']['proxy']['deny_from']  = "none"

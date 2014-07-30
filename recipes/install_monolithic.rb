@@ -50,11 +50,6 @@ include_recipe "apache2::mod_ssl"
     end
 end
 
-service "abiquo-tomcat" do
-    ignore_failure true
-    action :stop
-end
-
 include_recipe "abiquo::certificate"
 
 web_app "abiquo" do
@@ -70,5 +65,7 @@ include_recipe "apache2::iptables"
 iptables_rule "firewall-tomcat"
 
 %w{rpcbind redis}.each do |svc|
-    action [:enable, :start]
+    service svc do
+        action [:enable, :start]
+    end
 end
