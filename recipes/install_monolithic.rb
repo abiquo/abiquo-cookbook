@@ -69,6 +69,6 @@ include_recipe "iptables"
 include_recipe "apache2::iptables"
 iptables_rule "firewall-tomcat"
 
-service "rpcbind" do
+%w{rpcbind redis}.each do |svc|
     action [:enable, :start]
 end
