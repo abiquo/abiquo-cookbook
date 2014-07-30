@@ -15,13 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Remove all existing Abiquo repositories
-Dir.glob("/etc/yum.repos.d/*abiquo*", File::FNM_CASEFOLD).each do |repo|
-    file repo do
-        action :delete
-    end
-end
-
 execute "clean-yum-cache" do
     command "yum clean all"
 end
@@ -38,6 +31,7 @@ yum_repository "abiquo-base" do
     gpgcheck true
     gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
     action :create
+    subscribes :create, "package[abiquo-release-ee]", :immediately
 end
 
 yum_repository "abiquo-nightly" do
@@ -54,14 +48,6 @@ end
 package "abiquo-release-ee" do
     options "--nogpgcheck"
     action :install
-end
-
-# The abiquo-release-ee package installs this repo. As we are in control
-# of the created repos, we just delete it, to avoid having it conflict with
-# the configured ones.
-yum_repository "Abiquo-Base" do
-    action :nothing
-    subscribes :delete, "package[abiquo-release-ee]", :immediately
 end
 
 # Once the abiquo-release package is installed, detect the platform again

@@ -20,18 +20,14 @@ default['abiquo']['profile'] = "monolithic"
 
 # Common properties
 default['abiquo']['datacenterId'] = "Abiquo"
-default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
-default['abiquo']['nfs']['location'] = nil
-# default['abiquo']['nfs']['location'] = "10.60.1.104:/volume1/nfs-devel"
 default['abiquo']['installdb'] = true
 default['abiquo']['license'] = nil
-# default['abiquo']['license'] = "license-code"
+default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
+default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0.1:/opt/vm_repository"
 
 # Repository configuration
 default['abiquo']['yum']['repository'] = "http://mirror.abiquo.com/abiquo/3.0/os/x86_64"
-# Use this property to configure the yum repository with the nightly packages
 default['abiquo']['yum']['nightly-repo'] = nil
-#default['abiquo']['yum']['nightly-repo'] = "http://10.60.20.42/master/rpm"
 
 # RabbitMQ configuration
 default['abiquo']['rabbitmq']['host'] = "127.0.0.1"
@@ -55,11 +51,15 @@ default['abiquo']['aim']['port'] = 8889
 # SSL configuration
 default['abiquo']['ssl']['certificatefile'] = "/etc/pki/tls/certs/ca.crt"
 default['abiquo']['ssl']['keyfile'] = "/etc/pki/tls/private/ca.key"
-default['abiquo']['ssl']['keystore'] = "/usr/java/default/jre/lib/security/cacerts"
-default['abiquo']['ssl']['keytool'] = "/usr/java/default/jre/bin/keytool"
 default['abiquo']['ssl']['storepass'] = "changeit"
 
-# override the default JDK 6 version in the java cookbook
+# Override the Apache proxy configuration
+override['apache']['proxy']['order'] = "allow,deny"
+override['apache']['proxy']['deny_from']  = "none"
+override['apache']['proxy']['allow_from'] = "all"
+
+# Override the default JDK 6 version in the java cookbook
 override['java']['jdk_version'] = "8"
+override['java']['java_home'] = "/usr/java/default"
 override['java']['install_flavor'] = "oracle"
 override['java']['oracle']['accept_oracle_download_terms'] = true

@@ -21,13 +21,21 @@ package "dhclient" do
 end
 
 include_recipe "java"
-include_recipe "redisio::install"
-include_recipe "redisio::enable"
+
+package "redis" do
+    options "--nogpgcheck"
+    action :install
+end
 
 %w{remote-services v2v sosreport-plugins}.each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
+end
+
+service "abiquo-tomcat" do
+    ignore_failure true
+    action :stop
 end
 
 selinux_state "SELinux Permissive" do

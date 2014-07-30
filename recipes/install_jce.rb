@@ -15,12 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cookbook_file "#{node['java']['java_home']}/lib/security/local_policy.jar" do
+cookbook_file "#{node['java']['java_home']}/jre/lib/security/local_policy.jar" do
     source "java#{node['java']['jdk_version']}/local_policy.jar"
     action :create
 end
 
-cookbook_file "#{node['java']['java_home']}/lib/security/US_export_policy.jar" do
+cookbook_file "#{node['java']['java_home']}/jre/lib/security/US_export_policy.jar" do
     source "java#{node['java']['jdk_version']}/US_export_policy.jar"
     action :create
 end

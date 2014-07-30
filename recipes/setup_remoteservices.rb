@@ -17,10 +17,10 @@
 
 include_recipe "abiquo::install_jce"
 
-abiquo_nfs node['abiquo']['nfs']['mountpoint'] do
-    share node['abiquo']['nfs']['location']
-    oldshare "10.60.1.72:/opt/vm_repository"
-    action :configure
+mount node['abiquo']['nfs']['mountpoint'] do
+    device node['abiquo']['nfs']['location']
+    fstype "nfs"
+    action [:enable, :mount]
     not_if { node['abiquo']['nfs']['location'].nil? }
 end
 
@@ -29,7 +29,7 @@ template "/opt/abiquo/tomcat/conf/server.xml" do
     owner "root"
     group "root"
     action :create
-    notifies :restart, "service[abiquo-tomcat]"
+    notifies :start, "service[abiquo-tomcat]"
 end
 
 template "/opt/abiquo/config/abiquo.properties" do
@@ -37,7 +37,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     owner "root"
     group "root"
     action :create
-    notifies :restart, "service[abiquo-tomcat]"
+    notifies :start, "service[abiquo-tomcat]"
 end
 
 abiquo_wait_for_webapp "virtualfactory" do

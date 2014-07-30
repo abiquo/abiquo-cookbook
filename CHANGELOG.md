@@ -7,6 +7,7 @@ abiquo CHANGELOG
 * Support using JCE unlimited strength encryption policies.
 * Allow customization of the RabbitMQ and Redis properties.
 * Dropped support to configure the Abiquo Tomcat in jpda mode.
+* Redis is installed from the Abiquo packages.
 
 ## 0.1.0
 

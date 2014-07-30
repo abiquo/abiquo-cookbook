@@ -20,9 +20,10 @@ package "mysql-libs" do
     action :purge
 end
 
-%w{MariaDB-server MariaDB-client}.each do |pkg|
+# Some packages don't exist and Abiquo is packaging them but not signing with a 
+# custom key. Install those without the signature check, as they are unsigned
+%w{MariaDB-server MariaDB-client redis liquibase}.each do |pkg|
     package pkg do
-        # This is not an Abiquo nor a CentOS package
         options "--nogpgcheck"
         action :install
     end
@@ -39,8 +40,9 @@ end
 end
 
 include_recipe "java"
-include_recipe "redisio::install"
-include_recipe "redisio::enable"
+include_recipe "apache2"
+include_recipe "apache2::mod_proxy_ajp"
+include_recipe "apache2::mod_ssl"
 
 %w{monolithic sosreport-plugins}.each do |pkg|
     package "abiquo-#{pkg}" do
@@ -48,9 +50,11 @@ include_recipe "redisio::enable"
     end
 end
 
-include_recipe "apache2"
-include_recipe "apache2::mod_proxy_ajp"
-include_recipe "apache2::mod_ssl"
+service "abiquo-tomcat" do
+    ignore_failure true
+    action :stop
+end
+
 include_recipe "abiquo::certificate"
 
 web_app "abiquo" do

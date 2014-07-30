@@ -18,7 +18,6 @@ This cookbook depends on the following cookbooks:
 * iptables
 * java
 * java-management
-* redisio
 * selfsigned\_certificate
 * selinux
 * yum

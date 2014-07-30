@@ -19,8 +19,8 @@ include_recipe "selfsigned_certificate"
 
 java_management_truststore_certificate "abiquo" do
     file "#{node['selfsigned_certificate']['destination']}/server.crt"
-    keystore node['abiquo']['ssl']['keystore']
-    keytool node['abiquo']['ssl']['keytool']
+    keystore "#{node['java']['java_home']}/jre/lib/security/cacerts"
+    keytool "#{node['java']['java_home']}/jre/bin/keytool"
     storepass node['abiquo']['ssl']['storepass']
 end
 
@@ -30,7 +30,7 @@ file node['abiquo']['ssl']['certificatefile'] do
     mode 0644
     content lazy { ::File.open("#{node['selfsigned_certificate']['destination']}/server.crt").read }
     action :create
-    notifies :run, "execute[reload-apache]"
+    notifies :reload, "service[apache2]"
 end
 
 file node['abiquo']['ssl']['keyfile'] do
@@ -39,11 +39,5 @@ file node['abiquo']['ssl']['keyfile'] do
     mode 0644
     content lazy { ::File.open("#{node['selfsigned_certificate']['destination']}/server.key").read }
     action :create
-    notifies :run, "execute[reload-apache]"
-end
-
-# TODO: Remove this block once the upgrade recipes work with the apache2 cookbook
-execute "reload-apache" do
-    command "service httpd reload"
-    action :nothing
+    notifies :reload, "service[apache2]"
 end

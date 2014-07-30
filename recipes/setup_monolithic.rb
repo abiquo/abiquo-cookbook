@@ -17,10 +17,10 @@
 
 include_recipe "abiquo::install_jce"
 
-abiquo_nfs node['abiquo']['nfs']['mountpoint'] do
-    share node['abiquo']['nfs']['location']
-    oldshare "10.60.1.72:/opt/vm_repository"
-    action :configure
+mount node['abiquo']['nfs']['mountpoint'] do
+    device node['abiquo']['nfs']['location']
+    fstype "nfs"
+    action [:enable, :mount]
     not_if { node['abiquo']['nfs']['location'].nil? }
 end
 
@@ -40,7 +40,7 @@ end
 # Define the service with a custom name so we can subscribe just to the "restart" action
 # otherwise the "wait_for_webapp" resource will be notified too early (when tomcat is stopped)
 # and enqueued before the restart action is triggered
-service "abiquo-tomcat-restart" do
+service "abiquo-tomcat-start" do
     service_name "abiquo-tomcat"
 end
 
@@ -49,7 +49,7 @@ template "/opt/abiquo/tomcat/conf/server.xml" do
     owner "root"
     group "root"
     action :create
-    notifies :restart, "service[abiquo-tomcat-restart]"
+    notifies :start, "service[abiquo-tomcat-start]"
 end
 
 template "/opt/abiquo/config/abiquo.properties" do
@@ -58,7 +58,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     group "root"
     action :create
     variables lazy { { :apilocation => "https://#{node['fqdn']}/api" } }
-    notifies :restart, "service[abiquo-tomcat-restart]"
+    notifies :start, "service[abiquo-tomcat-start]"
 end
 
 abiquo_wait_for_webapp "api" do
@@ -67,6 +67,6 @@ abiquo_wait_for_webapp "api" do
     retries 3   # Retry if Tomcat is still not started
     retry_delay 5
     action :nothing
-    subscribes :wait, "service[abiquo-tomcat-restart]"
+    subscribes :wait, "service[abiquo-tomcat-start]"
     only_if { node['abiquo']['wait-for-webapps'] }
 end

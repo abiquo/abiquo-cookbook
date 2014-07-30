@@ -3,7 +3,7 @@
 <VirtualHost *:<%= port %>>
     RewriteEngine On
     RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [L,R=301]
-    </VirtualHost>
+</VirtualHost>
 <% end %>
 <% end %>
 
@@ -20,6 +20,7 @@
         Order allow,deny
         Allow from all
     </Directory>
+
     RewriteRule ^/$ /ui/ [R]
 
     <Location /api>
