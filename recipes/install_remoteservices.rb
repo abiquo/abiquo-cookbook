@@ -45,7 +45,3 @@ iptables_rule "firewall-tomcat"
         action [:enable, :start]
     end
 end
-
-service "abiquo-tomcat" do
-    action :nothing
-end
