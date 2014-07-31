@@ -34,7 +34,7 @@ selinux_state "SELinux Permissive" do
     action :permissive
 end
 
-include_recipe "iptables::disabled"
+include_recipe "iptables"
 
 service "rpcbind" do
     action [:enable, :start]
