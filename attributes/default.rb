@@ -47,7 +47,7 @@ default['abiquo']['tomcat-ajp-port'] = 8010
 default['abiquo']['wait-for-webapps'] = false
 
 # Configure abiquo KVM
-default['abiquo']['fullvirt'] = false
+default['abiquo']['kvm']['fullvirt'] = false
 default['abiquo']['aim']['port'] = 8889
 
 # Override the Apache proxy configuration

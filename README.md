@@ -65,7 +65,7 @@ Attribute | Description | Type | Default
 `['rabbitmq']['password']` | The password of the RabbitMQ server | String | "guest"
 `['redis']['host']` | The address of the Redis server | String | "127.0.0.1"
 `['redis']['port']` | The port of the Redis server | Integer | 6379
-`['fullivirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
+`['kvm']['fullvirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
 `['aim']['port']` | In a KVM, the port where the Abiquo AIM agent will listen | Integer | 8889
 `['tomcat-jpda']` | If the Abiquo Tomcat should be started with the JPDA configuration | Boolean | false
 `['tomcat-http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
