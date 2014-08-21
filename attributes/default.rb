@@ -42,7 +42,7 @@ default['abiquo']['redis']['host'] = "127.0.0.1"
 default['abiquo']['redis']['port'] = 6379
 
 # Mail server configuration
-default['abiquo']['mail']['address'] = "127.0.0.1"
+default['abiquo']['mail']['server'] = "127.0.0.1"
 default['abiquo']['mail']['user'] = "notifications@abiquo.com"
 default['abiquo']['mail']['password'] = nil
 
