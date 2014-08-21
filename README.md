@@ -67,10 +67,9 @@ Attribute | Description | Type | Default
 `['redis']['port']` | The port of the Redis server | Integer | 6379
 `['kvm']['fullvirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
 `['aim']['port']` | In a KVM, the port where the Abiquo AIM agent will listen | Integer | 8889
-`['tomcat-jpda']` | If the Abiquo Tomcat should be started with the JPDA configuration | Boolean | false
-`['tomcat-http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
-`['tomcat-ajp-port']` | The port where the Tomcat listens to AJP traffic | Integer | 8010
-`['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
+`['tomcat']['http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
+`['tomcat']['ajp-port']` | The port where the Tomcat listens to AJP traffic | Integer | 8010
+`['tomcat']['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
 `['ssl']['certificatefile']` | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
 `['ssl']['keyfile']` | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
 

@@ -35,7 +35,7 @@
 
     <Service name="Catalina">
 
-        <Connector port="<%= node['abiquo']['tomcat-http-port'] %>" protocol="HTTP/1.1"
+        <Connector port="<%= node['abiquo']['tomcat']['http-port'] %>" protocol="HTTP/1.1"
             connectionTimeout="20000"
             URIEncoding="UTF-8"
             redirectPort="8443" />
@@ -46,7 +46,7 @@
             keystorePass="<%= node['java-management']['truststore']['storepass'] %>"
             clientAuth="false" sslProtocol="TLS"/>
 
-        <Connector port="<%= node['abiquo']['tomcat-ajp-port'] %>" protocol="AJP/1.3"
+        <Connector port="<%= node['abiquo']['tomcat']['ajp-port'] %>" protocol="AJP/1.3"
             enableLookups="false"
             tomcatAuthentication="false"
             connectionTimeout="20000" />

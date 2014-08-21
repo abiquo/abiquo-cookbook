@@ -33,3 +33,4 @@ depends 'selinux'
 depends 'yum'
 
 suggests 'hostname'
+suggests 'postfix'

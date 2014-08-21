@@ -24,23 +24,23 @@
     RewriteRule ^/$ /ui/ [R]
 
     <Location /api>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/api
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/api
+        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/api
+        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/api
     </Location>
 
     <Location /am>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/am
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/am
+        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/am
+        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/am
     </Location>
  
     <Location /m>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/m
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/m
+        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/m
+        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/m
     </Location>
 
     <Location /legal>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/legal
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat-ajp-port'] %>/legal
+        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/legal
+        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/legal
     </Location>
 
     SSLEngine on

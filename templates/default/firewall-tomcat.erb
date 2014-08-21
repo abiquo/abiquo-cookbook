@@ -1,2 +1,2 @@
 # Enable the Tomcat port
--A FWR -p tcp -m tcp --dports <%= node['abiquo']['tomcat-http-port'] %>,<%= node['abiquo']['tomcat-ajp-port'] %> -j ACCEPT
+-A FWR -p tcp -m tcp --dports <%= node['abiquo']['tomcat']['http-port'] %>,<%= node['abiquo']['tomcat']['ajp-port'] %> -j ACCEPT

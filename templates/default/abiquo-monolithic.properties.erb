@@ -38,3 +38,10 @@ abiquo.virtualfactory.kvm.fullVirt = <%= node['abiquo']['kvm']['fullvirt'] %>
 # Default vcenter pass
 abiquo.dvs.vcenter.user = root
 abiquo.dvs.vcenter.password = vmware
+
+# Mail server configuration
+abiquo.server.mail.server = <%= node['abiquo']['mail']['server'] %>
+abiquo.server.mail.user = <%= node['abiquo']['mail']['user'] %>
+<% unless node['abiquo']['mail']['password'].nil? %>
+abiquo.server.mail.password = <%= node['abiquo']['mail']['password'] %>
+<% end %>

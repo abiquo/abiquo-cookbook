@@ -39,12 +39,17 @@ default['abiquo']['rabbitmq']['port'] = 5672
 
 # Redis configuration
 default['abiquo']['redis']['host'] = "127.0.0.1"
-default['abiquo']['redis']['port'] = 6379 
+default['abiquo']['redis']['port'] = 6379
+
+# Mail server configuration
+default['abiquo']['mail']['address'] = "127.0.0.1"
+default['abiquo']['mail']['user'] = "notifications@abiquo.com"
+default['abiquo']['mail']['password'] = nil
 
 # Tomcat configuration 
-default['abiquo']['tomcat-http-port'] = 8009
-default['abiquo']['tomcat-ajp-port'] = 8010
-default['abiquo']['wait-for-webapps'] = false
+default['abiquo']['tomcat']['http-port'] = 8009
+default['abiquo']['tomcat']['ajp-port'] = 8010
+default['abiquo']['tomcat']['wait-for-webapps'] = false
 
 # Configure abiquo KVM
 default['abiquo']['kvm']['fullvirt'] = false

@@ -63,10 +63,10 @@ end
 
 abiquo_wait_for_webapp "api" do
     host "localhost"
-    port node['abiquo']['tomcat-http-port']
+    port node['abiquo']['tomcat']['http-port']
     retries 3   # Retry if Tomcat is still not started
     retry_delay 5
     action :nothing
     subscribes :wait, "service[abiquo-tomcat-start]"
-    only_if { node['abiquo']['wait-for-webapps'] }
+    only_if { node['abiquo']['tomcat']['wait-for-webapps'] }
 end
