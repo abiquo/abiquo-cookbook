@@ -25,6 +25,7 @@ recipe 'abiquo::install_jce', 'Installs the JCE unlimited strength jurisdiction 
 supports 'centos', '>= 6.0'
 
 depends 'apache2'
+depends 'ark'
 depends 'iptables'
 depends 'java'
 depends 'java-management'

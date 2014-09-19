@@ -15,12 +15,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cookbook_file "#{node['java']['java_home']}/jre/lib/security/local_policy.jar" do
-    source "java#{node['java']['jdk_version']}/local_policy.jar"
+unless node['java']['oracle']['accept_oracle_download_terms']
+    Chef::Application.fatal!("Attribute node['java']['oracle']['accept_oracle_download_terms'] must be true to download directly from the Oracle site")
+end
+
+# Remove the existing policy files as the ones in the downloaded zip may have an older date
+# and the ark cookbook won't update them
+%w{local_policy US_export_policy}.each do |jar|
+    file "#{node['java']['java_home']}/jre/lib/security/#{jar}.jar" do
+        action :delete
+    end
+end
+
+ruby_block "prepare-license-cookie" do
+    block do
+        Chef::REST::CookieJar.instance["download.oracle.com:80"] = "oraclelicense=accept-securebackup-cookie"
+    end
     action :create
 end
 
-cookbook_file "#{node['java']['java_home']}/jre/lib/security/US_export_policy.jar" do
-    source "java#{node['java']['jdk_version']}/US_export_policy.jar"
-    action :create
+ark "jce-policy-files" do
+    url "http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip"
+    path "#{node['java']['java_home']}/jre/lib/security"
+    action :dump
 end
