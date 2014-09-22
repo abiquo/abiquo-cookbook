@@ -19,6 +19,6 @@ Chef::Recipe.send(:include, Abiquo::Platform)
 
 include_recipe "abiquo::stop"
 include_recipe "abiquo::repository"
-include_recipe "abiquo::update"
+include_recipe "abiquo::update_packages"
 include_recipe "abiquo::start"
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
