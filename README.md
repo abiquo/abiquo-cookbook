@@ -6,7 +6,7 @@ It allows to provision an Abiquo Monolithic, the Remote Services and a KVM hyper
 from scratch, as long as upgrading an existing Abiquo installation using the latest
 nightly builds.
 
-It targets Abiquo 3.2 or later releases.
+It targets Abiquo 3.3 or later releases.
 
 # Requirements
 
@@ -17,7 +17,6 @@ This cookbook depends on the following cookbooks:
 * apache2
 * ark
 * iptables
-* java
 * java-management
 * selfsigned\_certificate
 * selinux
@@ -58,7 +57,7 @@ Attribute | Description | Type | Default
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['installdb']` | Install (and override) the database or not | Boolean | true
 `['license']` | The Abiquo license to install | String | nil
-`['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.0/os/x86\_64"
+`['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.2/os/x86\_64"
 `['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
 `['rabbitmq']['host']` | The address of the RabbitMQ server | String | "127.0.0.1"
 `['rabbitmq']['port']` | The port of the RabbitMQ server | Integer | 5672
