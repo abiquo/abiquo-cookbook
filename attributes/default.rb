@@ -28,7 +28,7 @@ default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
 default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0.1:/opt/vm_repository"
 
 # Yum repository configuration
-default['abiquo']['yum']['repository'] = "http://mirror.abiquo.com/abiquo/3.0/os/x86_64"
+default['abiquo']['yum']['repository'] = "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
 default['abiquo']['yum']['nightly-repo'] = nil
 
 # RabbitMQ configuration
@@ -60,8 +60,6 @@ override['apache']['proxy']['order'] = "allow,deny"
 override['apache']['proxy']['deny_from']  = "none"
 override['apache']['proxy']['allow_from'] = "all"
 
-# Override the default JDK 6 version in the java cookbook
-override['java']['jdk_version'] = "8"
-override['java']['java_home'] = "/usr/java/default"
-override['java']['install_flavor'] = "oracle"
+# Override the default java configuration
 override['java']['oracle']['accept_oracle_download_terms'] = true
+override['java']['java_home'] = "/usr/java/default"

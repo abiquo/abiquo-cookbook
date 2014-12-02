@@ -6,7 +6,7 @@ It allows to provision an Abiquo Monolithic, the Remote Services and a KVM hyper
 from scratch, as long as upgrading an existing Abiquo installation using the latest
 nightly builds.
 
-It targets Abiquo 3.0 or later releases.
+It targets Abiquo 3.2 or later releases.
 
 # Requirements
 

@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Chef::Recipe.send(:include, Abiquo::Packages)
+
 execute "clean-yum-cache" do
     command "yum clean all"
 end
@@ -25,11 +27,13 @@ directory "/var/cache/yum" do
     action :delete
 end
 
+gpg_keys = gpg_key_files.join(" ")
+
 yum_repository "abiquo-base" do
     description "Abiquo base repository"
     baseurl node['abiquo']['yum']['repository']
     gpgcheck true
-    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
+    gpgkey gpg_keys
     action :create
     subscribes :create, "package[abiquo-release-ee]", :immediately
 end
@@ -38,7 +42,7 @@ yum_repository "abiquo-nightly" do
     description "Abiquo nightly packages"
     baseurl node['abiquo']['yum']['nightly-repo']
     gpgcheck false
-    gpgkey "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo"
+    gpgkey gpg_keys
     action :create
     not_if { node['abiquo']['yum']['nightly-repo'].nil? }
 end

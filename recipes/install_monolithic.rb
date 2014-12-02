@@ -29,8 +29,10 @@ end
     end
 end
 
-package "rabbitmq-server" do
-    action :install
+%w{rabbitmq-server jdk}.each do |pkg|
+    package pkg do
+        action :install
+    end
 end
 
 %w{mysql rabbitmq-server}.each do |svc|
@@ -39,7 +41,6 @@ end
     end
 end
 
-include_recipe "java"
 include_recipe "apache2"
 include_recipe "apache2::mod_proxy_ajp"
 include_recipe "apache2::mod_ssl"
