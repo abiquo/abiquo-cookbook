@@ -1,6 +1,12 @@
 abiquo CHANGELOG
 ================
 
+# 0.2.1
+
+* Install Java and RabbitMQ from the Abiquo repositories.
+* Added all missing signatures to the repository configuration.
+* Configured the cookbook to install Abiquo 3.3.
+
 ## 0.2.0
 
 * Support Java 8.
