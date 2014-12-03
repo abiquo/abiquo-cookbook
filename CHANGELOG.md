@@ -1,7 +1,15 @@
 abiquo CHANGELOG
 ================
 
-# 0.2.1
+## 0.3.1
+
+* Fixed the NFS resource.
+
+## 0.3.0
+
+* Added support for Abiquo 3.3.
+
+## 0.2.1
 
 * Install Java and RabbitMQ from the Abiquo repositories.
 * Added all missing signatures to the repository configuration.
