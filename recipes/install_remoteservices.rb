@@ -20,12 +20,7 @@ package "dhclient" do
     action :purge
 end
 
-package "jdk" do
-    action :install
-end
-
-package "redis" do
-    options "--nogpgcheck"
+package %{redis jdk} do
     action :install
 end
 

@@ -20,16 +20,7 @@ package "mysql-libs" do
     action :purge
 end
 
-# Some packages don't exist and Abiquo is packaging them but not signing with a 
-# custom key. Install those without the signature check, as they are unsigned
-%w{MariaDB-server MariaDB-client redis liquibase}.each do |pkg|
-    package pkg do
-        options "--nogpgcheck"
-        action :install
-    end
-end
-
-%w{rabbitmq-server jdk}.each do |pkg|
+%w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk}.each do |pkg|
     package pkg do
         action :install
     end
