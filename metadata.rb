@@ -4,8 +4,6 @@ maintainer_email 'ignasi.barrera@abiquo.com'
 license          'Apache 2.0'
 description      'Installs and configures an Abiquo platform'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-source_url       'https://github.com/abiquo/abiquo-cookbook'
-issues_url       'https://github.com/abiquo/abiquo-cookbook/issues'
 version          '0.3.0'
 
 recipe 'abiquo', 'Installs and configures an Abiquo platform'
