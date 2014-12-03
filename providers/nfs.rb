@@ -22,13 +22,15 @@ end
 action :configure do
     converge_by("Configuring NFS #{new_resource.share}") do
         # Some templates come with an old share already configured
-        mount new_resource.mountpoint do
+        mount "umount_#{new_resource.name}" do
+            mount_point new_resource.mountpoint
             device new_resource.oldshare
             fstype "nfs"
             action [:umount, :disable]
             not_if { new_resource.oldshare.nil? }
         end
-        mounted = mount new_resource.mountpoint do
+        mounted = mount "mount_#{new_resource.name}" do
+            mount_point new_resource.mountpoint
             device new_resource.share
             fstype "nfs"
             action [:enable, :mount]
