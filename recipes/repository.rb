@@ -31,7 +31,16 @@ gpg_keys = gpg_key_files.join(" ")
 
 yum_repository "abiquo-base" do
     description "Abiquo base repository"
-    baseurl node['abiquo']['yum']['repository']
+    baseurl node['abiquo']['yum']['base-repo']
+    gpgcheck true
+    gpgkey gpg_keys
+    action :create
+    subscribes :create, "package[abiquo-release-ee]", :immediately
+end
+
+yum_repository "abiquo-updates" do
+    description "Abiquo updates repository"
+    baseurl node['abiquo']['yum']['updates-repo']
     gpgcheck true
     gpgkey gpg_keys
     action :create

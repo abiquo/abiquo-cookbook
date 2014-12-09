@@ -1,6 +1,10 @@
 abiquo CHANGELOG
 ================
 
+## 0.3.2
+
+* Added the abiquo-updates yum repository.
+
 ## 0.3.1
 
 * Fixed the NFS resource.

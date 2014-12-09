@@ -28,7 +28,8 @@ default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
 default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0.1:/opt/vm_repository"
 
 # Yum repository configuration
-default['abiquo']['yum']['repository'] = "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
+default['abiquo']['yum']['base-repo'] = "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
+default['abiquo']['yum']['updates-repo'] = "http://mirror.abiquo.com/abiquo/3.2/updates/x86_64"
 default['abiquo']['yum']['nightly-repo'] = nil
 
 # RabbitMQ configuration
