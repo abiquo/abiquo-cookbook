@@ -27,6 +27,8 @@ directory "/var/cache/yum" do
     action :delete
 end
 
+include_recipe "yum"
+
 gpg_keys = gpg_key_files.join(" ")
 
 yum_repository "abiquo-base" do
