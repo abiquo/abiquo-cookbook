@@ -1,7 +1,3 @@
-
-# Cookbook Name:: abiquo
-# Resource:: nfs
-#
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +8,12 @@
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY :kind, either express or implied.
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-actions :configure
-
-default_action :nothing
-
-attribute :share, :kind_of => String, :default => nil
-attribute :mountpoint, :kind_of => String, :name_attribute => true
-attribute :oldshare, :kind_of => String, :default => nil
+if defined?(ChefSpec)
+    def wait_abiquo_wait_for_webapp(webapp_name)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_wait_for_webapp, :wait, webapp_name)
+    end
+end

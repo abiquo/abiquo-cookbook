@@ -62,5 +62,6 @@ override['apache']['proxy']['deny_from']  = "none"
 override['apache']['proxy']['allow_from'] = "all"
 
 # Override the default java configuration
+# TODO: Configure these attributes in a way that they don't have precedence over user config
 override['java']['oracle']['accept_oracle_download_terms'] = true
 override['java']['java_home'] = "/usr/java/default"

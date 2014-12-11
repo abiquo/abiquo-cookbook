@@ -31,7 +31,7 @@ ruby_block "prepare-license-cookie" do
     block do
         Chef::REST::CookieJar.instance["download.oracle.com:80"] = "oraclelicense=accept-securebackup-cookie"
     end
-    action :create
+    action :run
 end
 
 ark "jce-policy-files" do

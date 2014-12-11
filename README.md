@@ -99,25 +99,6 @@ This LWRP will make the Chef run wait until the configured webapp is started.
         action :wait
     end
 
-## abiquo\_nfs
-
-This LWRP allows to configure the Abiquo image repository, taking care of removing any
-existing repository configuration that could already exist.
-
-### Parameters
-
-* `mountpoint` - The path where the repository will be mounted
-* `share` - The NFS share to be configured
-* `oldshare` - The name of an already configured share, if it has to be removed first.
-
-### Example
-
-    abiquo_nfs "/opt/vm_repository" do
-        share "10.60.1.104:/volume1/nfs-devel"
-        oldshare "10.60.1.72:/opt/vm_repository"
-        action :configure
-    end
-
 # Usage
 
 The cookbook is pretty straightforwatd to use. Just set the `node['abiquo']['profile']` attribute

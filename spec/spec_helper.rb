@@ -1,6 +1,3 @@
-# Cookbook Name:: abiquo
-# Recipe:: install_remoteservices
-#
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,32 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package "dhclient" do
-    ignore_failure true
-    action :purge
-end
+require 'chefspec'
+require 'chefspec/berkshelf'
 
-%w{redis jdk}.each do |pkg|
-    package pkg do
-        action :install
-    end
-end
+ChefSpec::Coverage.start!
 
-%w{remote-services v2v sosreport-plugins}.each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
-end
-
-selinux_state "SELinux Permissive" do
-    action :permissive
-end
-
-include_recipe "iptables"
-iptables_rule "firewall-tomcat"
-
-%w{rpcbind redis}.each do |svc|
-    service svc do
-        action [:enable, :start]
-    end
+RSpec.configure do |config|
+    config.platform = 'centos'
+    config.version = '6.5'
 end

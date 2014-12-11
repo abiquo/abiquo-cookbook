@@ -34,7 +34,7 @@ ruby_block "configure-ui" do
         uiconfig['config.endpoint'] = "https://#{node['fqdn']}/api"
         File.write(uiconfigfile, JSON.pretty_generate(uiconfig))
     end
-    action :create
+    action :run
 end
 
 # Define the service with a custom name so we can subscribe just to the "restart" action
