@@ -1,6 +1,8 @@
 Abiquo Cookbook
 ===============
 
+[![Build Status](https://travis-ci.org/abiquo/abiquo-cookbook.svg?branch=master)](https://travis-ci.org/abiquo/abiquo-cookbook)
+
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
 It allows to provision an Abiquo Monolithic, the Remote Services and a KVM hypervisor
 from scratch, as long as upgrading an existing Abiquo installation using the latest
