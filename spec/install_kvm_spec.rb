@@ -18,8 +18,8 @@ require_relative 'support/matchers'
 describe 'abiquo::install_kvm' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
-    it 'installs the required packages' do
-        %w{qemu-kvm abiquo-cloud-node abiquo-sosreport-plugins}.each do |pkg|
+    %w{qemu-kvm abiquo-cloud-node abiquo-sosreport-plugins}.each do |pkg|
+        it "installs the #{pkg} package" do
             expect(chef_run).to install_package(pkg)
         end
     end

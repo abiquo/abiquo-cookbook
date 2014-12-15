@@ -31,6 +31,10 @@ describe 'abiquo::install_jce' do
         expect(chef_run).to run_ruby_block('prepare-license-cookie')
     end
 
+    it 'installs the unzip package' do
+        expect(chef_run).to install_package('unzip')
+    end
+
     it 'downloads the new policy files' do
         expect(chef_run).to dump_ark('jce-policy-files').with(
             :url => 'http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip',

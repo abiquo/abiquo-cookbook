@@ -54,5 +54,5 @@ abiquo_wait_for_webapp "virtualfactory" do
     retry_delay 5
     action :nothing
     subscribes :wait, "service[abiquo-tomcat-start]"
-    only_if { node['abiquo']['tomat']['wait-for-webapps'] }
+    only_if { node['abiquo']['tomcat']['wait-for-webapps'] }
 end

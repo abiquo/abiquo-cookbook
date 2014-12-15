@@ -34,6 +34,10 @@ ruby_block "prepare-license-cookie" do
     action :run
 end
 
+package "unzip" do
+    action :install
+end
+
 ark "jce-policy-files" do
     url "http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip"
     path "#{node['java']['java_home']}/jre/lib/security"
