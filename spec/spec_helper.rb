@@ -20,4 +20,6 @@ ChefSpec::Coverage.start!
 RSpec.configure do |config|
     config.platform = 'centos'
     config.version = '6.5'
+    # Don't show warnings due to using Chef 11. Remove once tests are upgraded to use Chef 12
+    config.log_level = :error
 end
