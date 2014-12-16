@@ -2,7 +2,7 @@ Abiquo Cookbook
 ===============
 
 [![Build Status](https://travis-ci.org/abiquo/abiquo-cookbook.svg?branch=master)](https://travis-ci.org/abiquo/abiquo-cookbook)
-[![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.3.2-blue.svg)](https://supermarket.chef.io/cookbooks/abiquo)
+[![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.4.0-blue.svg)](https://supermarket.chef.io/cookbooks/abiquo)
 [![Chef Version](http://img.shields.io/badge/chef-v11.14-orange.svg)](https://www.chef.io)
 
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
