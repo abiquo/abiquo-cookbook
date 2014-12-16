@@ -27,7 +27,14 @@ directory "/var/cache/yum" do
     action :delete
 end
 
-include_recipe "yum"
+# Manually install the keys that are missing from the
+# abiquo-release-ee package
+%w{MariaDB RabbitMQ}.each do |key|
+    cookbook_file "RPM-GPG-KEY-#{key}" do
+        path "/etc/pki/rpm-gpg/RPM-GPG-KEY-#{key}"
+        action :create_if_missing
+    end
+end
 
 gpg_keys = gpg_key_files.join(" ")
 

@@ -29,8 +29,8 @@ include_recipe "abiquo::database" if node['abiquo']['installdb']
 ruby_block "configure-ui" do
     block do
         # Chef search_file_replace_line is not working. Update the json manually
-        uiconfigfile = "/var/www/html/ui/config/client-config-custom.json"
-        uiconfig = JSON.parse(File.read(uiconfigfile));
+        uiconfigfile = "/var/www/html/ui/config/client-config.json"
+        uiconfig = JSON.parse(File.read(uiconfigfile, :encoding => 'iso-8859-1'));
         uiconfig['config.endpoint'] = "https://#{node['fqdn']}/api"
         File.write(uiconfigfile, JSON.pretty_generate(uiconfig))
     end

@@ -12,23 +12,15 @@ suites:
   - name: monolithic
     run_list:
       - recipe[abiquo::default]
-    attributes:
-      abiquo:
-        yum:
-          nightly-repo: http://10.60.20.42/master/rpm
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]
     attributes:
       abiquo:
         profile: remoteservices
-        yum:
-          nightly-repo: http://10.60.20.42/master/rpm
   - name: kvm
     run_list:
       - recipe[abiquo::default]
     attributes:
       abiquo:
         profile: kvm
-        yum:
-          nightly-repo: http://10.60.20.42/master/rpm
