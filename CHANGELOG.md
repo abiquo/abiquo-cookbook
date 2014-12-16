@@ -1,9 +1,14 @@
 abiquo CHANGELOG
 ================
 
+## 0.4.0
+
+
 ## 0.3.2
 
 * Added the abiquo-updates yum repository.
+* Configured the rpm GPG sign keys that are not present in the abiquo-release-ee package.
+* Fixed encofing in the UI configuration file.
 
 ## 0.3.1
 
