@@ -12,7 +12,7 @@ nightly builds.
 
 # Requirements
 
-* CentOS >= 6.0
+* CentOS >= 6.5
 
 This cookbook depends on the following cookbooks:
 

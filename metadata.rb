@@ -22,7 +22,7 @@ recipe 'abiquo::stop', 'Stops all Abiquo services'
 recipe 'abiquo::start', 'Starts all Abiquo services'
 recipe 'abiquo::install_jce', 'Installs the JCE unlimited strength jurisdiction policy files'
 
-supports 'centos', '>= 6.0'
+supports 'centos', '>= 6.5'
 
 depends 'apache2'
 depends 'ark'
