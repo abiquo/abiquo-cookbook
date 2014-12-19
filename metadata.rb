@@ -4,7 +4,7 @@ maintainer_email 'ignasi.barrera@abiquo.com'
 license          'Apache 2.0'
 description      'Installs and configures an Abiquo platform'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '0.3.2'
+version          '0.3.3'
 
 recipe 'abiquo', 'Installs and configures an Abiquo platform'
 recipe 'abiquo::upgrade', 'Upgrades an Abiquo platform'
@@ -22,7 +22,7 @@ recipe 'abiquo::stop', 'Stops all Abiquo services'
 recipe 'abiquo::start', 'Starts all Abiquo services'
 recipe 'abiquo::install_jce', 'Installs the JCE unlimited strength jurisdiction policy files'
 
-supports 'centos', '>= 6.0'
+supports 'centos', '>= 6.5'
 
 depends 'apache2'
 depends 'ark'
