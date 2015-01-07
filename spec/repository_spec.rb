@@ -13,7 +13,6 @@
 # limitations under the License.
 
 require 'spec_helper'
-require_relative 'support/matchers'
 
 describe 'abiquo::repository' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
