@@ -56,10 +56,6 @@ yum_repository "abiquo-nightly" do
     not_if { node['abiquo']['yum']['nightly-repo'].nil? }
 end
 
-package "yum-utils" do
-    action :install
-end
-
 # This package contains the gpgkey file, so the signature cannot
 # be validated when installing it.
 package "abiquo-release-ee" do

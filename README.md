@@ -29,7 +29,6 @@ This cookbook depends on the following cookbooks:
 Generic recipes to be used to deploy an Abiquo platform from scratch:
 
 * `recipe[abiquo]` - Installs an Abiquo Platform
-* `recipe[abiquo::upgrade]` - Upgrades an Abiquo Platform
 * `recipe[abiquo::repository]` - Configures the Abiquo yum repositories
 * `recipe[abiquo::install_monolithic]` - Installs an Abiquo Monolithic
 * `recipe[abiquo::install_remoteservices]` - Installs the Abiquo Remote Services
@@ -37,14 +36,12 @@ Generic recipes to be used to deploy an Abiquo platform from scratch:
 * `recipe[abiquo::setup_monolithic]` - Configures the Abiquo Server
 * `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
 * `recipe[abiquo::setup_kvm]` - Configures the KVM hypervisor
+* `recipe[abiquo::upgrade]` - Upgrades an Abiquo Platform
 * `recipe[abiquo::database]` - Installs the Abiquo database
 * `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
 
 Specific recipes to upgrade existing Abiquo installations:
 
-* `recipe[abiquo::stop]` - Stops all Abiquo services
-* `recipe[abiquo::start]` - Starts all Abiquo services
-* `recipe[abiquo::update_packages]` - Updates all Abiquo packages
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
 
 # Attributes

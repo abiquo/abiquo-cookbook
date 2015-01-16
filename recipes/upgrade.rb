@@ -17,8 +17,28 @@
 
 Chef::Recipe.send(:include, Abiquo::Platform)
 
-include_recipe "abiquo::stop"
+services = case node['abiquo']['profile']
+    # Order is important. The abiquo-tomcat will be stopped first and started at the end
+    when 'monolithic' then ['abiquo-tomcat', 'redis', 'mysql', 'rabbitmq-server']
+    when 'remoteservices' then ['abiquo-tomcat', 'redis']
+    when 'kvm' then ['abiquo-aim']
+end
+
+services.each do |svc|
+    service svc do
+        action :stop
+    end
+end
+
 include_recipe "abiquo::repository"
-include_recipe "abiquo::update_packages"
-include_recipe "abiquo::start"
-include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
+
+# Wildcards can't be used with the regular resource package, so just run the command
+execute "yum-upgrade-abiquo" do
+    command 'yum -y upgrade abiquo-*'
+end
+
+services.reverse.each do |svc|
+    service svc do
+        action :start
+    end
+end

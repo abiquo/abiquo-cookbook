@@ -12,6 +12,7 @@ suites:
   - name: monolithic
     run_list:
       - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
     attributes:
       abiquo:
         yum:
@@ -19,6 +20,7 @@ suites:
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
     attributes:
       abiquo:
         profile: remoteservices
@@ -27,6 +29,7 @@ suites:
   - name: kvm
     run_list:
       - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
     attributes:
       abiquo:
         profile: kvm
