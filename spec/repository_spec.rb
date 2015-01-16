@@ -80,11 +80,6 @@ describe 'abiquo::repository' do
         )
     end
 
-    it 'installs the yum-utils package' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to install_package('yum-utils')
-    end
-
     it 'installs the abiquo-release-ee package' do
         chef_run.converge(described_recipe)
         expect(chef_run).to install_package('abiquo-release-ee').with(

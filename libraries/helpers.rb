@@ -34,23 +34,5 @@ module Abiquo
                 "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-#{keyname}"
             end
         end
-        
-        def installed_packages
-            cmd = shell_out!("repoquery --installed 'abiquo-*' --qf '%{name}'")
-            cmd.stdout.split
-        end
-
-        def installed_services
-            services = []
-            if installed_packages.include?("abiquo-aim")
-                services << "abiquo-aim"
-            else
-                services << "abiquo-tomcat" << "redis"
-                if installed_packages.include?("abiquo-api")
-                    services << "mysql" << "rabbitmq-server"
-                end
-            end
-            services
-        end
     end
 end

@@ -12,15 +12,18 @@ suites:
   - name: monolithic
     run_list:
       - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
     attributes:
       abiquo:
         profile: remoteservices
   - name: kvm
     run_list:
       - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
     attributes:
       abiquo:
         profile: kvm
