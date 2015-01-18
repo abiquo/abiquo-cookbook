@@ -15,16 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::install_jce"
-
 mount node['abiquo']['nfs']['mountpoint'] do
     device node['abiquo']['nfs']['location']
     fstype "nfs"
     action [:enable, :mount]
     not_if { node['abiquo']['nfs']['location'].nil? }
 end
-
-include_recipe "abiquo::database" if node['abiquo']['installdb']
 
 ruby_block "configure-ui" do
     block do

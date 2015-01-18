@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 
-describe 'abiquo::database' do
+describe 'abiquo::install_database' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
     it 'creates the database' do

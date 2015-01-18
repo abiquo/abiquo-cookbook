@@ -17,11 +17,6 @@ require 'spec_helper'
 describe 'abiquo::setup_remoteservices' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
-    it 'includes the install_jce recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_jce')
-    end
-
     it 'does not mount the nfs repository by default' do
         chef_run.converge(described_recipe)
         expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])

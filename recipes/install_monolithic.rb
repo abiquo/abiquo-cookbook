@@ -61,3 +61,6 @@ iptables_rule "firewall-tomcat"
         action [:enable, :start]
     end
 end
+
+include_recipe "abiquo::install_jce"
+include_recipe "abiquo::install_database" if node['abiquo']['db']['install']

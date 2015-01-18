@@ -17,11 +17,6 @@ require 'spec_helper'
 describe 'abiquo::setup_monolithic' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
-    it 'includes the install_jce recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_jce')
-    end
-
     it 'does not mount the nfs repository by default' do
         chef_run.converge(described_recipe)
         expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])
@@ -38,17 +33,6 @@ describe 'abiquo::setup_monolithic' do
             :fstype => 'nfs',
             :device => '10.60.1.222:/opt/nfs-devel'
         )
-    end
-
-    it 'installs the database by default' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::database')
-    end
-
-    it 'does not install the database if not configured' do
-        chef_run.node.set['abiquo']['installdb'] = false
-        chef_run.converge(described_recipe)
-        expect(chef_run).to_not include_recipe('abiquo::database')
     end
 
     it 'runs the ruby block to configure the ui' do

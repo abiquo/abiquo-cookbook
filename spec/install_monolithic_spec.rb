@@ -16,13 +16,14 @@ require 'spec_helper'
 require_relative 'support/matchers'
 
 describe 'abiquo::install_monolithic' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+    let(:chef_run) { ChefSpec::SoloRunner.new }
 
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
     end
 
     it 'removes the MySQL packages' do
+        chef_run.converge(described_recipe)
         expect(chef_run).to purge_package('mysql-libs').with(
             :ignore_failure => true
         )
@@ -30,18 +31,21 @@ describe 'abiquo::install_monolithic' do
 
     %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk}.each do |pkg|
         it "installs the #{pkg} system package" do
+            chef_run.converge(described_recipe)
             expect(chef_run).to install_package(pkg)
         end
     end
 
     %w{mysql rabbitmq-server}.each do |svc|
         it "configures the #{svc} service" do
+            chef_run.converge(described_recipe)
             expect(chef_run).to enable_service(svc)
             expect(chef_run).to start_service(svc)
         end
     end
 
     it 'installs the Apache recipes' do
+        chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('apache2')
         expect(chef_run).to include_recipe('apache2::mod_proxy_ajp')
         expect(chef_run).to include_recipe('apache2::mod_ssl')
@@ -49,11 +53,13 @@ describe 'abiquo::install_monolithic' do
 
     %w{abiquo-monolithic abiquo-sosreport-plugins}.each do |pkg|
         it "installs the #{pkg} abiquo package" do
+            chef_run.converge(described_recipe)
             expect(chef_run).to install_package(pkg)
         end
     end
 
     it 'includes the certificate recipe' do
+        chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('abiquo::certificate')
     end
 
@@ -61,6 +67,7 @@ describe 'abiquo::install_monolithic' do
     # but definitions and do not exist in the resource list
 
     it 'configures the firewall' do
+        chef_run.converge(described_recipe)
         expect(chef_run).to permissive_selinux_state('SELinux Permissive')
         expect(chef_run).to include_recipe('iptables')
         expect(chef_run).to include_recipe('apache2::iptables')
@@ -68,8 +75,25 @@ describe 'abiquo::install_monolithic' do
 
     %w{rpcbind redis}.each do |svc|
         it "configures the #{svc} service" do
+            chef_run.converge(described_recipe)
             expect(chef_run).to enable_service(svc)
             expect(chef_run).to start_service(svc)
         end
+    end
+
+    it 'includes the install_jce recipe' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to include_recipe('abiquo::install_jce')
+    end
+
+    it 'installs the database by default' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to include_recipe('abiquo::install_database')
+    end
+
+    it 'does not install the database if not configured' do
+        chef_run.node.set['abiquo']['db']['install'] = false
+        chef_run.converge(described_recipe)
+        expect(chef_run).to_not include_recipe('abiquo::install_database')
     end
 end
