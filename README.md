@@ -37,7 +37,7 @@ Generic recipes to be used to deploy an Abiquo platform from scratch:
 * `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
 * `recipe[abiquo::setup_kvm]` - Configures the KVM hypervisor
 * `recipe[abiquo::upgrade]` - Upgrades an Abiquo Platform
-* `recipe[abiquo::database]` - Installs the Abiquo database
+* `recipe[abiquo::install_database]` - Installs the Abiquo database
 * `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
 
 Specific recipes to upgrade existing Abiquo installations:
@@ -54,10 +54,15 @@ Attribute | Description | Type | Default
 `['datacenterId']` | The value for the datacenter id property | String | "Abiquo"
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
-`['installdb']` | Install (and override) the database or not | Boolean | true
 `['license']` | The Abiquo license to install | String | nil
 `['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
 `['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
+`['db']['host']` | The database host used when running the database upgrade | String | "localhost""
+`['db']['port']` | The database port used when running the database upgrade | Integer | 3306
+`['db']['user']` | The database user used when running the database upgrade | String | "root"
+`['db']['password']` | The database password used when running the database upgrade | String | nil
+`['db']['install']` | Install the database when installing the Monolithic profile | Boolean | true
+`['db']['upgrade']` | Run the database upgrade when upgrading the monolithic profile | Boolean | true
 `['rabbitmq']['host']` | The address of the RabbitMQ server | String | "127.0.0.1"
 `['rabbitmq']['port']` | The port of the RabbitMQ server | Integer | 5672
 `['rabbitmq']['user']` | The username of the RabbitMQ server | String | "guest"

@@ -15,7 +15,7 @@ recipe 'abiquo::setup_monolithic', 'Configures and starts the Abiquo Platform'
 recipe 'abiquo::setup_remoteservices', 'Configures and starts the Abiquo Remote Services'
 recipe 'abiquo::setup_kvm', 'Configures a KVM hypervisor'
 recipe 'abiquo::upgrade', 'Upgrades an Abiquo platform'
-recipe 'abiquo::database', 'Creates the Abiquo database'
+recipe 'abiquo::install_database', 'Creates the Abiquo database'
 recipe 'abiquo::certificate', 'Installs a custom SSL certificate in the Apache'
 recipe 'abiquo::install_jce', 'Installs the JCE unlimited strength jurisdiction policy files'
 

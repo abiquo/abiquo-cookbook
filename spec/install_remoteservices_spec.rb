@@ -50,4 +50,8 @@ describe 'abiquo::install_remoteservices' do
             expect(chef_run).to start_service(svc)
         end
     end
+
+    it 'includes the install_jce recipe' do
+        expect(chef_run).to include_recipe('abiquo::install_jce')
+    end
 end

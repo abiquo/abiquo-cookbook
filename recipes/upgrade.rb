@@ -17,17 +17,9 @@
 
 Chef::Recipe.send(:include, Abiquo::Platform)
 
-services = case node['abiquo']['profile']
-    # Order is important. The abiquo-tomcat will be stopped first and started at the end
-    when 'monolithic' then ['abiquo-tomcat', 'redis', 'mysql', 'rabbitmq-server']
-    when 'remoteservices' then ['abiquo-tomcat', 'redis']
-    when 'kvm' then ['abiquo-aim']
-end
-
-services.each do |svc|
-    service svc do
-        action :stop
-    end
+svc = node['abiquo']['profile'] == 'kvm' ? 'abiquo-aim' : 'abiquo-tomcat'
+service svc do
+    action :stop
 end
 
 include_recipe "abiquo::repository"
@@ -37,8 +29,19 @@ execute "yum-upgrade-abiquo" do
     command 'yum -y upgrade abiquo-*'
 end
 
-services.reverse.each do |svc|
-    service svc do
-        action :start
-    end
+liquibase_cmd = "java -cp /usr/share/java/liquibase.jar liquibase.integration.commandline.Main " \
+    "--changeLogFile=/usr/share/doc/abiquo-server/database/src/kinton_master_changelog.xml " \
+    "--url=\"jdbc:mysql://#{node['abiquo']['db']['host']}:#{node['abiquo']['db']['port']}/kinton\"  " \
+    "--driver=com.mysql.jdbc.Driver " \
+    "--classpath=/opt/abiquo/tomcat/lib/mysql-connector-java-5.1.27-bin.jar " \
+    "--username #{node['abiquo']['db']['user']} "
+liquibase_cmd += "--password #{node['abiquo']['db']['password']} " unless node['abiquo']['db']['password'].nil?
+liquibase_cmd += "update"
+
+execute "liquibase-update" do
+    command liquibase_cmd
+    cwd '/usr/share/doc/abiquo-server/database'
+    only_if { node['abiquo']['profile'] == 'monolithic' && node['abiquo']['db']['upgrade'] }
 end
+
+include_recipe "abiquo::setup_#{node['abiquo']['profile']}"

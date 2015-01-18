@@ -20,7 +20,6 @@ default['abiquo']['profile'] = "monolithic"
 
 # Common properties
 default['abiquo']['datacenterId'] = "Abiquo"
-default['abiquo']['installdb'] = true
 default['abiquo']['license'] = nil
 
 # NFS repository configuration
@@ -31,6 +30,14 @@ default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0
 default['abiquo']['yum']['base-repo'] = "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
 default['abiquo']['yum']['updates-repo'] = "http://mirror.abiquo.com/abiquo/3.2/updates/x86_64"
 default['abiquo']['yum']['nightly-repo'] = nil
+
+# Database configuration
+default['abiquo']['db']['host'] = "localhost"
+default['abiquo']['db']['port'] = 3306
+default['abiquo']['db']['user'] = "root"
+default['abiquo']['db']['password'] = nil
+default['abiquo']['db']['install'] = true
+default['abiquo']['db']['upgrade'] = true
 
 # RabbitMQ configuration
 default['abiquo']['rabbitmq']['host'] = "127.0.0.1"

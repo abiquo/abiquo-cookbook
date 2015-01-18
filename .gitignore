@@ -2,3 +2,4 @@
 *.swp
 .kitchen/
 .kitchen.local.yml
+.ruby-version
