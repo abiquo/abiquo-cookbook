@@ -3,6 +3,9 @@ abiquo CHANGELOG
 
 ## 0.4.0
 
+* Removed the start, stop and update recipes.
+* Changed the upgrade recipe to also upgrade the database.
+* Added database configuration attributes.
 
 ## 0.3.2
 
