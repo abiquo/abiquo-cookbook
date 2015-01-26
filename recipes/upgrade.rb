@@ -27,6 +27,7 @@ include_recipe "abiquo::repository"
 # Wildcards can't be used with the regular resource package, so just run the command
 execute "yum-upgrade-abiquo" do
     command 'yum -y upgrade abiquo-*'
+    notifies :start, "service[#{svc}]"
 end
 
 liquibase_cmd = "java -cp /usr/share/java/liquibase.jar liquibase.integration.commandline.Main " \
