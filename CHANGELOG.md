@@ -1,6 +1,12 @@
 abiquo CHANGELOG
 ================
 
+## 0.3.3
+
+* Removed the start, stop and update recipes.
+* Changed the upgrade recipe to also upgrade the database.
+* Added database configuration attributes.
+
 ## 0.3.2
 
 * Added the abiquo-updates yum repository.
