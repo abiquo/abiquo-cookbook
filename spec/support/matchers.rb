@@ -23,3 +23,7 @@ end
 def permissive_selinux_state(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:selinux_state, :permissive, resource_name)
 end
+
+def create_if_missing_cookbook_file(resource_name)
+    ChefSpec::Matchers::ResourceMatcher.new(:cookbook_file, :create_if_missing, resource_name)
+end
