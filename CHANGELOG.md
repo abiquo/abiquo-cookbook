@@ -3,6 +3,10 @@ abiquo CHANGELOG
 
 ## 0.4.0
 
+* Use the rpm signing keys from the abiquo-release-ee package.
+
+## 0.3.3
+
 * Removed the start, stop and update recipes.
 * Changed the upgrade recipe to also upgrade the database.
 * Added database configuration attributes.
