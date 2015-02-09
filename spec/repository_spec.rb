@@ -32,15 +32,6 @@ describe 'abiquo::repository' do
         )
     end
 
-    %w(MariaDB RabbitMQ).each do |key|
-        it "installs the #{key} key" do
-            chef_run.converge(described_recipe)
-            expect(chef_run).to create_if_missing_cookbook_file("RPM-GPG-KEY-#{key}").with(
-                :path => "/etc/pki/rpm-gpg/RPM-GPG-KEY-#{key}"
-            )
-        end
-    end
-
     it 'creates the base repository' do
         chef_run.converge(described_recipe)
         expect(chef_run).to create_yum_repository('abiquo-base').with(
@@ -50,7 +41,8 @@ describe 'abiquo::repository' do
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6'
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
 
         resource = chef_run.find_resource(:yum_repository, 'abiquo-base')
@@ -66,7 +58,8 @@ describe 'abiquo::repository' do
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6'
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
 
         resource = chef_run.find_resource(:yum_repository, 'abiquo-updates')
@@ -88,7 +81,8 @@ describe 'abiquo::repository' do
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6'
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
     end
 
