@@ -41,7 +41,8 @@ describe 'abiquo::repository' do
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6'
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
 
         resource = chef_run.find_resource(:yum_repository, 'abiquo-base')
@@ -57,7 +58,8 @@ describe 'abiquo::repository' do
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6'
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
 
         resource = chef_run.find_resource(:yum_repository, 'abiquo-updates')
@@ -79,7 +81,8 @@ describe 'abiquo::repository' do
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6'
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
+                       'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
     end
 

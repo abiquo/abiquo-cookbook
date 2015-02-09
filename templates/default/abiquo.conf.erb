@@ -15,7 +15,7 @@
     ProxyTimeout <%= node['apache']['timeout'] %>
 
     <Directory "/var/www/html/ui">
-        Options MultiViews
+        Options MultiViews FollowSymLinks
         AllowOverride None
         Order allow,deny
         Allow from all
