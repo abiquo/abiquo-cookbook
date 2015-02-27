@@ -22,22 +22,18 @@ mount node['abiquo']['nfs']['mountpoint'] do
     not_if { node['abiquo']['nfs']['location'].nil? }
 end
 
-ruby_block "configure-ui" do
-    block do
-        # Chef search_file_replace_line is not working. Update the json manually
-        uiconfigfile = "/var/www/html/ui/config/client-config-custom.json"
-        uiconfig = JSON.parse(File.read(uiconfigfile));
-        uiconfig['config.endpoint'] = "https://#{node['fqdn']}/api"
-        File.write(uiconfigfile, JSON.pretty_generate(uiconfig))
-    end
-    action :run
-end
-
 # Define the service with a custom name so we can subscribe just to the "restart" action
 # otherwise the "wait_for_webapp" resource will be notified too early (when tomcat is stopped)
 # and enqueued before the restart action is triggered
 service "abiquo-tomcat-start" do
     service_name "abiquo-tomcat"
+end
+
+template "/var/www/html/ui/config/client-config-custom.json" do
+    source "ui-config.json.erb"
+    owner "root"
+    group "root"
+    action :create
 end
 
 template "/opt/abiquo/tomcat/conf/server.xml" do

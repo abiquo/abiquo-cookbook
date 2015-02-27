@@ -35,15 +35,19 @@ describe 'abiquo::setup_monolithic' do
         )
     end
 
-    it 'runs the ruby block to configure the ui' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to run_ruby_block('configure-ui')
-    end
-
     it 'defines the abiquo-tomcat-start service' do
         chef_run.converge(described_recipe)
         resource = chef_run.service('abiquo-tomcat-start')
         expect(resource).to do_nothing
+    end
+
+    it 'renders ui configuration file' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to create_template('/var/www/html/ui/config/client-config-custom.json').with(
+            :source => 'ui-config.json.erb',
+            :owner => 'root',
+            :group => 'root'
+        )
     end
 
     it 'renders tomcat configuration file' do
