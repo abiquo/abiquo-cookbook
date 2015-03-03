@@ -55,6 +55,7 @@ Attribute | Description | Type | Default
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['license']` | The Abiquo license to install | String | nil
+`['properties']` | Hash with additional Abiquo properties to add to the Abiquo configuration file | Hash | nil
 `['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
 `['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
 `['db']['host']` | The database host used when running the database upgrade | String | "localhost""

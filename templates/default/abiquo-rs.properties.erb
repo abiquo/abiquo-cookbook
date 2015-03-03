@@ -26,3 +26,10 @@ abiquo.virtualfactory.kvm.fullVirt = <%= node['abiquo']['kvm']['fullvirt'] %>
 # Default vcenter pass
 abiquo.dvs.vcenter.user = root
 abiquo.dvs.vcenter.password = vmware
+
+<% if @properties %>
+# Other properties
+<% @properties.each_pair do |name, value| %>
+<%= "#{name} = #{value}" %>
+<% end %>
+<% end %>

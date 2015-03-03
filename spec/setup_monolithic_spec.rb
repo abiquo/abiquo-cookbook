@@ -62,11 +62,39 @@ describe 'abiquo::setup_monolithic' do
     end
 
     it 'renders abiquo properties file' do
+        chef_run.node.automatic['fqdn'] = 'foo.bar.com'
         chef_run.converge(described_recipe)
         expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
             :source => 'abiquo-monolithic.properties.erb',
             :owner => 'root',
-            :group => 'root'
+            :group => 'root',
+            :variables => {
+                :apilocation => 'https://foo.bar.com/api',
+                :properties => nil
+            }
+        )
+        resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
+        expect(resource).to notify('service[abiquo-tomcat-start]').to(:start).delayed
+    end
+
+    it 'renders abiquo properties file with custom properties' do
+        chef_run.node.automatic['fqdn'] = 'foo.bar.com'
+        chef_run.node.set['abiquo']['properties'] = {
+            'abiquo.docker.registry' => 'http://localhost:5000',
+            'foo' => 'bar'
+        }
+        chef_run.converge(described_recipe)
+        expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
+            :source => 'abiquo-monolithic.properties.erb',
+            :owner => 'root',
+            :group => 'root',
+            :variables => {
+                :apilocation => 'https://foo.bar.com/api',
+                :properties => {
+                    'abiquo.docker.registry' => 'http://localhost:5000',
+                    'foo' => 'bar'
+                }
+            }
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:start).delayed

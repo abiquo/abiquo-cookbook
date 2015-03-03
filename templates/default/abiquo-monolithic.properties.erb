@@ -50,3 +50,10 @@ abiquo.server.mail.user = <%= node['abiquo']['mail']['user'] %>
 <% unless node['abiquo']['mail']['password'].nil? %>
 abiquo.server.mail.password = <%= node['abiquo']['mail']['password'] %>
 <% end %>
+
+<% if @properties %>
+# Other properties
+<% @properties.each_pair do |name, value| %>
+<%= "#{name} = #{value}" %>
+<% end %>
+<% end %>
