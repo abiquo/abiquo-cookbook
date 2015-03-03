@@ -42,6 +42,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     owner "root"
     group "root"
     action :create
+    variables :properties => node['abiquo']['properties']
     notifies :start, "service[abiquo-tomcat-start]"
 end
 

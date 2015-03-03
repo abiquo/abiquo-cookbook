@@ -53,7 +53,10 @@ template "/opt/abiquo/config/abiquo.properties" do
     owner "root"
     group "root"
     action :create
-    variables lazy { { :apilocation => "https://#{node['fqdn']}/api" } }
+    variables lazy { {
+        :apilocation => "https://#{node['fqdn']}/api",
+        :properties => node['abiquo']['properties']
+    } }
     notifies :start, "service[abiquo-tomcat-start]"
 end
 
