@@ -116,6 +116,15 @@ in the run list:
 When installing the Abiquo Monolithic profile, you may also want to set the `node['selfsigned_certificate']['cn']`
 attribute to match the hostname of the node. You can also use it together with the [hostname](http://community.opscode.com/cookbooks/hostname) cookbook to make sure the node will have it properly configured.
 
+# Testing
+
+In order to test the cookbook you will need to install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/). Once installed you can run the unit and integration tests as follows:
+
+    bundle install
+    bundle exec rake          # Run the unit and style tests
+    bundle exec rake kitchen  # Run the integration tests
+
+
 # License and Authors
 
 * Author:: Ignasi Barrera (ignasi.barrera@abiquo.com)
