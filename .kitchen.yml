@@ -6,7 +6,7 @@ provisioner:
   require_chef_omnibus: 11.16.4
 
 platforms:
-  - name: centos-6.5
+  - name: chef/centos-6.5
 
 suites:
   - name: monolithic
