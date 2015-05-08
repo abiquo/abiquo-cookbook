@@ -16,16 +16,6 @@ require 'chef/platform'
 
 module Abiquo
 
-    module Platform
-        [:service, :cron, :package, :mdadm, :ifconfig].each do |resource_type|
-            Chef::Platform.set(
-                :platform => :abiquo,
-                :resource => resource_type,
-                :provider => Chef::Platform.find_provider(:centos, :default, resource_type)
-            )
-        end
-    end
-
     module Packages
         include Chef::Mixin::ShellOut
 
