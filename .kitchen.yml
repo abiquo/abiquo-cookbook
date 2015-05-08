@@ -16,7 +16,8 @@ suites:
     attributes:
       abiquo:
         yum:
-          nightly-repo: http://10.60.20.42/master/rpm
+          base-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
+          updates-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]
@@ -25,7 +26,8 @@ suites:
       abiquo:
         profile: remoteservices
         yum:
-          nightly-repo: http://10.60.20.42/master/rpm
+          base-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
+          updates-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
   - name: kvm
     run_list:
       - recipe[abiquo::default]
@@ -34,4 +36,5 @@ suites:
       abiquo:
         profile: kvm
         yum:
-          nightly-repo: http://10.60.20.42/master/rpm
+          base-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
+          updates-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"

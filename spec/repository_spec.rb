@@ -36,7 +36,7 @@ describe 'abiquo::repository' do
         chef_run.converge(described_recipe)
         expect(chef_run).to create_yum_repository('abiquo-base').with(
             :description => 'Abiquo base repository',
-            :baseurl => 'http://mirror.abiquo.com/abiquo/3.2/os/x86_64',
+            :baseurl => 'http://mirror.abiquo.com/abiquo/3.4/os/x86_64',
             :gpgcheck => true,
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
@@ -53,7 +53,7 @@ describe 'abiquo::repository' do
         chef_run.converge(described_recipe)
         expect(chef_run).to create_yum_repository('abiquo-updates').with(
             :description => 'Abiquo updates repository',
-            :baseurl => 'http://mirror.abiquo.com/abiquo/3.2/updates/x86_64',
+            :baseurl => 'http://mirror.abiquo.com/abiquo/3.4/updates/x86_64',
             :gpgcheck => true,
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
@@ -91,10 +91,5 @@ describe 'abiquo::repository' do
         expect(chef_run).to install_package('abiquo-release-ee').with(
             :options => '--nogpgcheck'
         )
-    end
-
-    it 'reloads ohai' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to reload_ohai('reload')
     end
 end

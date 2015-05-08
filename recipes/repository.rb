@@ -62,11 +62,3 @@ package "abiquo-release-ee" do
     options "--nogpgcheck"
     action :install
 end
-
-# Once the abiquo-release package is installed, detect the platform again
-ohai "reload" do
-    action :reload
-end
-
-# In Abiquo the family is not set. Force it to the right value
-node.set['platform_family'] = 'rhel'
