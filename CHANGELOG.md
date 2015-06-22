@@ -1,6 +1,8 @@
 abiquo CHANGELOG
 ================
 
+## 0.5.0
+
 ## 0.4.0
 
 * Use the rpm signing keys from the abiquo-release-ee package.
