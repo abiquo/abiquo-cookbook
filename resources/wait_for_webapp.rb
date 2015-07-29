@@ -1,4 +1,3 @@
-
 # Cookbook Name:: abiquo
 # Resource:: wait_for_webapp
 #

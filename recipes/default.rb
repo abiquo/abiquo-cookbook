@@ -15,6 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::repository"
-include_recipe "abiquo::install_#{node['abiquo']['profile']}"
-include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
+if node['abiquo']['profile'] == 'monitoring'
+    include_recipe "abiquo::monitoring"
+else
+    include_recipe "abiquo::repository"
+    include_recipe "abiquo::install_#{node['abiquo']['profile']}"
+    include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
+end
+

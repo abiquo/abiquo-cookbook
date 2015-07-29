@@ -17,11 +17,9 @@ abiquo.redis.host = <%= node['abiquo']['redis']['host'] %>
 abiquo.vncport.min = 5000
 abiquo.vncport.max = 6000
 
-# OAuth configuration: do not expire tokens. Applications can
-# be revoked/deleted if users no longer want to use them
-abiquo.oauth.requesttoken.validity = 0
-abiquo.oauth.accesstoken.validity = 0
-
+# KairosDB configuration
+abiquo.kairosdb.host = <% node['abiquo']['kairosdb']['host'] %>
+abiquo.kairosdb.port = <% node['abiquo']['kairosdb']['port'] %>
 
 ## ABIQUO REMOTE SERVICES ##
 

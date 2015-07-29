@@ -63,6 +63,13 @@ default['abiquo']['tomcat']['wait-for-webapps'] = false
 default['abiquo']['kvm']['fullvirt'] = false
 default['abiquo']['aim']['port'] = 8889
 
+# Configure monitoring node
+default['abiquo']['cassandra']['cluster_name'] = 'abiquo'
+default['abiquo']['kairosdb']['host'] = 'localhost'
+default['abiquo']['kairosdb']['port'] = 8080
+default['abiquo']['kairosdb']['version'] = '0.9.4'
+default['abiquo']['kairosdb']['release'] = '6'
+
 # Override the Apache proxy configuration
 override['apache']['proxy']['order'] = "allow,deny"
 override['apache']['proxy']['deny_from']  = "none"

@@ -18,6 +18,7 @@ This cookbook depends on the following cookbooks:
 
 * apache2
 * ark
+* cassandra-dse
 * iptables
 * java-management
 * selfsigned\_certificate
@@ -26,7 +27,7 @@ This cookbook depends on the following cookbooks:
 
 # Recipes
 
-Generic recipes to be used to deploy an Abiquo platform from scratch:
+The cookbook contains the following recipes:
 
 * `recipe[abiquo]` - Installs an Abiquo Platform
 * `recipe[abiquo::repository]` - Configures the Abiquo yum repositories
@@ -39,9 +40,7 @@ Generic recipes to be used to deploy an Abiquo platform from scratch:
 * `recipe[abiquo::upgrade]` - Upgrades an Abiquo Platform
 * `recipe[abiquo::install_database]` - Installs the Abiquo database
 * `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
-
-Specific recipes to upgrade existing Abiquo installations:
-
+* `recipe[abiquo::monitoring]` - Installs an Abiquo monitoring node with KairosDB and Cassandra
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
 
 # Attributes
@@ -50,7 +49,7 @@ The following attributes are under the `node['abiquo']` namespace.
 
 Attribute | Description | Type | Default
 ----------|-------------|------|--------
-`['profile']` | The profile to install: "monolithic", "remoteservices" or "kvm" | String | "monolithic"
+`['profile']` | The profile to install: "monolithic", "remoteservices", "kvm" or "monitoring" | String | "monolithic"
 `['datacenterId']` | The value for the datacenter id property | String | "Abiquo"
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
@@ -77,6 +76,11 @@ Attribute | Description | Type | Default
 `['tomcat']['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
 `['ssl']['certificatefile']` | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
 `['ssl']['keyfile']` | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
+`['kairosdb']['host']` | The host where KairosDB is running | String | "localhost"
+`['kairosdb']['port']` | The host where KairosDB is listening | Integer | 8080
+`['kairosdb']['version']` | The version of KairosDB to install in the monitoring node | String | "0.9.4"
+`['kairosdb']['release']` | The release of the configured KairosDB version to install in the monitoring node | String | "6"
+`['cassandra']['cluster_name']` | The name for the Cassandra cluster in the monitoring node | String | "abiquo"
 
 # Resources and providers
 
@@ -104,6 +108,28 @@ This LWRP will make the Chef run wait until the configured webapp is started.
         action :wait
     end
 
+## abiquo\_wait\_for\_port
+
+This LWRP will make the Chef run wait until the configured port is open.
+
+### Parameters
+
+* `host` - The address where the service is running
+* `port` - The port where the service is listening
+* `service` - The name of the service
+* `delay` - The delay in seconds between retries
+* `timeout` - The timeout for a connection to be considered failed
+
+### Example
+
+    abiquo_wait_for_port "cassandra" do
+        host "localhost"
+        port 9160
+        delay 10
+        timeout 5
+        action :wait
+    end
+
 # Usage
 
 The cookbook is pretty straightforwatd to use. Just set the `node['abiquo']['profile']` attribute
@@ -112,6 +138,7 @@ in the run list:
 
 * `recipe[abiquo]` - To perform an installation from scratch
 * `recipe[abiquo::upgrade]` - To upgrade an existing installation
+* `recipe[abiquo::monitoring]` - To install a monitoring node with KairosDB and Cassandra
 
 When installing the Abiquo Monolithic profile, you may also want to set the `node['selfsigned_certificate']['cn']`
 attribute to match the hostname of the node. You can also use it together with the [hostname](http://community.opscode.com/cookbooks/hostname) cookbook to make sure the node will have it properly configured.

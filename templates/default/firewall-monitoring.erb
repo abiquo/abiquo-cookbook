@@ -1,0 +1,8 @@
+# Enable the KairosDB port
+-A FWR -p tcp -m tcp --dport <%= node['abiquo']['kairosdb']['port'] %> -j ACCEPT
+
+# Enable the Cassandra clients port
+-A FWR -p tcp -m tcp --dport <%= node['cassandra']['rpc_port'].to_i %> -j ACCEPT
+
+# Enable the Cassandra inter-node communication port
+-A FWR -p tcp -m tcp --dport <%= node['cassandra']['storage_port'] %> -j ACCEPT

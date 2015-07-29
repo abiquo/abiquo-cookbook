@@ -15,7 +15,7 @@
 require 'spec_helper'
 
 describe 'abiquo::default' do
-    let(:chef_run) { ChefSpec::SoloRunner.new }
+    let(:chef_run) { ChefSpec::SoloRunner.new(file_cache_path: '/tmp') }
 
     %w(monolithic remoteservices kvm).each do |profile|
         it "includes the recipes for the #{profile} profile" do
@@ -27,5 +27,11 @@ describe 'abiquo::default' do
             expect(chef_run).to include_recipe("abiquo::install_#{profile}")
             expect(chef_run).to include_recipe("abiquo::setup_#{profile}")
         end
+    end
+
+    it 'includes the recipes for the monitoring profile' do
+        chef_run.node.set['abiquo']['profile'] = 'monitoring'
+        chef_run.converge(described_recipe)
+        expect(chef_run).to include_recipe('abiquo::monitoring')
     end
 end

@@ -18,11 +18,13 @@ recipe 'abiquo::upgrade', 'Upgrades an Abiquo platform'
 recipe 'abiquo::install_database', 'Creates the Abiquo database'
 recipe 'abiquo::certificate', 'Installs a custom SSL certificate in the Apache'
 recipe 'abiquo::install_jce', 'Installs the JCE unlimited strength jurisdiction policy files'
+recipe 'abiquo::monitoring', 'Installs an Abiquo monitoring node with a Cassandra backed KairosDB'
 
 supports 'centos', '>= 6.5'
 
 depends 'apache2'
 depends 'ark'
+depends 'cassandra-dse'
 depends 'iptables'
 depends 'java-management'
 depends 'selfsigned_certificate'

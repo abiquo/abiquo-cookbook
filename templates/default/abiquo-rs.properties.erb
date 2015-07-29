@@ -27,6 +27,10 @@ abiquo.virtualfactory.kvm.fullVirt = <%= node['abiquo']['kvm']['fullvirt'] %>
 abiquo.dvs.vcenter.user = root
 abiquo.dvs.vcenter.password = vmware
 
+# KairosDB configuration
+abiquo.kairosdb.host = <% node['abiquo']['kairosdb']['host'] %>
+abiquo.kairosdb.port = <% node['abiquo']['kairosdb']['port'] %>
+
 <% if @properties %>
 # Other properties
 <% @properties.each_pair do |name, value| %>

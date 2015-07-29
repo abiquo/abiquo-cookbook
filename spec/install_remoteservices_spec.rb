@@ -36,12 +36,10 @@ describe 'abiquo::install_remoteservices' do
         end
     end
 
-    # The iptables_rule call can't be tested because it is not a LWRP
-    # but a definition and does not exist in the resource list
-
     it 'configures the firewall' do
         expect(chef_run).to permissive_selinux_state('SELinux Permissive')
         expect(chef_run).to include_recipe('iptables')
+        expect(chef_run).to enable_iptables_rule('firewall-tomcat')
     end
 
     %w{rpcbind redis}.each do |svc|

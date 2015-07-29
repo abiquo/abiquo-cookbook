@@ -7,6 +7,9 @@ provisioner:
 
 platforms:
   - name: chef/centos-6.5
+    driver_config:
+      customize:
+        memory: 1024
 
 suites:
   - name: monolithic
@@ -38,3 +41,9 @@ suites:
         yum:
           base-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
           updates-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
+  - name: monitoring
+    run_list:
+      - recipe[abiquo::default]
+    attributes:
+      abiquo:
+        profile: monitoring

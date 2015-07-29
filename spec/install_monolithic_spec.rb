@@ -63,14 +63,15 @@ describe 'abiquo::install_monolithic' do
         expect(chef_run).to include_recipe('abiquo::certificate')
     end
 
-    # The apache webapp and the iptables_rule calls can't be tested because they are not a LWRPs
-    # but definitions and do not exist in the resource list
+    # The apache webapp calls can be tested because it is not a LWRP
+    # but a definition and does not exist in the resource list
 
     it 'configures the firewall' do
         chef_run.converge(described_recipe)
         expect(chef_run).to permissive_selinux_state('SELinux Permissive')
         expect(chef_run).to include_recipe('iptables')
         expect(chef_run).to include_recipe('apache2::iptables')
+        expect(chef_run).to enable_iptables_rule('firewall-tomcat')
     end
 
     %w{rpcbind redis}.each do |svc|
