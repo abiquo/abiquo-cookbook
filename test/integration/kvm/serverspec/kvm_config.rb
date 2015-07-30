@@ -1,6 +1,3 @@
-# Cookbook Name:: abiquo
-# Recipe:: install_kvm
-#
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,25 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package "qemu-kvm" do
-    action :install
-end
+require_relative '../../serverspec_helper'
 
-%w{cloud-node sosreport-plugins}.each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
+describe 'KVM configuration' do
+    it 'has the aim configuration file' do
+        expect(file('/etc/abiquo-aim.ini')).to contain('port = 8889')
+        expect(file('/etc/abiquo-aim.ini')).to contain('reposiotry = /opt/vm_repository')
+    end
+
+    it 'has the libvirt configuration file' do
+        expect(file('/etc/sysconfig/libvirt-guests')).to exist
     end
 end
 
-link "/usr/bin/qemu-system-x86_64" do
-    to "/usr/bin/qemu-kvm"
-    not_if { ::File.exists?("/usr/bin/qemu-system-x86_64") }
-end
 
-selinux_state "SELinux Permissive" do
-    action :permissive
-end
 
-service "rpcbind" do
-    action [:enable, :start]
-end

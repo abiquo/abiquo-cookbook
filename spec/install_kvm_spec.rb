@@ -40,7 +40,6 @@ describe 'abiquo::install_kvm' do
 
     it 'configures the firewall' do
         expect(chef_run).to permissive_selinux_state('SELinux Permissive')
-        expect(chef_run).to include_recipe('iptables')
     end
 
     it 'configures the rpcbind service' do

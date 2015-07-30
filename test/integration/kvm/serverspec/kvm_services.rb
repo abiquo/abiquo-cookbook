@@ -1,6 +1,3 @@
-# Cookbook Name:: abiquo
-# Recipe:: install_kvm
-#
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,25 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package "qemu-kvm" do
-    action :install
-end
+require_relative '../../serverspec_helper'
 
-%w{cloud-node sosreport-plugins}.each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
+describe 'KVM services' do
+    it 'has selinux configured as permissive' do
+        expect(selinux).to be_permissive
+    end
+
+    it 'has the rpcbind service running' do
+        expect(service('rpcbind')).to be_enabled
+        expect(service('rpcbind')).to be_running
+    end
+
+    it 'has the abiquo-aim service running' do
+        expect(service('abiquo-aim')).to be_enabled
+        expect(service('abiquo-aim')).to be_running
+        expect(port(8889)).to be_listening
     end
 end
 
-link "/usr/bin/qemu-system-x86_64" do
-    to "/usr/bin/qemu-kvm"
-    not_if { ::File.exists?("/usr/bin/qemu-system-x86_64") }
-end
 
-selinux_state "SELinux Permissive" do
-    action :permissive
-end
 
-service "rpcbind" do
-    action [:enable, :start]
-end
