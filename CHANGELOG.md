@@ -3,6 +3,8 @@ abiquo CHANGELOG
 
 ## 0.5.0
 
+* Added a recipe to install a monitoring node
+
 ## 0.4.0
 
 * Use the rpm signing keys from the abiquo-release-ee package.
