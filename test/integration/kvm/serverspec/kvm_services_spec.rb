@@ -12,16 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../../serverspec_helper'
+require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'KVM configuration' do
-    it 'has the aim configuration file' do
-        expect(file('/etc/abiquo-aim.ini')).to contain('port = 8889')
-        expect(file('/etc/abiquo-aim.ini')).to contain('reposiotry = /opt/vm_repository')
+describe 'KVM services' do
+    it 'has selinux configured as permissive' do
+        expect(selinux).to be_permissive
     end
 
-    it 'has the libvirt configuration file' do
-        expect(file('/etc/sysconfig/libvirt-guests')).to exist
+    it 'has the rpcbind service running' do
+        expect(service('rpcbind')).to be_enabled
+        expect(service('rpcbind')).to be_running
+    end
+
+    it 'has the abiquo-aim service running' do
+        expect(service('abiquo-aim')).to be_enabled
+        expect(service('abiquo-aim')).to be_running
+        expect(port(8889)).to be_listening
     end
 end
 

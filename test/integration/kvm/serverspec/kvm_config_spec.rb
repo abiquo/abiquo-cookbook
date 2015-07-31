@@ -12,21 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../../serverspec_helper'
+require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'KVM packages' do
-    it 'has the qemu package installed' do
-        expect(package('qemu-kvm')).to be_installed
+describe 'KVM configuration' do
+    it 'has the aim configuration file' do
+        expect(file('/etc/abiquo-aim.ini')).to contain('port = 8889')
+        expect(file('/etc/abiquo-aim.ini')).to contain('repository = /opt/vm_repository')
     end
 
-    it 'has the qemu binary in place' do
-        expect(file('/usr/bin/qemu-system-x86_64')).to exist
-    end
-
-    it 'has the abiquo packages installed' do
-        %w{cloud-node sosreport-plugins}.each do |pkg|
-            expect(package("abiquo-#{pkg}")).to be_installed
-        end
+    it 'has the libvirt configuration file' do
+        expect(file('/etc/sysconfig/libvirt-guests')).to exist
     end
 end
 

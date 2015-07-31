@@ -12,22 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require_relative '../../serverspec_helper'
+require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'KVM services' do
-    it 'has selinux configured as permissive' do
-        expect(selinux).to be_permissive
+describe 'KVM packages' do
+    it 'has the qemu package installed' do
+        expect(package('qemu-kvm')).to be_installed
     end
 
-    it 'has the rpcbind service running' do
-        expect(service('rpcbind')).to be_enabled
-        expect(service('rpcbind')).to be_running
+    it 'has the qemu binary in place' do
+        expect(file('/usr/bin/qemu-system-x86_64')).to exist
     end
 
-    it 'has the abiquo-aim service running' do
-        expect(service('abiquo-aim')).to be_enabled
-        expect(service('abiquo-aim')).to be_running
-        expect(port(8889)).to be_listening
+    it 'has the abiquo packages installed' do
+        %w{cloud-node sosreport-plugins}.each do |pkg|
+            expect(package("abiquo-#{pkg}")).to be_installed
+        end
     end
 end
 
