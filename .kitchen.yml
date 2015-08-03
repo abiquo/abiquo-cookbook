@@ -5,6 +5,9 @@ provisioner:
   name: chef_solo
   require_chef_omnibus: 11.16.4
 
+transport:
+  compression: none
+
 platforms:
   - name: chef/centos-6.5
     driver_config:
