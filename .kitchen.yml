@@ -20,11 +20,6 @@ suites:
     run_list:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
-    attributes:
-      abiquo:
-        yum:
-          base-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
-          updates-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]
@@ -32,9 +27,6 @@ suites:
     attributes:
       abiquo:
         profile: remoteservices
-        yum:
-          base-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
-          updates-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
   - name: kvm
     run_list:
       - recipe[abiquo::default]
@@ -42,9 +34,6 @@ suites:
     attributes:
       abiquo:
         profile: kvm
-        yum:
-          base-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
-          updates-repo: "http://mirror.bcn.abiquo.com/abiquo/3.4/os/x86_64"
   - name: monitoring
     run_list:
       - recipe[abiquo::default]

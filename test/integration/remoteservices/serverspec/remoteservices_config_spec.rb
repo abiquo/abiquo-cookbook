@@ -14,10 +14,19 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Monitoring configuration' do
-    it 'kairosdb is configured to use cassandra' do
-        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.jetty.port=8080')
-        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.service.datastore=org.kairosdb.datastore.cassandra.CassandraModule')
-        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.host_list=localhost:9160')
+describe 'Remote Services configuration' do
+    it 'has the yum repositories configured' do
+        %w{base updates}.each do |repo|
+            expect(yumrepo("abiquo-#{repo}")).to exist
+            expect(yumrepo("abiquo-#{repo}")).to be_enabled
+        end
+    end
+
+    it 'has tomcat properly configured' do
+        expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
+    end
+
+    it 'has the abiquo properties file' do
+        expect(file('/opt/abiquo/config/abiquo.properties')).to exist
     end
 end
