@@ -24,6 +24,3 @@ describe 'KVM configuration' do
         expect(file('/etc/sysconfig/libvirt-guests')).to exist
     end
 end
-
-
-

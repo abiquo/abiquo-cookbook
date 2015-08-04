@@ -29,6 +29,3 @@ describe 'KVM packages' do
         end
     end
 end
-
-
-

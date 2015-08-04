@@ -1,3 +1,4 @@
+
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +15,10 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'KVM services' do
-    it 'has selinux configured as permissive' do
-        expect(selinux).to be_permissive
-    end
-
-    it 'has the rpcbind service running' do
-        expect(service('rpcbind')).to be_enabled
-        expect(service('rpcbind')).to be_running
-    end
-
-    it 'has the abiquo-aim service running' do
-        expect(service('abiquo-aim')).to be_enabled
-        expect(service('abiquo-aim')).to be_running
-        expect(port(8889)).to be_listening
+describe 'Monitoring configuration' do
+    it 'kairosdb is configured to use cassandra' do
+        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.jetty.port=8080')
+        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.service.datastore=org.kairosdb.datastore.cassandra.CassandraModule')
+        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.host_list=localhost:9160')
     end
 end

@@ -1,3 +1,4 @@
+
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,19 +15,8 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'KVM services' do
-    it 'has selinux configured as permissive' do
-        expect(selinux).to be_permissive
-    end
-
-    it 'has the rpcbind service running' do
-        expect(service('rpcbind')).to be_enabled
-        expect(service('rpcbind')).to be_running
-    end
-
-    it 'has the abiquo-aim service running' do
-        expect(service('abiquo-aim')).to be_enabled
-        expect(service('abiquo-aim')).to be_running
-        expect(port(8889)).to be_listening
+describe 'Monitoring packages' do
+    it 'has the kairosdb package installed' do
+        expect(package('kairosdb')).to be_installed
     end
 end
