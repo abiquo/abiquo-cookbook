@@ -28,8 +28,8 @@ abiquo.dvs.vcenter.user = root
 abiquo.dvs.vcenter.password = vmware
 
 # KairosDB configuration
-abiquo.kairosdb.host = <% node['abiquo']['kairosdb']['host'] %>
-abiquo.kairosdb.port = <% node['abiquo']['kairosdb']['port'] %>
+abiquo.kairosdb.host = <%= node['abiquo']['kairosdb']['host'] %>
+abiquo.kairosdb.port = <%= node['abiquo']['kairosdb']['port'] %>
 
 <% if @properties %>
 # Other properties
