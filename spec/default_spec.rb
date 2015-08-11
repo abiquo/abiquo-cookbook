@@ -32,6 +32,8 @@ describe 'abiquo::default' do
     it 'includes the recipes for the monitoring profile' do
         chef_run.node.set['abiquo']['profile'] = 'monitoring'
         chef_run.converge(described_recipe)
+
+        expect(chef_run).to include_recipe('abiquo::repository')
         expect(chef_run).to include_recipe('abiquo::monitoring')
     end
 end

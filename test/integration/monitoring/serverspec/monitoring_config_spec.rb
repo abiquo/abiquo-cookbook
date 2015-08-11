@@ -20,4 +20,8 @@ describe 'Monitoring configuration' do
         expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.service.datastore=org.kairosdb.datastore.cassandra.CassandraModule')
         expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.host_list=localhost:9160')
     end
+
+    it 'java 8 is the default one' do
+        expect(command('java -version').stderr).to contain('java version "1.8')
+    end
 end

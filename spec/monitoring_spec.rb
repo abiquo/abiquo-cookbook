@@ -40,6 +40,17 @@ describe 'abiquo::monitoring' do
         )
     end
 
+    it 'installs the jdk package' do
+        expect(chef_run).to install_package('jdk')
+    end
+
+    it 'configures the java alternatives' do
+        expect(chef_run).to set_java_alternatives('set default jdk8').with({
+            :java_location => '/usr/java/default',
+            :bin_cmds => ['java', 'javac']
+        })
+    end
+
     it 'includes the cassandra recipe' do
         expect(chef_run).to include_recipe('cassandra-dse')
     end

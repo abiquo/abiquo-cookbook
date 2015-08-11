@@ -15,6 +15,10 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Monitoring packages' do
+    it 'has the jdk package installed' do
+        expect(package('jdk')).to be_installed
+    end
+
     it 'has the kairosdb package installed' do
         expect(package('kairosdb')).to be_installed
     end

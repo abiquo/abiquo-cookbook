@@ -33,8 +33,18 @@ template '/opt/kairosdb/conf/kairosdb.properties' do
     action :create
 end
 
-# Install Cassandra after kairos to let its cookbook set the right default JRE
+package "jdk" do
+    action :install
+end
+
+java_alternatives "set default jdk8" do
+    java_location node['java']['java_home']
+    bin_cmds ['java', 'javac']
+    action :set
+end
+
 node.set['cassandra']['cluster_name'] = node['abiquo']['cassandra']['cluster_name']
+node.set['cassandra']['install_java'] = false   # The Abiquo jdk package is installed instead
 include_recipe 'cassandra-dse'
 
 selinux_state "SELinux Permissive" do
