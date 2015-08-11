@@ -28,13 +28,10 @@ execute "yum-upgrade-abiquo" do
     notifies :start, "service[#{svc}]"
 end
 
-liquibase_cmd = "java -cp /usr/share/java/liquibase.jar liquibase.integration.commandline.Main " \
-    "--changeLogFile=/usr/share/doc/abiquo-server/database/src/kinton_master_changelog.xml " \
-    "--url=\"jdbc:mysql://#{node['abiquo']['db']['host']}:#{node['abiquo']['db']['port']}/kinton\"  " \
-    "--driver=com.mysql.jdbc.Driver " \
-    "--classpath=/opt/abiquo/tomcat/lib/mysql-connector-java-5.1.27-bin.jar " \
-    "--username #{node['abiquo']['db']['user']} "
-liquibase_cmd += "--password #{node['abiquo']['db']['password']} " unless node['abiquo']['db']['password'].nil?
+liquibase_cmd = "abiquo-liquibase -h #{node['abiquo']['db']['host']} "
+liquibase_cmd += "-P #{node['abiquo']['db']['port']} "
+liquibase_cmd += "-u #{node['abiquo']['db']['user']} "
+liquibase_cmd += "-p #{node['abiquo']['db']['password']} " unless node['abiquo']['db']['password'].nil?
 liquibase_cmd += "update"
 
 execute "liquibase-update" do

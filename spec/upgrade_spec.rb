@@ -75,12 +75,7 @@ describe 'abiquo::upgrade' do
         chef_run.converge(described_recipe)
         expect(chef_run).to run_execute('liquibase-update').with(
             :cwd => '/usr/share/doc/abiquo-server/database',
-            :command => 'java -cp /usr/share/java/liquibase.jar liquibase.integration.commandline.Main ' \
-                        '--changeLogFile=/usr/share/doc/abiquo-server/database/src/kinton_master_changelog.xml ' \
-                        '--url="jdbc:mysql://localhost:3306/kinton"  ' \
-                        '--driver=com.mysql.jdbc.Driver ' \
-                        '--classpath=/opt/abiquo/tomcat/lib/mysql-connector-java-5.1.27-bin.jar ' \
-                        '--username root update'
+            :command => 'abiquo-liquibase -h localhost -P 3306 -u root update'
         )
     end
 
@@ -90,12 +85,7 @@ describe 'abiquo::upgrade' do
         chef_run.converge(described_recipe)
         expect(chef_run).to run_execute('liquibase-update').with(
             :cwd => '/usr/share/doc/abiquo-server/database',
-            :command => 'java -cp /usr/share/java/liquibase.jar liquibase.integration.commandline.Main ' \
-                        '--changeLogFile=/usr/share/doc/abiquo-server/database/src/kinton_master_changelog.xml ' \
-                        '--url="jdbc:mysql://127.0.0.1:3306/kinton"  ' \
-                        '--driver=com.mysql.jdbc.Driver ' \
-                        '--classpath=/opt/abiquo/tomcat/lib/mysql-connector-java-5.1.27-bin.jar ' \
-                        '--username root --password abiquo update'
+            :command => 'abiquo-liquibase -h 127.0.0.1 -P 3306 -u root -p abiquo update'
         )
     end
 
