@@ -20,6 +20,7 @@ describe 'Monitoring services' do
     end
 
     it 'has the firewall configured' do
+        expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 22 -j ACCEPT')
         expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 8080 -j ACCEPT')
         expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 9160 -j ACCEPT')
         expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 7000 -j ACCEPT')

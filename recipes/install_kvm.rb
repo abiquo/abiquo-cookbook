@@ -34,6 +34,9 @@ selinux_state "SELinux Permissive" do
     action :permissive
 end
 
+include_recipe "iptables"
+iptables_rule "firewall-kvm"
+
 service "rpcbind" do
     action [:enable, :start]
 end

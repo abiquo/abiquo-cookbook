@@ -19,6 +19,13 @@ describe 'KVM services' do
         expect(selinux).to be_permissive
     end
 
+    it 'has the firewall configured' do
+        expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 22 -j ACCEPT')
+        expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 8889 -j ACCEPT')
+        expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 16509 -j ACCEPT')
+        expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 16514 -j ACCEPT')
+    end
+
     it 'has the rpcbind service running' do
         expect(service('rpcbind')).to be_enabled
         expect(service('rpcbind')).to be_running

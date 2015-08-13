@@ -36,4 +36,10 @@ describe 'Remote Services services' do
     it 'has selinux configured as permissive' do
         expect(selinux).to be_permissive
     end
+
+    it 'has the firewall configured' do
+        expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 22 -j ACCEPT')
+        expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 8009 -j ACCEPT')
+        expect(iptables).to have_rule('-A FWR -p tcp -m tcp --dport 8010 -j ACCEPT')
+    end
 end
