@@ -1,6 +1,8 @@
 abiquo CHANGELOG
 ================
 
+## 0.6.0
+
 ## 0.5.0
 
 * Configured the firewall in the kvm profile.
