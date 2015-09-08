@@ -46,6 +46,10 @@ describe 'Monolithic configuration' do
         expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
     end
 
+    it 'has the ec2 api tools configured' do
+        expect(file('/etc/sysconfig/abiquo/ec2-api-tools')).to contain('^export EC2_HOME=')
+    end
+
     it 'has the abiquo properties file' do
         expect(file('/opt/abiquo/config/abiquo.properties')).to exist
     end

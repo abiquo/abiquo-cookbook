@@ -3,10 +3,11 @@ abiquo CHANGELOG
 
 ## 0.5.0
 
-* Configured the firewall in the kvm profile
-* Upgrade the database using the abiquo-liquibase script
-* Added integration tests with ServerSpec
-* Added a recipe to install a monitoring node
+* Configured the firewall in the kvm profile.
+* Upgrade the database using the abiquo-liquibase script.
+* Added integration tests with ServerSpec.
+* Added a recipe to install a monitoring node.
+* Upgraded base repositories to 3.6.
 
 ## 0.4.0
 
