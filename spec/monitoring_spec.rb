@@ -16,7 +16,11 @@ require 'spec_helper'
 require_relative 'support/matchers'
 
 describe 'abiquo::monitoring' do
-    let(:chef_run) { ChefSpec::SoloRunner.new(file_cache_path: '/tmp').converge(described_recipe) }
+    let(:chef_run) do
+        ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+            node.set['cassandra']['config']['cluster_name'] = 'abiquo'
+        end.converge(described_recipe)
+    end
     let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['kairosdb']['version']}-#{chef_run.node['abiquo']['kairosdb']['release']}.rpm" }
     let(:url) { "https://github.com/kairosdb/kairosdb/releases/download/v#{chef_run.node['abiquo']['kairosdb']['version']}/#{pkg}" }
 
