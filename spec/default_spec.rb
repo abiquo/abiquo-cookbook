@@ -15,7 +15,11 @@
 require 'spec_helper'
 
 describe 'abiquo::default' do
-    let(:chef_run) { ChefSpec::SoloRunner.new(file_cache_path: '/tmp') }
+    let(:chef_run) do
+        ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+            node.set['cassandra']['config']['cluster_name'] = 'abiquo'
+        end.converge(described_recipe)
+    end
 
     %w(monolithic remoteservices kvm).each do |profile|
         it "includes the recipes for the #{profile} profile" do
