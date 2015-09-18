@@ -20,6 +20,10 @@ describe 'abiquo::default' do
             node.set['cassandra']['config']['cluster_name'] = 'abiquo'
         end.converge(described_recipe)
     end
+    
+    before do
+        stub_command('/usr/sbin/httpd -t').and_return(true)
+    end
 
     %w(monolithic remoteservices kvm).each do |profile|
         it "includes the recipes for the #{profile} profile" do
