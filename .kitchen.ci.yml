@@ -1,13 +1,8 @@
 platforms:
-  - name: chef/centos-6.5
+  - name: centos-6.5
     driver_config:
       customize:
         memory: 1024
     run_list:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
-    attributes:
-      abiquo:
-        yum:
-          base-repo: "http://mirror.bcn.abiquo.com/abiquo/3.6/os/x86_64"
-          updates-repo: "http://mirror.bcn.abiquo.com/abiquo/3.6/updates/x86_64"
