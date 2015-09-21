@@ -34,3 +34,6 @@ suites:
     attributes:
       abiquo:
         profile: monitoring
+      cassandra:
+        config:
+          cluster_name: abiquo
