@@ -18,7 +18,7 @@ require_relative 'support/matchers'
 describe 'abiquo::monitoring' do
     let(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-            node.set['cassandra']['config']['cluster_name'] = 'abiquo'
+            node.set['abiquo']['cassandra']['cluster_name'] = 'abiquo'
         end.converge(described_recipe)
     end
     let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['kairosdb']['version']}-#{chef_run.node['abiquo']['kairosdb']['release']}.rpm" }
@@ -72,7 +72,7 @@ describe 'abiquo::monitoring' do
 
     it 'reboots kairosdb when cassandra is started' do
         expect(chef_run).to wait_abiquo_wait_for_port('cassandra').with({
-            :port => chef_run.node['cassandra']['rpc_port'].to_i
+            :port => chef_run.node['cassandra']['config']['rpc_port'].to_i
         })
         resource = chef_run.find_resource(:abiquo_wait_for_port, 'cassandra')
         expect(resource).to notify('service[kairosdb]').to(:restart).delayed

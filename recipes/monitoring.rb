@@ -43,7 +43,7 @@ java_alternatives "set default jdk8" do
     action :set
 end
 
-node.set['cassandra']['cluster_name'] = node['abiquo']['cassandra']['cluster_name']
+node.set['cassandra']['config']['cluster_name'] = node['abiquo']['cassandra']['cluster_name']
 node.set['cassandra']['install_java'] = false   # The Abiquo jdk package is installed instead
 include_recipe 'cassandra-dse'
 
@@ -61,7 +61,7 @@ service 'kairosdb' do
 end
 
 abiquo_wait_for_port "cassandra" do
-    port node['cassandra']['rpc_port'].to_i
+    port node['cassandra']['config']['rpc_port'].to_i
     action :wait
     notifies :restart, "service[kairosdb]"
 end
