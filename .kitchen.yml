@@ -14,6 +14,10 @@ platforms:
     driver_config:
       customize:
         memory: 1024
+    attributes:
+      chef_client:
+        config:
+          yum_timeout: 1800
 
 suites:
   - name: monolithic
@@ -40,6 +44,3 @@ suites:
     attributes:
       abiquo:
         profile: monitoring
-      cassandra:
-        config:
-          cluster_name: abiquo
