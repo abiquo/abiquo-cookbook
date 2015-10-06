@@ -3,7 +3,9 @@ platforms:
     driver_config:
       customize:
         memory: 1024
+    <% if ENV['CI_BRANCH'] %>
     attributes:
       abiquo:
         yum:
           nightly-repo: http://10.60.20.42/<%= ENV['CI_BRANCH']%>/rpm
+    <% end %>
