@@ -151,6 +151,7 @@ In order to test the cookbook you will need to install [Vagrant](https://www.vag
     bundle exec rake          # Run the unit and style tests
     bundle exec rake kitchen  # Run the integration tests
 
+The tests and Gemfile have been developed using Ruby 2.1.5, and that is the recommended Ruby version to use to run the tests. Other versions may cause conflicts with the versions of the gems Bundler will install.
 
 # License and Authors
 
