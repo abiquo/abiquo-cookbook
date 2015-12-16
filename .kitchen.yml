@@ -3,7 +3,7 @@ driver:
 
 provisioner:
   name: chef_solo
-  require_chef_omnibus: 11.16.4
+  require_chef_omnibus: 12.5.1
   data_path: test/fixtures
 
 transport:
