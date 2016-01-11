@@ -6,9 +6,9 @@ Abiquo Cookbook
 [![Chef Version](http://img.shields.io/badge/chef-v11.16-orange.svg?style=flat)](https://www.chef.io)
 
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
-It allows to provision an Abiquo Monolithic, the Remote Services and a KVM hypervisor
-from scratch, as long as upgrading an existing Abiquo installation using the latest
-nightly builds.
+It allows to provision an Abiquo Server, the Remote Services server, standalone V2V
+server, monitoring server and a KVM hypervisor from scratch, as long as upgrading 
+an existing Abiquo installation using the latest nightly builds.
 
 # Requirements
 
@@ -32,13 +32,18 @@ The cookbook contains the following recipes:
 * `recipe[abiquo]` - Installs an Abiquo Platform
 * `recipe[abiquo::repository]` - Configures the Abiquo yum repositories
 * `recipe[abiquo::install_monolithic]` - Installs an Abiquo Monolithic
+* `recipe[abiquo::install_server]` - Installs an Abiquo Server
 * `recipe[abiquo::install_remoteservices]` - Installs the Abiquo Remote Services
+* `recipe[abiquo::install_v2v]` - Installs an standalone V2V Server
 * `recipe[abiquo::install_kvm]` - Installs the KVM hypervisor
-* `recipe[abiquo::setup_monolithic]` - Configures the Abiquo Server
+* `recipe[abiquo::setup_monolithic]` - Configures the Abiquo Monolithic Server
+* `recipe[abiquo::setup_server]` - Configures the Abiquo Server
 * `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
+* `recipe[abiquo::setup_v2v]` - Configures an standalone V2V Server
 * `recipe[abiquo::setup_kvm]` - Configures the KVM hypervisor
 * `recipe[abiquo::upgrade]` - Upgrades an Abiquo Platform
 * `recipe[abiquo::install_database]` - Installs the Abiquo database
+* `recipe[abiquo::install_ext_services]` - Installs the Abiquo supporting services like Redis, RabbitMQ, etc.
 * `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
 * `recipe[abiquo::monitoring]` - Installs an Abiquo monitoring node with KairosDB and Cassandra
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
@@ -49,10 +54,14 @@ The following attributes are under the `node['abiquo']` namespace.
 
 Attribute | Description | Type | Default
 ----------|-------------|------|--------
-`['profile']` | The profile to install: "monolithic", "remoteservices", "kvm" or "monitoring" | String | "monolithic"
-`['datacenterId']` | The value for the datacenter id property | String | "Abiquo"
+`['profile']` | The profile to install: "monolithic", "server", "remoteservices", "v2v", "kvm" or "monitoring" | String | "monolithic"
+`['install_ext_services']` | Whether or not to install supporting services like MariaDB, Redis, RabbitMQ, etc. | Boolean | true
+`['ui_address_type']` | The attribute to use as the Abiquo UI address: "fqdn", "ipaddress", "fixed" | String | "fqdn"
+`['ui_address']` | When `['ui_address_type']` is `fixed` use this as address | String | node['fqdn']
+`['datacenterId']` | The value for the datacenter id property | String | node['fqdn']
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
+`['nfs']['mount_repository']` | Wether or not to mount the NFS repository | Boolean | true
 `['license']` | The Abiquo license to install | String | nil
 `['properties']` | Hash with additional Abiquo properties to add to the Abiquo configuration file | Hash | nil
 `['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
@@ -63,24 +72,17 @@ Attribute | Description | Type | Default
 `['db']['password']` | The database password used when running the database upgrade | String | nil
 `['db']['install']` | Install the database when installing the Monolithic profile | Boolean | true
 `['db']['upgrade']` | Run the database upgrade when upgrading the monolithic profile | Boolean | true
-`['rabbitmq']['host']` | The address of the RabbitMQ server | String | "127.0.0.1"
-`['rabbitmq']['port']` | The port of the RabbitMQ server | Integer | 5672
-`['rabbitmq']['user']` | The username of the RabbitMQ server | String | "guest"
-`['rabbitmq']['password']` | The password of the RabbitMQ server | String | "guest"
-`['redis']['host']` | The address of the Redis server | String | "127.0.0.1"
-`['redis']['port']` | The port of the Redis server | Integer | 6379
-`['kvm']['fullvirt']` | If full virtualization is used in the KVM hypervisors | Boolean | false
 `['aim']['port']` | In a KVM, the port where the Abiquo AIM agent will listen | Integer | 8889
 `['tomcat']['http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
 `['tomcat']['ajp-port']` | The port where the Tomcat listens to AJP traffic | Integer | 8010
 `['tomcat']['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
 `['ssl']['certificatefile']` | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
 `['ssl']['keyfile']` | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
-`['kairosdb']['host']` | The host where KairosDB is running | String | "localhost"
 `['kairosdb']['port']` | The host where KairosDB is listening | Integer | 8080
 `['kairosdb']['version']` | The version of KairosDB to install in the monitoring node | String | "0.9.4"
 `['kairosdb']['release']` | The release of the configured KairosDB version to install in the monitoring node | String | "6"
 `['cassandra']['cluster_name']` | The name for the Cassandra cluster in the monitoring node | String | "abiquo"
+`['properties']` | Set of properties to set on the `abiquo.properties` file. | Hash | {}
 
 # Resources and providers
 
@@ -138,7 +140,6 @@ in the run list:
 
 * `recipe[abiquo]` - To perform an installation from scratch
 * `recipe[abiquo::upgrade]` - To upgrade an existing installation
-* `recipe[abiquo::monitoring]` - To install a monitoring node with KairosDB and Cassandra
 
 When installing the Abiquo Monolithic profile, you may also want to set the `node['selfsigned_certificate']['cn']`
 attribute to match the hostname of the node. You can also use it together with the [hostname](http://community.opscode.com/cookbooks/hostname) cookbook to make sure the node will have it properly configured.
@@ -156,6 +157,7 @@ The tests and Gemfile have been developed using Ruby 2.1.5, and that is the reco
 # License and Authors
 
 * Author:: Ignasi Barrera (ignasi.barrera@abiquo.com)
+* Author:: Marc Cirauqui (marc.cirauqui@abiquo.com)
 
 Copyright:: 2014, Abiquo
 
