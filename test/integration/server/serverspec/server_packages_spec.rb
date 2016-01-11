@@ -14,16 +14,22 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Monolithic packages' do
+describe 'Server packages' do
     it 'has the system packages installed' do
-        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk ec2-api-tools}.each do |pkg|
+        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk}.each do |pkg|
             expect(package(pkg)).to be_installed
         end
     end
 
     it 'has the abiquo packages installed' do
-        %w{server remote-services v2v sosreport-plugins}.each do |pkg|
+        %w{server sosreport-plugins}.each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
+        end
+    end
+
+    it 'does not have other abiquo installed' do
+        %w{remote-services monolithic nodecollector}.each do |pkg|
+            expect(package("abiquo-#{pkg}")).not_to be_installed
         end
     end
 

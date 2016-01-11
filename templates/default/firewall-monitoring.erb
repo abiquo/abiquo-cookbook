@@ -1,11 +1,11 @@
 # Allow SSH access
--A FWR -p tcp -m tcp --dport 22 -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport 22 -j ACCEPT
 
 # Enable the KairosDB port
--A FWR -p tcp -m tcp --dport <%= node['abiquo']['kairosdb']['port'] %> -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport <%= node['abiquo']['kairosdb']['port'] %> -j ACCEPT
 
 # Enable the Cassandra clients port
--A FWR -p tcp -m tcp --dport <%= node['cassandra']['config']['rpc_port'].to_i %> -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport <%= node['cassandra']['config']['rpc_port'].to_i %> -j ACCEPT
 
 # Enable the Cassandra inter-node communication port
--A FWR -p tcp -m tcp --dport <%= node['cassandra']['config']['storage_port'] %> -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport <%= node['cassandra']['config']['storage_port'] %> -j ACCEPT

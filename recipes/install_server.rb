@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_remoteservices
+# Recipe:: install_server
 #
 # Copyright 2014, Abiquo
 #
@@ -15,17 +15,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package 'jdk' do
-    action :install
+include_recipe "apache2"
+include_recipe "apache2::mod_proxy_ajp"
+include_recipe "apache2::mod_ssl"
+
+%w{liquibase jdk}.each do |pkg|
+    package pkg do
+        action :install
+    end
 end
 
 include_recipe "abiquo::install_jce"
 include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
 
-%w{remote-services sosreport-plugins}.each do |pkg|
+%w{server sosreport-plugins}.each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
+end
+
+include_recipe "abiquo::certificate"
+
+web_app "abiquo" do
+    template "abiquo.conf.erb"
 end
 
 selinux_state "SELinux Permissive" do
@@ -33,8 +45,7 @@ selinux_state "SELinux Permissive" do
 end
 
 include_recipe "iptables"
+iptables_rule "firewall-apache"
 iptables_rule "firewall-tomcat"
 
-service 'rpcbind' do
-    action [:enable, :start]
-end
+include_recipe "abiquo::install_database" if node['abiquo']['db']['install']

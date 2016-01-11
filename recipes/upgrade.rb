@@ -37,7 +37,7 @@ liquibase_cmd += "update"
 execute "liquibase-update" do
     command liquibase_cmd
     cwd '/usr/share/doc/abiquo-server/database'
-    only_if { node['abiquo']['profile'] == 'monolithic' && node['abiquo']['db']['upgrade'] }
+    only_if { (node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server') && node['abiquo']['db']['upgrade'] }
 end
 
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"

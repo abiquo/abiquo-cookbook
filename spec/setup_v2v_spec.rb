@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 
-describe 'abiquo::setup_remoteservices' do
+describe 'abiquo::setup_v2v' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
     it 'does not mount the nfs repository by default' do
@@ -52,12 +52,13 @@ describe 'abiquo::setup_remoteservices' do
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:start).delayed
     end
 
-    it 'renders abiquo default properties file' do
+    it 'renders abiquo properties file' do
+        chef_run.node.automatic['fqdn'] = 'foo.bar.com'
         chef_run.converge(described_recipe)
         expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
             :source => 'abiquo.properties.erb',
             :owner => 'root',
-            :group => 'root',
+            :group => 'root'
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:restart).delayed
@@ -66,14 +67,15 @@ describe 'abiquo::setup_remoteservices' do
     end
 
     it 'renders abiquo properties file with custom properties' do
+        chef_run.node.automatic['fqdn'] = 'foo.bar.com'
         chef_run.node.set['abiquo']['properties']['abiquo.docker.registry'] = 'http://localhost:5000'
         chef_run.node.set['abiquo']['properties']['foo'] = 'bar'
-        
+
         chef_run.converge(described_recipe)
         expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
             :source => 'abiquo.properties.erb',
             :owner => 'root',
-            :group => 'root',
+            :group => 'root'
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:restart).delayed
@@ -84,7 +86,7 @@ describe 'abiquo::setup_remoteservices' do
     it 'waits until tomcat is started' do
         chef_run.node.set['abiquo']['tomcat']['wait-for-webapps'] = true
         chef_run.converge(described_recipe)
-        resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'virtualfactory')
+        resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'bpm-async')
         expect(resource).to do_nothing
         expect(resource).to subscribe_to('service[abiquo-tomcat-start]').on(:wait).delayed
     end

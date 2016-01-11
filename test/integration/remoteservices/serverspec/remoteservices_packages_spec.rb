@@ -16,13 +16,13 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Remote Services packages' do
     it 'has the system packages installed' do
-        %w{redis jdk ec2-api-tools}.each do |pkg|
+        %w{redis jdk}.each do |pkg|
             expect(package(pkg)).to be_installed
         end
     end
 
     it 'has the abiquo packages installed' do
-        %w{remote-services v2v sosreport-plugins}.each do |pkg|
+        %w{remote-services sosreport-plugins}.each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
         end
     end

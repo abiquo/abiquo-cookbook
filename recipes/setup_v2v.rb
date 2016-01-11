@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_remoteservices
+# Recipe:: setup_monolithic
 #
 # Copyright 2014, Abiquo
 #
@@ -53,7 +53,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     notifies :restart, "service[abiquo-tomcat-start]"
 end
 
-abiquo_wait_for_webapp "virtualfactory" do
+abiquo_wait_for_webapp "bpm-async" do
     host "localhost"
     port node['abiquo']['tomcat']['http-port']
     retries 3   # Retry if Tomcat is still not started

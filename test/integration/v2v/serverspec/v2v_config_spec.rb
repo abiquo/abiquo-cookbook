@@ -14,7 +14,7 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Remote Services configuration' do
+describe 'V2V configuration' do
     it 'has the yum repositories configured' do
         %w{base updates}.each do |repo|
             expect(yumrepo("abiquo-#{repo}")).to exist
@@ -24,6 +24,10 @@ describe 'Remote Services configuration' do
 
     it 'has tomcat properly configured' do
         expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
+    end
+
+    it 'has the ec2 api tools configured' do
+        expect(file('/etc/sysconfig/abiquo/ec2-api-tools')).to contain('^export EC2_HOME=')
     end
 
     it 'has the abiquo properties file' do

@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_monolithic
+# Recipe:: install_remoteservices
 #
 # Copyright 2014, Abiquo
 #
@@ -15,6 +15,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::install_server"
-include_recipe "abiquo::install_remoteservices"
-include_recipe "abiquo::install_v2v"
+%w{redis jdk}.each do |pkg|
+    package pkg do
+        action :install
+    end
+end
+
+include_recipe "abiquo::install_jce"
+
+%w{v2v sosreport-plugins}.each do |pkg|
+    package "abiquo-#{pkg}" do
+        action :install
+    end
+end
+
+selinux_state "SELinux Permissive" do
+    action :permissive
+end
+
+include_recipe "iptables"
+iptables_rule "firewall-tomcat"
+
+%w{rpcbind redis}.each do |svc|
+  service svc do
+      action [:enable, :start]
+  end
+end

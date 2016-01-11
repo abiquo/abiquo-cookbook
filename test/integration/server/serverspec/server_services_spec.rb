@@ -14,7 +14,7 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Monolithic services' do
+describe 'Server services' do
     it 'has mysql running' do
         expect(service('mysql')).to be_enabled
         expect(service('mysql')).to be_running

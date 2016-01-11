@@ -20,6 +20,13 @@ suites:
     run_list:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
+  - name: server
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: server
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]
@@ -27,6 +34,13 @@ suites:
     attributes:
       abiquo:
         profile: remoteservices
+  - name: v2v
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: v2v
   - name: kvm
     run_list:
       - recipe[abiquo::default]

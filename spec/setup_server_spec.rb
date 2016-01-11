@@ -14,31 +14,22 @@
 
 require 'spec_helper'
 
-describe 'abiquo::setup_remoteservices' do
+describe 'abiquo::setup_server' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
-
-    it 'does not mount the nfs repository by default' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])
-    end
-
-    it 'enables and mounts the nfs repository if configured' do
-        chef_run.node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
-        chef_run.converge(described_recipe)
-        expect(chef_run).to mount_mount('/opt/vm_repository').with(
-            :fstype => 'nfs',
-            :device => '10.60.1.222:/opt/nfs-devel'
-        )
-        expect(chef_run).to enable_mount('/opt/vm_repository').with(
-            :fstype => 'nfs',
-            :device => '10.60.1.222:/opt/nfs-devel'
-        )
-    end
 
     it 'defines the abiquo-tomcat-start service' do
         chef_run.converge(described_recipe)
         resource = chef_run.service('abiquo-tomcat-start')
         expect(resource).to do_nothing
+    end
+
+    it 'renders ui configuration file' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to create_template('/var/www/html/ui/config/client-config-custom.json').with(
+            :source => 'ui-config.json.erb',
+            :owner => 'root',
+            :group => 'root'
+        )
     end
 
     it 'renders tomcat configuration file' do
@@ -52,12 +43,13 @@ describe 'abiquo::setup_remoteservices' do
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:start).delayed
     end
 
-    it 'renders abiquo default properties file' do
+    it 'renders abiquo properties file' do
+        chef_run.node.automatic['fqdn'] = 'foo.bar.com'
         chef_run.converge(described_recipe)
         expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
             :source => 'abiquo.properties.erb',
             :owner => 'root',
-            :group => 'root',
+            :group => 'root'
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:restart).delayed
@@ -66,14 +58,15 @@ describe 'abiquo::setup_remoteservices' do
     end
 
     it 'renders abiquo properties file with custom properties' do
+        chef_run.node.automatic['fqdn'] = 'foo.bar.com'
         chef_run.node.set['abiquo']['properties']['abiquo.docker.registry'] = 'http://localhost:5000'
         chef_run.node.set['abiquo']['properties']['foo'] = 'bar'
-        
+
         chef_run.converge(described_recipe)
         expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
             :source => 'abiquo.properties.erb',
             :owner => 'root',
-            :group => 'root',
+            :group => 'root'
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:restart).delayed
@@ -84,7 +77,7 @@ describe 'abiquo::setup_remoteservices' do
     it 'waits until tomcat is started' do
         chef_run.node.set['abiquo']['tomcat']['wait-for-webapps'] = true
         chef_run.converge(described_recipe)
-        resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'virtualfactory')
+        resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'api')
         expect(resource).to do_nothing
         expect(resource).to subscribe_to('service[abiquo-tomcat-start]').on(:wait).delayed
     end

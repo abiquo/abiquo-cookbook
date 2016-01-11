@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_monolithic
+# Recipe:: certificate
 #
 # Copyright 2014, Abiquo
 #
@@ -15,6 +15,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::install_server"
-include_recipe "abiquo::install_remoteservices"
-include_recipe "abiquo::install_v2v"
+package "mysql-libs" do
+    ignore_failure true
+    action :purge
+end
+
+case node['abiquo']['profile']
+when "monolithic", "server"
+    packages = %w{MariaDB-server MariaDB-client redis rabbitmq-server}
+    services = %w{mysql redis rabbitmq-server}
+when "remoteservices"
+    packages = %w{redis}
+    services = %w{redis}
+end
+
+packages.each do |pkg|
+    package pkg do
+        action :install
+    end
+end
+
+services.each do |svc|
+    service svc do
+        action [:enable, :start]
+    end
+end

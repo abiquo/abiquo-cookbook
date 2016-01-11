@@ -45,4 +45,9 @@ describe 'abiquo::install_database' do
             :command => '/usr/bin/mysql kinton -e "INSERT INTO license (data) VALUES (\'foo\');"'
         )
     end
+
+    it 'extracts default m user password' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to run_ruby_block("extract_m_user_password")
+    end
 end

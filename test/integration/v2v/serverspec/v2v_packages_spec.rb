@@ -14,19 +14,21 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Remote Services configuration' do
-    it 'has the yum repositories configured' do
-        %w{base updates}.each do |repo|
-            expect(yumrepo("abiquo-#{repo}")).to exist
-            expect(yumrepo("abiquo-#{repo}")).to be_enabled
+describe 'Remote Services packages' do
+    it 'has the system packages installed' do
+        %w{redis jdk ec2-api-tools}.each do |pkg|
+            expect(package(pkg)).to be_installed
         end
     end
 
-    it 'has tomcat properly configured' do
-        expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
+    it 'has the abiquo packages installed' do
+        %w{v2v sosreport-plugins}.each do |pkg|
+            expect(package("abiquo-#{pkg}")).to be_installed
+        end
     end
 
-    it 'has the abiquo properties file' do
-        expect(file('/opt/abiquo/config/abiquo.properties')).to exist
+    it 'has the strong jce encryption policies installed' do
+        expect(file('/usr/java/default/jre/lib/security/local_policy.jar').md5sum).to eq('dabfcb23d7bf9bf5a201c3f6ea9bfb2c')
+        expect(file('/usr/java/default/jre/lib/security/US_export_policy.jar').md5sum).to eq('ef6e8eae7d1876d7f05d765d2c2e0529')
     end
 end

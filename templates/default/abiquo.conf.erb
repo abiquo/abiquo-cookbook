@@ -1,5 +1,5 @@
 <% node['apache']['listen_ports'].each do |port| -%>
-<% if port != "443" -%>
+<% if port != 443 -%>
 <VirtualHost *:<%= port %>>
     RewriteEngine On
     RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [L,R=301]

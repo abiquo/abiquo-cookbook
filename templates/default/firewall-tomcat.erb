@@ -1,6 +1,6 @@
 # Allow SSH access
--A FWR -p tcp -m tcp --dport 22 -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport 22 -j ACCEPT
 
 # Enable the Tomcat ports
--A FWR -p tcp -m tcp --dport <%= node['abiquo']['tomcat']['http-port'] %> -j ACCEPT
--A FWR -p tcp -m tcp --dport <%= node['abiquo']['tomcat']['ajp-port'] %> -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport <%= node['abiquo']['tomcat']['http-port'] %> -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport <%= node['abiquo']['tomcat']['ajp-port'] %> -j ACCEPT

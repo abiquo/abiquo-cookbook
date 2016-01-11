@@ -1,9 +1,9 @@
 # Allow SSH access
--A FWR -p tcp -m tcp --dport 22 -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport 22 -j ACCEPT
 
 # Enable the Abiquo AIM port
--A FWR -p tcp -m tcp --dport <%= node['abiquo']['aim']['port'] %> -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport <%= node['abiquo']['aim']['port'] %> -j ACCEPT
 
 # Enable the Libvirt ports: TCP, TLS
--A FWR -p tcp -m tcp --dport 16509 -j ACCEPT
--A FWR -p tcp -m tcp --dport 16514 -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport 16509 -j ACCEPT
+-A FORWARD -p tcp -m tcp --dport 16514 -j ACCEPT

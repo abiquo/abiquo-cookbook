@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_remoteservices
+# Recipe:: setup_monolithic
 #
 # Copyright 2014, Abiquo
 #
@@ -15,26 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if node['abiquo']['nfs']['location'].nil?
-    node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = '/opt/vm_repository'
-    node.default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = false
-else
-    mount node['abiquo']['nfs']['mountpoint'] do
-        device node['abiquo']['nfs']['location']
-        fstype "nfs"
-        action [:enable, :mount]
-        not_if { node['abiquo']['nfs']['location'].nil? }
-    end
-
-    node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint'] unless node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath']
-    node.default['abiquo']['properties']['abiquo.appliancemanager.repositoryLocation'] = node['abiquo']['nfs']['location'] unless node['abiquo']['properties']['abiquo.appliancemanager.repositoryLocation']
-end
-
 # Define the service with a custom name so we can subscribe just to the "restart" action
 # otherwise the "wait_for_webapp" resource will be notified too early (when tomcat is stopped)
 # and enqueued before the restart action is triggered
 service "abiquo-tomcat-start" do
     service_name "abiquo-tomcat"
+end
+
+template "/var/www/html/ui/config/client-config-custom.json" do
+    source "ui-config.json.erb"
+    owner "root"
+    group "root"
+    action :create
 end
 
 template "/opt/abiquo/tomcat/conf/server.xml" do
@@ -53,7 +45,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     notifies :restart, "service[abiquo-tomcat-start]"
 end
 
-abiquo_wait_for_webapp "virtualfactory" do
+abiquo_wait_for_webapp "api" do
     host "localhost"
     port node['abiquo']['tomcat']['http-port']
     retries 3   # Retry if Tomcat is still not started

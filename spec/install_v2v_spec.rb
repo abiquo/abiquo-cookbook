@@ -15,15 +15,17 @@
 require 'spec_helper'
 require_relative 'support/matchers'
 
-describe 'abiquo::install_remoteservices' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+describe 'abiquo::install_v2v' do
+    let(:chef_run) { ChefSpec::SoloRunner.new }
 
-    it "installs the jdk system package" do
+    it "installs the jdk package" do
+        chef_run.converge(described_recipe)
         expect(chef_run).to install_package("jdk")
     end
-    
-    %w{abiquo-remote-services abiquo-sosreport-plugins}.each do |pkg|
+
+    %w{abiquo-v2v redis abiquo-sosreport-plugins}.each do |pkg|
         it "installs the #{pkg} abiquo package" do
+            chef_run.converge(described_recipe)
             expect(chef_run).to install_package(pkg)
         end
     end
@@ -33,17 +35,25 @@ describe 'abiquo::install_remoteservices' do
         expect(chef_run).to permissive_selinux_state("SELinux Permissive")
     end
 
+    # The apache webapp calls can be tested because it is not a LWRP
+    # but a definition and does not exist in the resource list
+
     it 'configures the firewall' do
+        chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('iptables')
         expect(chef_run).to enable_iptables_rule('firewall-tomcat')
     end
 
-    it "configures the rpcbind service" do
-        expect(chef_run).to enable_service("rpcbind")
-        expect(chef_run).to start_service("rpcbind")
-    end
-    
     it 'includes the install_jce recipe' do
+        chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('abiquo::install_jce')
+    end
+
+    %w{rpcbind redis}.each do |svc|
+        it "configures the #{svc} service" do
+            chef_run.converge(described_recipe)
+            expect(chef_run).to enable_service(svc)
+            expect(chef_run).to start_service(svc)
+        end
     end
 end

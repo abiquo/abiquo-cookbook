@@ -1,0 +1,3 @@
+<% node['apache']['listen_ports'].each do |port| -%>
+-A FORWARD -p tcp -m tcp --dport <%= port %> -j ACCEPT
+<% end %>

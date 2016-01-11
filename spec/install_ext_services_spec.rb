@@ -15,25 +15,27 @@
 require 'spec_helper'
 require_relative 'support/matchers'
 
-describe 'abiquo::install_monolithic' do
+describe 'abiquo::install_ext_services' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
-    before do
-        stub_command('/usr/sbin/httpd -t').and_return(true)
+    it 'uninstalls mysql-libs package' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to purge_package('mysql-libs')
     end
 
-    it 'includes the server recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_server')
+    %w{MariaDB-server MariaDB-client redis rabbitmq-server}.each do |pkg|
+        it "installs the #{pkg} system package" do
+            chef_run.converge(described_recipe)
+            expect(chef_run).to install_package(pkg)
+        end
     end
 
-    it 'includes the remoteservices recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_remoteservices')
+    %w{mysql rabbitmq-server redis}.each do |svc|
+        it "configures the #{svc} service" do
+            chef_run.converge(described_recipe)
+            expect(chef_run).to enable_service(svc)
+            expect(chef_run).to start_service(svc)
+        end
     end
 
-    it 'includes the v2v recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_v2v')
-    end
 end

@@ -27,3 +27,13 @@ execute "install-license" do
     command "/usr/bin/mysql kinton -e \"INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}');\""
     not_if { node['abiquo']['license'].nil? || node['abiquo']['license'].empty? }
 end
+
+ruby_block "extract_m_user_password" do
+  block do
+    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)      
+    mysql_command = 'mysql kinton -B --skip-column-names -e "select COMMENTS from DATABASECHANGELOG where ID = \'default_user_for_m\'"'
+    mysql_command_out = shell_out(mysql_command)
+    node.default['abiquo']['properties']['abiquo.m.credential'] = mysql_command_out.stdout.gsub("\n", "")
+  end
+  action :run
+end
