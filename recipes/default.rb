@@ -15,6 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+selinux_state "SELinux Permissive" do
+    action :permissive
+end
+
 include_recipe "abiquo::repository"
 
 if node['abiquo']['profile'] == 'monitoring'

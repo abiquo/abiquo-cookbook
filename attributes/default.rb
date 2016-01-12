@@ -30,13 +30,12 @@ default['abiquo']['ui_address_type'] = 'fqdn'
 default['abiquo']['ui_address'] = node['fqdn']
 
 # Common properties
-default['abiquo']['datacenterId'] = node['hostname']
+default['abiquo']['datacenterId'] = node['fqdn']
 default['abiquo']['license'] = nil
 
 # NFS repository configuration
 default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
 default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0.1:/opt/vm_repository"
-default['abiquo']['nfs']['mount_repository'] = true
 
 # Yum repository configuration
 default['abiquo']['yum']['base-repo'] = "http://mirror.abiquo.com/abiquo/3.6/os/x86_64"
@@ -75,9 +74,6 @@ override['apache']['proxy']['allow_from'] = "all"
 override['java']['oracle']['accept_oracle_download_terms'] = true
 override['java']['java_home'] = "/usr/java/default"
 
-# Default empty properties
-default['abiquo']['properties'] = {}
-
 # Default properties
 default['abiquo']['properties']['abiquo.server.sessionTimeout'] = 30
 default['abiquo']['properties']['abiquo.server.mail.server'] = '127.0.0.1'
@@ -89,6 +85,7 @@ default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
 default['abiquo']['properties']['abiquo.rabbitmq.port'] = 5672
 default['abiquo']['properties']['abiquo.redis.host'] = '127.0.0.1'
 default['abiquo']['properties']['abiquo.redis.port'] = 6379
+default['abiquo']['properties']['abiquo.datacenter.id'] = node['abiquo']['datacenterId']
 default['abiquo']['properties']['abiquo.m.identity'] = 'default_outbound_api_user'
 
 if node['abiquo']['profile'] == "monolithic" or node['abiquo']['profile'] == "server"

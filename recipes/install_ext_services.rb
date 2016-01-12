@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: certificate
+# Recipe:: install_ext_services
 #
 # Copyright 2014, Abiquo
 #

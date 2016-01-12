@@ -1,7 +1,8 @@
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
+# you may not use this file except in compliance with the License.           Error executing action `install` on resource 'yum_package[abiquo-release-ee]'
+
 # You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
@@ -28,14 +29,10 @@ describe 'abiquo::install_remoteservices' do
         end
     end
 
-    it 'changes selinux to permissive' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to permissive_selinux_state("SELinux Permissive")
-    end
-
     it 'configures the firewall' do
         expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-tomcat')
+        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
+        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
     end
 
     it "configures the rpcbind service" do

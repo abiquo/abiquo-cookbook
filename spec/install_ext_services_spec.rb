@@ -16,26 +16,22 @@ require 'spec_helper'
 require_relative 'support/matchers'
 
 describe 'abiquo::install_ext_services' do
-    let(:chef_run) { ChefSpec::SoloRunner.new }
+    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
     it 'uninstalls mysql-libs package' do
-        chef_run.converge(described_recipe)
         expect(chef_run).to purge_package('mysql-libs')
     end
 
     %w{MariaDB-server MariaDB-client redis rabbitmq-server}.each do |pkg|
         it "installs the #{pkg} system package" do
-            chef_run.converge(described_recipe)
             expect(chef_run).to install_package(pkg)
         end
     end
 
     %w{mysql rabbitmq-server redis}.each do |svc|
         it "configures the #{svc} service" do
-            chef_run.converge(described_recipe)
             expect(chef_run).to enable_service(svc)
             expect(chef_run).to start_service(svc)
         end
     end
-
 end

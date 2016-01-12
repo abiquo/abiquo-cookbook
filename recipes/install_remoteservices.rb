@@ -28,12 +28,9 @@ include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_ser
     end
 end
 
-selinux_state "SELinux Permissive" do
-    action :permissive
-end
-
 include_recipe "iptables"
-iptables_rule "firewall-tomcat"
+iptables_rule "firewall-policy-drop"
+iptables_rule "firewall-abiquo"
 
 service 'rpcbind' do
     action [:enable, :start]

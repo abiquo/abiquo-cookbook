@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_monolithic
+# Recipe:: setup_v2v
 #
 # Copyright 2014, Abiquo
 #
@@ -49,6 +49,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     source "abiquo.properties.erb"
     owner "root"
     group "root"
+    variables lazy {{ :properties => node['abiquo']['properties'] }}
     action :create
     notifies :restart, "service[abiquo-tomcat-start]"
 end

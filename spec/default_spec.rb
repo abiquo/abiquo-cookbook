@@ -25,6 +25,11 @@ describe 'abiquo::default' do
         stub_command('/usr/sbin/httpd -t').and_return(true)
     end
 
+    it 'changes selinux to permissive' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to permissive_selinux_state("SELinux Permissive")
+    end
+
     %w(monolithic remoteservices kvm).each do |profile|
         it "includes the recipes for the #{profile} profile" do
             chef_run.node.set['abiquo']['profile'] = profile

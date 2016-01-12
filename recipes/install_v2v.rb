@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_remoteservices
+# Recipe:: install_v2v
 #
 # Copyright 2014, Abiquo
 #
@@ -29,12 +29,9 @@ include_recipe "abiquo::install_jce"
     end
 end
 
-selinux_state "SELinux Permissive" do
-    action :permissive
-end
-
 include_recipe "iptables"
-iptables_rule "firewall-tomcat"
+iptables_rule "firewall-policy-drop"
+iptables_rule "firewall-abiquo"
 
 %w{rpcbind redis}.each do |svc|
   service svc do

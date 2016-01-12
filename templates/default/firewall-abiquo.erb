@@ -1,0 +1,38 @@
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Allow SSH access
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+
+<% if node['abiquo']['profile'] == "monolithic" or node['abiquo']['profile'] == "server" %>
+# Apache ports
+<% node['apache']['listen_ports'].each do |port| %>
+-A INPUT -p tcp -m tcp --dport <%= port %> -j ACCEPT
+<% end %>
+<% end %>
+
+<% if node['abiquo']['profile'] == "kvm" %>
+# Enable the Abiquo AIM port
+-A INPUT -p tcp -m tcp --dport <%= node['abiquo']['aim']['port'] %> -j ACCEPT
+
+# Enable the Libvirt ports: TCP, TLS
+-A INPUT -p tcp -m tcp --dport 16509 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 16514 -j ACCEPT
+<% end %>
+
+<% if node['abiquo']['profile'] == "monitoring" %>
+# Enable the KairosDB port
+-A INPUT -p tcp -m tcp --dport <%= node['abiquo']['kairosdb']['port'] %> -j ACCEPT
+
+# Enable the Cassandra clients port
+-A INPUT -p tcp -m tcp --dport <%= node['cassandra']['config']['rpc_port'].to_i %> -j ACCEPT
+
+# Enable the Cassandra inter-node communication port
+-A INPUT -p tcp -m tcp --dport <%= node['cassandra']['config']['storage_port'] %> -j ACCEPT
+<% end %>
+
+<% unless node['abiquo']['profile'] == "kvm" or node['abiquo']['profile'] == "monitoring" %>
+# Enable the Tomcat ports
+-A INPUT -p tcp -m tcp --dport <%= node['abiquo']['tomcat']['http-port'] %> -j ACCEPT
+-A INPUT -p tcp -m tcp --dport <%= node['abiquo']['tomcat']['ajp-port'] %> -j ACCEPT
+<% end %>

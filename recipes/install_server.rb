@@ -40,12 +40,8 @@ web_app "abiquo" do
     template "abiquo.conf.erb"
 end
 
-selinux_state "SELinux Permissive" do
-    action :permissive
-end
-
 include_recipe "iptables"
-iptables_rule "firewall-apache"
-iptables_rule "firewall-tomcat"
+iptables_rule "firewall-policy-drop"
+iptables_rule "firewall-abiquo"
 
 include_recipe "abiquo::install_database" if node['abiquo']['db']['install']

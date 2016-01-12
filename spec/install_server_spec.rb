@@ -43,11 +43,6 @@ describe 'abiquo::install_server' do
         end
     end
 
-    it 'changes selinux to permissive' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to permissive_selinux_state("SELinux Permissive")
-    end
-
     it 'includes the certificate recipe' do
         chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('abiquo::certificate')
@@ -59,8 +54,8 @@ describe 'abiquo::install_server' do
     it 'configures the firewall' do
         chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-tomcat')
-        expect(chef_run).to enable_iptables_rule('firewall-apache')
+        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
+        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
     end
 
     it 'includes the install_jce recipe' do
@@ -76,7 +71,7 @@ describe 'abiquo::install_server' do
     it 'does not include install_ext_services recipe if not configured' do
         chef_run.node.set['abiquo']['install_ext_services'] = false
         chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_jce')
+        expect(chef_run).to_not include_recipe('abiquo::install_ext_services')
     end
 
     it 'installs the database by default' do

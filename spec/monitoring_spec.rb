@@ -60,9 +60,9 @@ describe 'abiquo::monitoring' do
     end
 
     it 'configures the firewall' do
-        expect(chef_run).to permissive_selinux_state('SELinux Permissive')
         expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-monitoring')
+        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
+        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
     end
 
     it 'declares the kairosdb service' do

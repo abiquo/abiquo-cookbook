@@ -1,9 +1,9 @@
-<% if node['abiquo']['ui_address_type'] != "fixed" %>
+<% if @ui_address_type != "fixed" %>
 {
-    "config.endpoint": "https://<%= node[node['abiquo']['ui_address_type']] %>/api"
+    "config.endpoint": "https://<%= @ui_address_type_resolved %>/api"
 }
 <% else %>
 {
-    "config.endpoint": "https://<%= node['abiquo']['ui_address'] %>/api"
+    "config.endpoint": "https://<%= @ui_address %>/api"
 }
 <% end %>

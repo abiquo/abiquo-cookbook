@@ -39,9 +39,9 @@ describe 'abiquo::install_kvm' do
     end
 
     it 'configures the firewall' do
-        expect(chef_run).to permissive_selinux_state('SELinux Permissive')
         expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-kvm')
+        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
+        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
     end
 
     it 'configures the rpcbind service' do
