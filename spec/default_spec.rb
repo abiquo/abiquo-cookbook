@@ -30,7 +30,7 @@ describe 'abiquo::default' do
         expect(chef_run).to permissive_selinux_state("SELinux Permissive")
     end
 
-    %w(monolithic remoteservices kvm).each do |profile|
+    %w(monolithic server v2v remoteservices kvm).each do |profile|
         it "includes the recipes for the #{profile} profile" do
             chef_run.node.set['abiquo']['profile'] = profile
             stub_command('/usr/sbin/httpd -t').and_return(true) if profile == 'monolithic'
