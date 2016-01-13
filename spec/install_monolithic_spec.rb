@@ -13,27 +13,17 @@
 # limitations under the License.
 
 require 'spec_helper'
-require_relative 'support/matchers'
 
 describe 'abiquo::install_monolithic' do
-    let(:chef_run) { ChefSpec::SoloRunner.new }
+    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
     end
 
-    it 'includes the server recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_server')
-    end
-
-    it 'includes the remoteservices recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_remoteservices')
-    end
-
-    it 'includes the v2v recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_v2v')
+    %w{server remoteservices v2v}.each do |recipe|
+        it "includes the #{recipe} install recipe" do
+            expect(chef_run).to include_recipe("abiquo::install_#{recipe}")
+        end
     end
 end

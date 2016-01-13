@@ -13,7 +13,6 @@
 # limitations under the License.
 
 require 'spec_helper'
-require_relative 'support/matchers'
 
 describe 'abiquo::install_ext_services' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }

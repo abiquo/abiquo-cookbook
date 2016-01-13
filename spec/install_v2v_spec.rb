@@ -13,19 +13,16 @@
 # limitations under the License.
 
 require 'spec_helper'
-require_relative 'support/matchers'
 
 describe 'abiquo::install_v2v' do
-    let(:chef_run) { ChefSpec::SoloRunner.new }
+    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
     it "installs the jdk package" do
-        chef_run.converge(described_recipe)
         expect(chef_run).to install_package("jdk")
     end
 
     %w{abiquo-v2v redis abiquo-sosreport-plugins}.each do |pkg|
         it "installs the #{pkg} abiquo package" do
-            chef_run.converge(described_recipe)
             expect(chef_run).to install_package(pkg)
         end
     end
@@ -34,13 +31,11 @@ describe 'abiquo::install_v2v' do
     # but a definition and does not exist in the resource list
 
     it 'includes the install_jce recipe' do
-        chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('abiquo::install_jce')
     end
 
     %w{rpcbind redis}.each do |svc|
         it "configures the #{svc} service" do
-            chef_run.converge(described_recipe)
             expect(chef_run).to enable_service(svc)
             expect(chef_run).to start_service(svc)
         end
