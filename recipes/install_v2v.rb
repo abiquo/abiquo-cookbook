@@ -29,10 +29,6 @@ include_recipe "abiquo::install_jce"
     end
 end
 
-include_recipe "iptables"
-iptables_rule "firewall-policy-drop"
-iptables_rule "firewall-abiquo"
-
 %w{rpcbind redis}.each do |svc|
   service svc do
       action [:enable, :start]

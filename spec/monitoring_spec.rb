@@ -17,9 +17,10 @@ require_relative 'support/matchers'
 
 describe 'abiquo::monitoring' do
     let(:chef_run) do
-        ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-            node.set['abiquo']['cassandra']['cluster_name'] = 'abiquo'
-        end.converge(described_recipe)
+        # ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+        #     node.set['abiquo']['cassandra']['cluster_name'] = 'abiquo'
+        # end.converge(described_recipe)
+        ChefSpec::SoloRunner.new(file_cache_path: '/tmp').converge(described_recipe)
     end
     let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['kairosdb']['version']}-#{chef_run.node['abiquo']['kairosdb']['release']}.rpm" }
     let(:url) { "https://github.com/kairosdb/kairosdb/releases/download/v#{chef_run.node['abiquo']['kairosdb']['version']}/#{pkg}" }
@@ -57,12 +58,6 @@ describe 'abiquo::monitoring' do
 
     it 'includes the cassandra recipe' do
         expect(chef_run).to include_recipe('cassandra-dse')
-    end
-
-    it 'configures the firewall' do
-        expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
-        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
     end
 
     it 'declares the kairosdb service' do

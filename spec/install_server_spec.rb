@@ -51,13 +51,6 @@ describe 'abiquo::install_server' do
     # The apache webapp calls can be tested because it is not a LWRP
     # but a definition and does not exist in the resource list
 
-    it 'configures the firewall' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
-        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
-    end
-
     it 'includes the install_jce recipe' do
         chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('abiquo::install_jce')

@@ -28,12 +28,6 @@ describe 'abiquo::install_remoteservices' do
         end
     end
 
-    it 'configures the firewall' do
-        expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
-        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
-    end
-
     it "configures the rpcbind service" do
         expect(chef_run).to enable_service("rpcbind")
         expect(chef_run).to start_service("rpcbind")

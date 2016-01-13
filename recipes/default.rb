@@ -28,3 +28,6 @@ else
     include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
 end
 
+include_recipe "iptables"
+iptables_rule "firewall-policy-drop"
+iptables_rule "firewall-abiquo"

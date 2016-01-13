@@ -47,10 +47,6 @@ node.set['cassandra']['config']['cluster_name'] = node['abiquo']['cassandra']['c
 node.set['cassandra']['install_java'] = false   # The Abiquo jdk package is installed instead
 include_recipe 'cassandra-dse'
 
-include_recipe "iptables"
-iptables_rule "firewall-policy-drop"
-iptables_rule "firewall-abiquo"
-
 # Cassandra takes some time to start. We have to wait a bit otherwise KairosDB
 # will fail to start.
 service 'kairosdb' do

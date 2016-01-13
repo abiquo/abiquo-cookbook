@@ -28,10 +28,6 @@ include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_ser
     end
 end
 
-include_recipe "iptables"
-iptables_rule "firewall-policy-drop"
-iptables_rule "firewall-abiquo"
-
 service 'rpcbind' do
     action [:enable, :start]
 end

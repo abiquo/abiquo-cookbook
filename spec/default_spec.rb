@@ -13,6 +13,7 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/matchers'
 
 describe 'abiquo::default' do
     let(:chef_run) do
@@ -30,7 +31,7 @@ describe 'abiquo::default' do
         expect(chef_run).to permissive_selinux_state("SELinux Permissive")
     end
 
-    %w(monolithic server v2v remoteservices kvm).each do |profile|
+    %w{monolithic server v2v remoteservices kvm}.each do |profile|
         it "includes the recipes for the #{profile} profile" do
             chef_run.node.set['abiquo']['profile'] = profile
             stub_command('/usr/sbin/httpd -t').and_return(true) if profile == 'monolithic'
@@ -48,5 +49,12 @@ describe 'abiquo::default' do
 
         expect(chef_run).to include_recipe('abiquo::repository')
         expect(chef_run).to include_recipe('abiquo::monitoring')
+    end
+
+    it 'configures the firewall' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to include_recipe('iptables')
+        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
+        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
     end
 end

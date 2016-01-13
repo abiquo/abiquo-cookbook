@@ -38,12 +38,6 @@ describe 'abiquo::install_kvm' do
         expect(chef_run).to_not create_link('/usr/bin/qemu-system-x86_64')
     end
 
-    it 'configures the firewall' do
-        expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
-        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
-    end
-
     it 'configures the rpcbind service' do
         expect(chef_run).to enable_service('rpcbind')
         expect(chef_run).to start_service('rpcbind')
