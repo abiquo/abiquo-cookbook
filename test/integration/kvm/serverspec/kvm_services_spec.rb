@@ -21,12 +21,14 @@ describe 'KVM services' do
 
     it 'has the firewall configured' do
         expect(iptables).to have_rule('-A INPUT -i lo -j ACCEPT')
-        expect(iptables).to have_rule('-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8889 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 16509 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 16514 -j ACCEPT')
         expect(iptables).to have_rule('-P INPUT DROP')
+
+        # Cannot use have_rule with comma
+        expect(command('iptables -S | grep -- "-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"').exit_status).to eq 0
     end
 
     it 'has the rpcbind service running' do
