@@ -36,6 +36,3 @@ depends 'java-management', '~> 1.0.3'
 depends 'selfsigned_certificate', '~> 0.1.0'
 depends 'selinux', '~> 0.9.0'
 depends 'yum', '~> 3.8.2'
-
-suggests 'hostname'
-suggests 'postfix'

@@ -23,7 +23,3 @@ end
 def permissive_selinux_state(resource_name)
     ChefSpec::Matchers::ResourceMatcher.new(:selinux_state, :permissive, resource_name)
 end
-
-def enable_iptables_rule(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:iptables_rule, :enable, resource_name)
-end
