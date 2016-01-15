@@ -29,4 +29,8 @@ describe 'Remote Services configuration' do
     it 'has the abiquo properties file' do
         expect(file('/opt/abiquo/config/abiquo.properties')).to exist
     end
+
+    it 'has the appliance manager properly configured' do
+        expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.appliancemanager.checkMountedRepository = false')
+    end
 end

@@ -15,19 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if node['abiquo']['nfs']['location'].nil?
-    node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = '/opt/vm_repository'
-    node.default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = false
-else
-    mount node['abiquo']['nfs']['mountpoint'] do
-        device node['abiquo']['nfs']['location']
-        fstype "nfs"
-        action [:enable, :mount]
-        not_if { node['abiquo']['nfs']['location'].nil? }
-    end
+node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint'] unless node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'].is_a?(String)
 
-    node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint'] unless node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath']
-    node.default['abiquo']['properties']['abiquo.appliancemanager.repositoryLocation'] = node['abiquo']['nfs']['location'] unless node['abiquo']['properties']['abiquo.appliancemanager.repositoryLocation']
+mount node['abiquo']['nfs']['mountpoint'] do
+    device node['abiquo']['nfs']['location']
+    fstype "nfs"
+    action [:enable, :mount]
+    not_if { node['abiquo']['nfs']['location'].nil? }
 end
 
 # Define the service with a custom name so we can subscribe just to the "restart" action

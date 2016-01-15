@@ -30,7 +30,6 @@ default['abiquo']['ui_address_type'] = 'fqdn'
 default['abiquo']['ui_address'] = node['fqdn']
 
 # Common properties
-default['abiquo']['datacenterId'] = node['fqdn']
 default['abiquo']['license'] = nil
 
 # NFS repository configuration
@@ -75,23 +74,27 @@ override['java']['oracle']['accept_oracle_download_terms'] = true
 override['java']['java_home'] = "/usr/java/default"
 
 # Default properties
-default['abiquo']['properties']['abiquo.server.sessionTimeout'] = 30
-default['abiquo']['properties']['abiquo.server.mail.server'] = '127.0.0.1'
-default['abiquo']['properties']['abiquo.server.mail.user'] = 'none@none.es'
-default['abiquo']['properties']['abiquo.server.mail.password'] = 'none'
+default['abiquo']['properties']['abiquo.datacenter.id'] = node['fqdn']
 default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
 default['abiquo']['properties']['abiquo.rabbitmq.port'] = 5672
-default['abiquo']['properties']['abiquo.redis.host'] = '127.0.0.1'
-default['abiquo']['properties']['abiquo.redis.port'] = 6379
-default['abiquo']['properties']['abiquo.datacenter.id'] = node['abiquo']['datacenterId']
-default['abiquo']['properties']['abiquo.m.identity'] = 'default_outbound_api_user'
 
-if node['abiquo']['profile'] == "monolithic" or node['abiquo']['profile'] == "server"
-  if node['abiquo']['ui_address_type'] != "fixed"
-    default['abiquo']['properties']['abiquo.server.api.location'] = "http://#{node[node['abiquo']['ui_address_type']]}:8009/api"
-  else
-    default['abiquo']['properties']['abiquo.server.api.location'] = "http://#{node['abiquo']['ui_address']}:8009/api"
-  end
+case node['abiquo']['profile']
+when "monolithic", "server"
+    default['abiquo']['properties']['abiquo.m.identity'] = 'default_outbound_api_user'
+    default['abiquo']['properties']['abiquo.server.sessionTimeout'] = 30
+    default['abiquo']['properties']['abiquo.server.mail.server'] = '127.0.0.1'
+    default['abiquo']['properties']['abiquo.server.mail.user'] = 'none@none.es'
+    default['abiquo']['properties']['abiquo.server.mail.password'] = 'none'
+    default['abiquo']['properties']['abiquo.redis.host'] = '127.0.0.1'
+    default['abiquo']['properties']['abiquo.redis.port'] = 6379
+
+    if node['abiquo']['ui_address_type'] != "fixed"
+        default['abiquo']['properties']['abiquo.server.api.location'] = "http://#{node[node['abiquo']['ui_address_type']]}:8009/api"
+    else
+        default['abiquo']['properties']['abiquo.server.api.location'] = "http://#{node['abiquo']['ui_address']}:8009/api"
+    end
+when "remoteservices"
+    default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
 end
