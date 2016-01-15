@@ -17,11 +17,13 @@
 
 node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint'] unless node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'].is_a?(String)
 
-mount node['abiquo']['nfs']['mountpoint'] do
-    device node['abiquo']['nfs']['location']
-    fstype "nfs"
-    action [:enable, :mount]
-    not_if { node['abiquo']['nfs']['location'].nil? }
+# The device attribute is mandatory for the mount resource, so we can't use a regular guard
+unless node['abiquo']['nfs']['location'].nil?
+    mount node['abiquo']['nfs']['mountpoint'] do
+        device node['abiquo']['nfs']['location']
+        fstype "nfs"
+        action [:enable, :mount]
+    end
 end
 
 # Define the service with a custom name so we can subscribe just to the "restart" action

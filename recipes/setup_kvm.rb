@@ -15,11 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mount node['abiquo']['nfs']['mountpoint'] do
-    device node['abiquo']['nfs']['location']
-    fstype "nfs"
-    action [:enable, :mount]
-    not_if { node['abiquo']['nfs']['location'].nil? }
+# The device attribute is mandatory for the mount resource, so we can't use a regular guard
+unless node['abiquo']['nfs']['location'].nil?
+    mount node['abiquo']['nfs']['mountpoint'] do
+        device node['abiquo']['nfs']['location']
+        fstype "nfs"
+        action [:enable, :mount]
+    end
 end
 
 template "/etc/sysconfig/libvirt-guests" do
