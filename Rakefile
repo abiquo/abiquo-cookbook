@@ -11,7 +11,7 @@ end
 desc 'Run ChefSpec tests'
 RSpec::Core::RakeTask.new(:spec)
 
-desc 'Run Test Kitchen integration tests with Vagrant'
+desc 'Run Test Kitchen integration tests'
 task :kitchen do
     require 'kitchen'
     Kitchen.logger = Kitchen.default_file_logger
@@ -20,4 +20,4 @@ task :kitchen do
     end
 end
 
-task :default => ['style', 'spec']
+task :default => ['spec', 'style']

@@ -58,11 +58,10 @@ Attribute | Description | Type | Default
 `['install_ext_services']` | Whether or not to install supporting services like MariaDB, Redis, RabbitMQ, etc. | Boolean | true
 `['ui_address_type']` | The attribute to use as the Abiquo UI address: "fqdn", "ipaddress", "fixed" | String | "fqdn"
 `['ui_address']` | When `['ui_address_type']` is `fixed` use this as address | String | node['fqdn']
-`['datacenterId']` | The value for the datacenter id property | String | node['fqdn']
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['license']` | The Abiquo license to install | String | nil
-`['properties']` | Hash with additional Abiquo properties to add to the Abiquo configuration file | Hash | nil
+`['properties']` | Hash with additional Abiquo properties to add to the Abiquo configuration file | Hash | {}
 `['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
 `['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
 `['db']['host']` | The database host used when running the database upgrade | String | "localhost""
@@ -81,7 +80,6 @@ Attribute | Description | Type | Default
 `['kairosdb']['version']` | The version of KairosDB to install in the monitoring node | String | "0.9.4"
 `['kairosdb']['release']` | The release of the configured KairosDB version to install in the monitoring node | String | "6"
 `['cassandra']['cluster_name']` | The name for the Cassandra cluster in the monitoring node | String | "abiquo"
-`['properties']` | Set of properties to set on the `abiquo.properties` file. | Hash | {}
 
 # Resources and providers
 
@@ -139,6 +137,8 @@ in the run list:
 
 * `recipe[abiquo]` - To perform an installation from scratch
 * `recipe[abiquo::upgrade]` - To upgrade an existing installation
+
+The available profiles are: `monolithic`, `remoteservices`, `server`, `v2v` and `kvm`.
 
 When installing the Abiquo Monolithic profile, you may also want to set the `node['selfsigned_certificate']['cn']`
 attribute to match the hostname of the node. You can also use it together with the [hostname](http://community.opscode.com/cookbooks/hostname) cookbook to make sure the node will have it properly configured.
