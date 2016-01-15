@@ -38,8 +38,10 @@ describe 'Server configuration' do
         expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateKeyFile /usr/var/ssl/certs/server.key')
     end
 
-    it 'has the ui config file' do
+    it 'has the ui properly configured' do
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to exist
+        # The suite is forced to configure the hostname
+        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://server.abiquo.com/api"')
     end
 
     it 'has tomcat properly configured' do

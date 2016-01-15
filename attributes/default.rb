@@ -91,9 +91,9 @@ when "monolithic", "server"
     default['abiquo']['properties']['abiquo.redis.port'] = 6379
 
     if node['abiquo']['ui_address_type'] != "fixed"
-        default['abiquo']['properties']['abiquo.server.api.location'] = "http://#{node[node['abiquo']['ui_address_type']]}:8009/api"
+        default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node[node['abiquo']['ui_address_type']]}/api"
     else
-        default['abiquo']['properties']['abiquo.server.api.location'] = "http://#{node['abiquo']['ui_address']}:8009/api"
+        default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['abiquo']['ui_address']}/api"
     end
 when "remoteservices"
     default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?

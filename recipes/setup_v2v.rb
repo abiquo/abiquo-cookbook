@@ -43,7 +43,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     source "abiquo.properties.erb"
     owner "root"
     group "root"
-    variables lazy {{ :properties => node['abiquo']['properties'] }}
+    variables({ :properties => node['abiquo']['properties'] })
     action :create
     notifies :restart, "service[abiquo-tomcat-start]"
 end
