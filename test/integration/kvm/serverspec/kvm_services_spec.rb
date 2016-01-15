@@ -21,6 +21,7 @@ describe 'KVM services' do
 
     it 'has the firewall configured' do
         expect(iptables).to have_rule('-A INPUT -i lo -j ACCEPT')
+        expect(iptables).to have_rule('-A INPUT -p icmp -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8889 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 16509 -j ACCEPT')
