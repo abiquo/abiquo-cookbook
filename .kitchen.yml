@@ -10,7 +10,7 @@ transport:
   compression: none
 
 platforms:
-  - name: centos-6.5
+  - name: centos-6.7
     driver_config:
       customize:
         memory: 1024
@@ -20,6 +20,13 @@ suites:
     run_list:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
+    attributes:
+      set_fqdn: monolithic.abiquo.com
+      abiquo:
+        profile: monolithic
+        ui_address_type: set_fqdn
+        certificate:
+          common_name: monolithic.abiquo.com
   - name: server
     run_list:
       - recipe[abiquo::default]
@@ -29,6 +36,8 @@ suites:
       abiquo:
         profile: server
         ui_address_type: set_fqdn
+        certificate:
+          common_name: server.abiquo.com
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]

@@ -3,7 +3,7 @@ Abiquo Cookbook
 
 [![Build Status](https://travis-ci.org/abiquo/abiquo-cookbook.svg?branch=master)](https://travis-ci.org/abiquo/abiquo-cookbook)
 [![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.6.0-blue.svg?style=flat)](https://supermarket.chef.io/cookbooks/abiquo)
-[![Chef Version](http://img.shields.io/badge/chef-v11.16-orange.svg?style=flat)](https://www.chef.io)
+[![Chef Version](http://img.shields.io/badge/chef-v12.5.1-orange.svg?style=flat)](https://www.chef.io)
 
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
 It allows to provision an Abiquo Server, the Remote Services server, standalone V2V
@@ -47,6 +47,7 @@ The cookbook contains the following recipes:
 * `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
 * `recipe[abiquo::monitoring]` - Installs an Abiquo monitoring node with KairosDB and Cassandra
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
+* `recipe[abiquo::service]` - Manages Abiquo tomcat service
 
 # Attributes
 
@@ -56,13 +57,19 @@ Attribute | Description | Type | Default
 ----------|-------------|------|--------
 `['profile']` | The profile to install: "monolithic", "server", "remoteservices", "v2v", "kvm" or "monitoring" | String | "monolithic"
 `['install_ext_services']` | Whether or not to install supporting services like MariaDB, Redis, RabbitMQ, etc. | Boolean | true
+`['jce']['install']` | Wether or not to install tha Java Strong Encryption extensions | Boolean | true
+`['certificate']['install']` | Whether or not to generate a custom selfsigned certificate for this host | Boolean | true
+`['certificate']['file']` | If `['certificate']['file']` is false, use this file as certificate | String | '/etc/pki/tls/certs/localhost.crt'
+`['certificate']['key_file']` | If `['certificate']['file']` is false, use this file as the certificate private key | String | '/etc/pki/tls/private/localhost.key'
+`['certificate']['ca_file']` | If `['certificate']['file']` is false, use this file as tha CA certificate | String | nil
 `['ui_address_type']` | The attribute to use as the Abiquo UI address: "fqdn", "ipaddress", "fixed" | String | "fqdn"
 `['ui_address']` | When `['ui_address_type']` is `fixed` use this as address | String | node['fqdn']
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['license']` | The Abiquo license to install | String | nil
 `['properties']` | Hash with additional Abiquo properties to add to the Abiquo configuration file | Hash | {}
-`['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
+`['yum']['base-repo']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/os/x86_64"
+`['yum']['update-repo']` | The Abiquo updates yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/updates/x86_64"
 `['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
 `['db']['host']` | The database host used when running the database upgrade | String | "localhost""
 `['db']['port']` | The database port used when running the database upgrade | Integer | 3306

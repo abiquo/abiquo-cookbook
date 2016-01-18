@@ -23,6 +23,20 @@ default['abiquo']['profile'] = "monolithic"
 # Set to false if you wish to use existing servers.
 default['abiquo']['install_ext_services'] = true
 
+# Wheter or not to generate a self signed certificate
+# for this host. If not, provide path to certificate,
+# private key and optionally a CA cert. The cookbook
+# does not manage the certificate files path provided
+# for non generated certificates.
+default['abiquo']['certificate']['common_name'] = node['fqdn']
+default['abiquo']['certificate']['organization'] = 'Abiquo'
+default['abiquo']['certificate']['department'] = 'Engineering'
+default['abiquo']['certificate']['country'] = 'ES'
+default['abiquo']['certificate']['source'] = 'self-signed'
+default['abiquo']['certificate']['file'] = "/etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.crt"
+default['abiquo']['certificate']['key_file'] = "/etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.key"
+default['abiquo']['certificate']['ca_file'] = nil
+
 # Attribute to use to setup UI config file.
 # Change to 'ipaddress' to use IP instead of fqdn.
 # 'fixed' will setup node['abiquo']['ui_address']
@@ -46,7 +60,6 @@ default['abiquo']['db']['host'] = "localhost"
 default['abiquo']['db']['port'] = 3306
 default['abiquo']['db']['user'] = "root"
 default['abiquo']['db']['password'] = nil
-default['abiquo']['db']['install'] = true
 default['abiquo']['db']['upgrade'] = true
 
 # Tomcat configuration 
@@ -72,9 +85,10 @@ override['apache']['proxy']['allow_from'] = "all"
 # TODO: Configure these attributes in a way that they don't have precedence over user config
 override['java']['oracle']['accept_oracle_download_terms'] = true
 override['java']['java_home'] = "/usr/java/default"
+override['java']['jdk_version'] = 8
 
 # Default properties
-default['abiquo']['properties']['abiquo.datacenter.id'] = node['fqdn']
+default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
 default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
@@ -96,5 +110,6 @@ when "monolithic", "server"
         default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['abiquo']['ui_address']}/api"
     end
 when "remoteservices"
+    default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint']
     default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
 end

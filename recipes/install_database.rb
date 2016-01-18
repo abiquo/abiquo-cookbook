@@ -15,25 +15,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if node['abiquo']['db']['password'].nil? or node['abiquo']['db']['password'].nil?
+  mysqlcmd = "/usr/bin/mysql -h #{node['abiquo']['db']['host']} -P #{node['abiquo']['db']['port']} -u#{node['abiquo']['db']['user']}"
+else
+  mysqlcmd = "/usr/bin/mysql -h #{node['abiquo']['db']['host']} -P #{node['abiquo']['db']['port']} -u#{node['abiquo']['db']['user']} -p#{node['abiquo']['db']['password']}"
+end
+
 execute "create-database" do
-    command '/usr/bin/mysql -e "CREATE DATABASE IF NOT EXISTS kinton"'
+  command "#{mysqlcmd} -e 'CREATE DATABASE kinton'"
+  not_if "#{mysqlcmd} kinton -e 'SELECT 1'"
+  notifies :run, "execute[install-database]", :immediately
 end
 
 execute "install-database" do
-    command "/usr/bin/mysql kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
-end
-
-execute "install-license" do
-    command "/usr/bin/mysql kinton -e \"INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}');\""
-    not_if { node['abiquo']['license'].nil? || node['abiquo']['license'].empty? }
+  command "#{mysqlcmd} kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
+  action :nothing
+  notifies :run, "ruby_block[extract_m_user_password]", :immediately
 end
 
 ruby_block "extract_m_user_password" do
   block do
     Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)      
-    mysql_command = 'mysql kinton -B --skip-column-names -e "select COMMENTS from DATABASECHANGELOG where ID = \'default_user_for_m\'"'
+    mysql_command = "#{mysqlcmd} kinton -B --skip-column-names -e \"select COMMENTS from DATABASECHANGELOG where ID = 'default_user_for_m'\""
     mysql_command_out = shell_out!(mysql_command)
-    node.default['abiquo']['properties']['abiquo.m.credential'] = mysql_command_out.stdout.gsub("\n", "")
+    node.set['abiquo']['properties']['abiquo.m.credential'] = mysql_command_out.stdout.gsub("\n", "")
   end
-  action :run
+  action :nothing
 end

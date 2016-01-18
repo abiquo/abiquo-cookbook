@@ -17,37 +17,43 @@ require 'spec_helper'
 describe 'abiquo::install_database' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
+    before do
+        stub_command("/usr/bin/mysql -h localhost -P 3306 -uroot kinton -e 'SELECT 1'").and_return(false)
+    end
+
     it 'creates the database' do
         expect(chef_run).to run_execute('create-database').with(
-            :command => '/usr/bin/mysql -e "CREATE DATABASE IF NOT EXISTS kinton"'
+            :command => '/usr/bin/mysql -h localhost -P 3306 -uroot -e \'CREATE DATABASE kinton\''
         )
+        resource = chef_run.execute('create-database')
+        expect(resource).to notify("execute[install-database]").to(:run).immediately
     end
 
     it 'installs the database' do
-        expect(chef_run).to run_execute('install-database').with(
-            :command => '/usr/bin/mysql kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql'
-        )
+        resource = chef_run.execute('install-database')
+        expect(resource).to do_nothing
+        expect(resource).to notify('ruby_block[extract_m_user_password]').to(:run).immediately
     end
 
-    it 'does not install the license if not provided' do
-        expect(chef_run).to_not run_execute('install-license')
-    end
+    # it 'does not install the license if not provided' do
+    #     expect(chef_run).to_not run_execute('install-license')
+    # end
 
-    it 'does not install the license if it is empty' do
-        chef_run.node.set['abiquo']['license'] = ''
-        expect(chef_run).to_not run_execute('install-license')
-    end
+    # it 'does not install the license if it is empty' do
+    #     chef_run.node.set['abiquo']['license'] = ''
+    #     expect(chef_run).to_not run_execute('install-license')
+    # end
 
-    it 'installs the license if configured' do
-        chef_run.node.set['abiquo']['license'] = 'foo'
-        chef_run.converge(described_recipe)
-        expect(chef_run).to run_execute('install-license').with(
-            :command => '/usr/bin/mysql kinton -e "INSERT INTO license (data) VALUES (\'foo\');"'
-        )
-    end
+    # it 'installs the license if configured' do
+    #     chef_run.node.set['abiquo']['license'] = 'foo'
+    #     chef_run.converge(described_recipe)
+    #     expect(chef_run).to run_execute('install-license').with(
+    #         :command => '/usr/bin/mysql kinton -e "INSERT INTO license (data) VALUES (\'foo\');"'
+    #     )
+    # end
 
     it 'extracts default m user password' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to run_ruby_block("extract_m_user_password")
+        resource = chef_run.ruby_block('extract_m_user_password')
+        expect(resource).to do_nothing  
     end
 end
