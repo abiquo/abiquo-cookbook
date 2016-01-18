@@ -43,3 +43,5 @@ ark "jce-policy-files" do
     path "#{node['java']['java_home']}/jre/lib/security"
     action :dump
 end
+
+node.set['abiquo']['jce']['install'] = false

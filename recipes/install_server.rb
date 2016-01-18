@@ -25,7 +25,7 @@ include_recipe "apache2::mod_ssl"
     end
 end
 
-include_recipe "abiquo::install_jce"
+include_recipe "abiquo::install_jce" if node['abiquo']['jce']['install']
 include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
 
 %w{server sosreport-plugins}.each do |pkg|
@@ -34,7 +34,7 @@ include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_ser
     end
 end
 
-include_recipe "abiquo::certificate"
+include_recipe "abiquo::certificate" if node['abiquo']['certificate']['install']
 
 web_app "abiquo" do
     template "abiquo.conf.erb"

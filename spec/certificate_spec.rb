@@ -35,4 +35,9 @@ describe 'abiquo::certificate' do
             :file => '/tmp/server.crt'
         )
     end
+
+    it 'disables further certificate install' do
+        chef_run.converge(described_recipe)
+        expect(chef_run.node['abiquo']['certificate']['install']).to eq(false)
+    end
 end

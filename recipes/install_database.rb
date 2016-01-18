@@ -37,3 +37,5 @@ ruby_block "extract_m_user_password" do
   end
   action :run
 end
+
+node.set['abiquo']['db']['install'] = false

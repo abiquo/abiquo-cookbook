@@ -47,12 +47,24 @@ describe 'abiquo::install_server' do
         expect(chef_run).to include_recipe('abiquo::certificate')
     end
 
+    it 'does not include the certificate recipe if not configured' do
+        chef_run.node.set['abiquo']['certificate']['install'] = false
+        chef_run.converge(described_recipe)
+        expect(chef_run).not_to include_recipe('abiquo::certificate')
+    end
+
     # The apache webapp calls can be tested because it is not a LWRP
     # but a definition and does not exist in the resource list
 
     it 'includes the install_jce recipe' do
         chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('abiquo::install_jce')
+    end
+
+    it 'does not include the install_jce recipe if not configured' do
+        chef_run.node.set['abiquo']['jce']['install'] = false
+        chef_run.converge(described_recipe)
+        expect(chef_run).not_to include_recipe('abiquo::install_jce')
     end
 
     it 'includes the install_ext_services recipe by default' do

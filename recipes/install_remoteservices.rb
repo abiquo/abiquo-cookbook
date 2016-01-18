@@ -19,7 +19,7 @@ package 'jdk' do
     action :install
 end
 
-include_recipe "abiquo::install_jce"
+include_recipe "abiquo::install_jce" if node['abiquo']['jce']['install']
 include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
 
 %w{remote-services sosreport-plugins}.each do |pkg|

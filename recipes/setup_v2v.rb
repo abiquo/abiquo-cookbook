@@ -15,8 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint'] unless node.default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'].is_a?(String)
-
 # The device attribute is mandatory for the mount resource, so we can't use a regular guard
 unless node['abiquo']['nfs']['location'].nil? # ~FC023
     mount node['abiquo']['nfs']['mountpoint'] do

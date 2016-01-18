@@ -41,4 +41,9 @@ describe 'abiquo::install_jce' do
             :path => '/usr/java/default/jre/lib/security'
         )
     end
+
+    it 'disables further jce install' do
+        chef_run.converge(described_recipe)
+        expect(chef_run.node['abiquo']['jce']['install']).to eq(false)
+    end
 end

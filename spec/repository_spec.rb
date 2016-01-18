@@ -19,14 +19,14 @@ describe 'abiquo::repository' do
 
     it 'cleans the yum cache' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to run_execute('clean-yum-cache').with(
+        expect(chef_run).not_to run_execute('clean-yum-cache').with(
             :command => 'yum clean all'
         )
     end
 
     it 'deletes the yum cache directory' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to delete_directory('/var/cache/yum').with(
+        expect(chef_run).not_to delete_directory('/var/cache/yum').with(
             :ignore_failure => true,
             :recursive => true
         )
@@ -47,6 +47,8 @@ describe 'abiquo::repository' do
 
         resource = chef_run.find_resource(:yum_repository, 'abiquo-base')
         expect(resource).to subscribe_to('package[abiquo-release-ee]').on(:create)
+        expect(resource).to notify('directory[/var/cache/yum]').to(:delete).immediately
+        expect(resource).to notify('execute[clean-yum-cache]').to(:run).immediately
     end
 
     it 'creates the updates repository' do
@@ -64,6 +66,8 @@ describe 'abiquo::repository' do
 
         resource = chef_run.find_resource(:yum_repository, 'abiquo-updates')
         expect(resource).to subscribe_to('package[abiquo-release-ee]')
+        expect(resource).to notify('directory[/var/cache/yum]').to(:delete).immediately
+        expect(resource).to notify('execute[clean-yum-cache]').to(:run).immediately
     end
 
     it 'creates does not create the nightly packages repository by default' do
@@ -84,6 +88,10 @@ describe 'abiquo::repository' do
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
+        
+        resource = chef_run.find_resource(:yum_repository, 'abiquo-nightly')
+        expect(resource).to notify('directory[/var/cache/yum]').to(:delete).immediately
+        expect(resource).to notify('execute[clean-yum-cache]').to(:run).immediately
     end
 
     it 'installs the abiquo-release-ee package' do

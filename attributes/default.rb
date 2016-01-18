@@ -23,6 +23,10 @@ default['abiquo']['profile'] = "monolithic"
 # Set to false if you wish to use existing servers.
 default['abiquo']['install_ext_services'] = true
 
+# Wheter or not to generate a self signed certificate
+# for this host.
+default['abiquo']['certificate']['install'] = true
+
 # Attribute to use to setup UI config file.
 # Change to 'ipaddress' to use IP instead of fqdn.
 # 'fixed' will setup node['abiquo']['ui_address']
@@ -72,6 +76,7 @@ override['apache']['proxy']['allow_from'] = "all"
 # TODO: Configure these attributes in a way that they don't have precedence over user config
 override['java']['oracle']['accept_oracle_download_terms'] = true
 override['java']['java_home'] = "/usr/java/default"
+default['abiquo']['jce']['install'] = true
 
 # Default properties
 default['abiquo']['properties']['abiquo.datacenter.id'] = node['fqdn']
@@ -96,5 +101,6 @@ when "monolithic", "server"
         default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['abiquo']['ui_address']}/api"
     end
 when "remoteservices"
+    default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint']
     default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
 end
