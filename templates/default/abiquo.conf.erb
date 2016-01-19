@@ -46,6 +46,13 @@
     SSLEngine on
     SSLProtocol all -SSLv2
     SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
-    SSLCertificateFile <%= node['selfsigned_certificate']['destination'] %>server.crt
-    SSLCertificateKeyFile <%= node['selfsigned_certificate']['destination'] %>server.key
+    <% if not @params[:cert_file].nil? %>
+    SSLCertificateFile <%= @params[:cert_file] %>
+    <% end %>
+    <% unless @params[:key_file].nil? %>
+    SSLCertificateKeyFile <%= @params[:key_file] %>
+    <% end %>
+    <% unless @params[:ca_file].nil? %>
+    SSLCACertificateFile <%= @params[:ca_file] %>
+    <% end %>
 </VirtualHost>

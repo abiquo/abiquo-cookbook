@@ -25,4 +25,7 @@ java_management_truststore_certificate "abiquo" do
     file "#{node['selfsigned_certificate']['destination']}server.crt"
 end
 
+node.set['abiquo']['certificate']['file'] = "#{node['selfsigned_certificate']['destination']}server.crt"
+node.set['abiquo']['certificate']['key_file'] = "#{node['selfsigned_certificate']['destination']}server.key"
+
 node.set['abiquo']['certificate']['install'] = false

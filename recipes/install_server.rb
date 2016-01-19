@@ -38,6 +38,9 @@ include_recipe "abiquo::certificate" if node['abiquo']['certificate']['install']
 
 web_app "abiquo" do
     template "abiquo.conf.erb"
+    cert_file node['abiquo']['certificate']['file']
+    key_file node['abiquo']['certificate']['key_file']
+    ca_file node['abiquo']['certificate']['ca_file']
 end
 
 include_recipe "abiquo::install_database" if node['abiquo']['db']['install']

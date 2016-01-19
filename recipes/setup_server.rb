@@ -26,11 +26,11 @@ template "/var/www/html/ui/config/client-config-custom.json" do
     source "ui-config.json.erb"
     owner "root"
     group "root"
-    variables({
+    variables lazy {{
         :ui_address_type => node['abiquo']['ui_address_type'],
         :ui_address_type_resolved => node[node['abiquo']['ui_address_type']],
         :ui_address => node['abiquo']['ui_address']
-    })
+    }}
     action :create
 end
 
@@ -46,7 +46,7 @@ template "/opt/abiquo/config/abiquo.properties" do
     source "abiquo.properties.erb"
     owner "root"
     group "root"
-    variables({ :properties => node['abiquo']['properties'] })
+    variables lazy {{ :properties => node['abiquo']['properties'] }}
     action :create
     notifies :restart, "service[abiquo-tomcat-start]"
 end

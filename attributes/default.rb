@@ -24,8 +24,14 @@ default['abiquo']['profile'] = "monolithic"
 default['abiquo']['install_ext_services'] = true
 
 # Wheter or not to generate a self signed certificate
-# for this host.
+# for this host. If not, provide path to certificate,
+# private key and optionally a CA cert. The cookbook
+# does not manage the certificate files path provided
+# for non generated certificates.
 default['abiquo']['certificate']['install'] = true
+default['abiquo']['certificate']['file'] = '/etc/pki/tls/certs/localhost.crt'
+default['abiquo']['certificate']['key_file'] = '/etc/pki/tls/private/localhost.key'
+default['abiquo']['certificate']['ca_file'] = nil
 
 # Attribute to use to setup UI config file.
 # Change to 'ipaddress' to use IP instead of fqdn.
