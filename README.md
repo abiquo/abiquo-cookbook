@@ -68,7 +68,7 @@ Attribute | Description | Type | Default
 `['license']` | The Abiquo license to install | String | nil
 `['properties']` | Hash with additional Abiquo properties to add to the Abiquo configuration file | Hash | {}
 `['yum']['base-repo']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/os/x86_64"
-`['yum']['updatee-repo']` | The Abiquo updates yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/updates/x86_64"
+`['yum']['update-repo']` | The Abiquo updates yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/updates/x86_64"
 `['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
 `['db']['host']` | The database host used when running the database upgrade | String | "localhost""
 `['db']['port']` | The database port used when running the database upgrade | Integer | 3306

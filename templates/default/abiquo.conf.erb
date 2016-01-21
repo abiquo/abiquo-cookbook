@@ -46,7 +46,7 @@
     SSLEngine on
     SSLProtocol all -SSLv2
     SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
-    <% if not @params[:cert_file].nil? %>
+    <% unless @params[:cert_file].nil? %>
     SSLCertificateFile <%= @params[:cert_file] %>
     <% end %>
     <% unless @params[:key_file].nil? %>

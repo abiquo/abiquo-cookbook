@@ -85,7 +85,7 @@ override['java']['java_home'] = "/usr/java/default"
 default['abiquo']['jce']['install'] = true
 
 # Default properties
-default['abiquo']['properties']['abiquo.datacenter.id'] = node['fqdn']
+default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
 default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
