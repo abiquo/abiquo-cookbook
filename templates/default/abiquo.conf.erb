@@ -8,6 +8,7 @@
 <% end %>
 
 <VirtualHost *:443>
+    ServerName <%= @params[:server_name] %>
     DocumentRoot "/var/www/html"
     RewriteEngine On
     ProxyRequests Off

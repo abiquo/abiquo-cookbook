@@ -13,31 +13,40 @@
 # limitations under the License.
 
 require 'spec_helper'
-require_relative 'support/matchers'
 
 describe 'abiquo::certificate' do
-    let(:chef_run) do
-        ChefSpec::SoloRunner.new do |node|
-            node.set['selfsigned_certificate']['destination'] = '/tmp/'
-        end.converge(described_recipe)
+    let(:chef_run) { ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    end.converge('apache2::default',described_recipe,'abiquo::service') }
+    let(:cn) { 'test.local' }
+    
+    before do
+        stub_command('/usr/sbin/httpd -t').and_return(true)
     end
 
-    it 'includes the selfsigned_certificate recipe' do
-        expect(chef_run).to include_recipe('selfsigned_certificate::default')
+    it 'creates the /etc/pki/abiquo directory' do
+        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
+        expect(chef_run).to create_directory("/etc/pki/abiquo")
     end
 
-    it 'reloads the apache service' do
-        expect(chef_run).to reload_service('apache2')
+    it 'creates a self signed certificate' do
+        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
+        expect(chef_run).to create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
+        resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
+        expect(resource).to notify('service[apache2]').to(:restart).delayed
+    end
+    
+    it 'creates does not overwrite self signed certificate' do
+        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
+        resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
+        expect(resource).to do_nothing
     end
 
     it 'installs the certificate in the java trust store' do
-        expect(chef_run).to import_java_management_truststore_certificate('abiquo').with(
-            :file => '/tmp/server.crt'
-        )
-    end
-
-    it 'disables further certificate install' do
-        chef_run.converge(described_recipe)
-        expect(chef_run.node['abiquo']['certificate']['install']).to eq(false)
+        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
+        resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
+        expect(resource).to do_nothing
+        expect(resource).to subscribe_to("ssl_certificate[#{chef_run.node['abiquo']['certificate']['common_name']}]").on(:import).immediately
+        expect(resource).to notify('service[abiquo-tomcat]').to(:start).delayed
     end
 end

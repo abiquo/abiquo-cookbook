@@ -34,8 +34,8 @@ describe 'Server configuration' do
         expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLEngine on')
         expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLProtocol all -SSLv2')
         expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW')
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateFile /usr/var/ssl/certs/server.crt')
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateKeyFile /usr/var/ssl/certs/server.key')
+        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateFile /etc/pki/abiquo/server.abiquo.com.crt')
+        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateKeyFile /etc/pki/abiquo/server.abiquo.com.key')
     end
 
     it 'has the ui properly configured' do

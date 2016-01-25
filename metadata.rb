@@ -28,10 +28,10 @@ recipe 'abiquo::install_ext_services', 'Installs Abiquo supporting services (Mar
 supports 'centos', '>= 6.5'
 
 depends 'apache2', '~> 3.1.0'
-depends 'ark', '~> 0.9.0'
 depends 'cassandra-dse', '~> 4.1.0'
 depends 'iptables', '~> 2.0.1'
+depends 'java', '~> 1.37.0'
 depends 'java-management', '~> 1.0.3'
-depends 'selfsigned_certificate', '~> 0.1.0'
 depends 'selinux', '~> 0.9.0'
 depends 'yum', '~> 3.8.2'
+depends 'ssl_certificate', '~> 1.11.0'

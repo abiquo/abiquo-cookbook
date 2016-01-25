@@ -19,11 +19,15 @@ describe 'abiquo::default' do
     let(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
             node.set['cassandra']['config']['cluster_name'] = 'abiquo'
-        end.converge(described_recipe)
+            node.set['abiquo']['certificate']['common_name'] = 'test.local'
+        end
     end
+    let(:cn) { 'test.local' }
     
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
+        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
+        stub_command("/usr/bin/mysql -h localhost -P 3306 -uroot kinton -e 'SELECT 1'").and_return(true)
     end
 
     it 'changes selinux to permissive' do

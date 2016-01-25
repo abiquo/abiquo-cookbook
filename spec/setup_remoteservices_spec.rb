@@ -35,57 +35,8 @@ describe 'abiquo::setup_remoteservices' do
         )
     end
 
-    it 'defines the abiquo-tomcat-start service' do
+    it "includes the service recipe" do
         chef_run.converge(described_recipe)
-        resource = chef_run.service('abiquo-tomcat-start')
-        expect(resource).to do_nothing
-    end
-
-    it 'renders tomcat configuration file' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to create_template('/opt/abiquo/tomcat/conf/server.xml').with(
-            :source => 'server.xml.erb',
-            :owner => 'root',
-            :group => 'root'
-        )
-        resource = chef_run.template('/opt/abiquo/tomcat/conf/server.xml')
-        expect(resource).to notify('service[abiquo-tomcat-start]').to(:start).delayed
-    end
-
-    it 'renders abiquo default properties file' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
-            :source => 'abiquo.properties.erb',
-            :owner => 'root',
-            :group => 'root',
-        )
-        resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
-        expect(resource).to notify('service[abiquo-tomcat-start]').to(:restart).delayed
-
-        expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.rabbitmq.host\ =\ 127.0.0.1/)
-    end
-
-    it 'renders abiquo properties file with custom properties' do
-        chef_run.node.set['abiquo']['properties']['abiquo.docker.registry'] = 'http://localhost:5000'
-        chef_run.node.set['abiquo']['properties']['foo'] = 'bar'
-        
-        chef_run.converge(described_recipe)
-        expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
-            :source => 'abiquo.properties.erb',
-            :owner => 'root',
-            :group => 'root',
-        )
-        resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
-        expect(resource).to notify('service[abiquo-tomcat-start]').to(:restart).delayed
-
-        expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.docker.registry\ =\ http:\/\/localhost:5000/)
-    end
-
-    it 'waits until tomcat is started' do
-        chef_run.node.set['abiquo']['tomcat']['wait-for-webapps'] = true
-        chef_run.converge(described_recipe)
-        resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'virtualfactory')
-        expect(resource).to do_nothing
-        expect(resource).to subscribe_to('service[abiquo-tomcat-start]').on(:wait).delayed
+        expect(chef_run).to include_recipe("abiquo::service")
     end
 end

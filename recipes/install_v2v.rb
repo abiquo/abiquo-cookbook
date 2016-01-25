@@ -21,7 +21,7 @@
     end
 end
 
-include_recipe "abiquo::install_jce" if node['abiquo']['jce']['install']
+include_recipe "java::oracle_jce"
 
 %w{v2v sosreport-plugins}.each do |pkg|
     package "abiquo-#{pkg}" do

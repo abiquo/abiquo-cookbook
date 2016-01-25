@@ -38,6 +38,10 @@ execute "liquibase-update" do
     command liquibase_cmd
     cwd '/usr/share/doc/abiquo-server/database'
     only_if { (node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server') && node['abiquo']['db']['upgrade'] }
+    notifies :restart, "service[abiquo-tomcat]"
 end
 
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
+include_recipe "abiquo::service"
+
+node.run_list.remove("abiquo::upgrade")
