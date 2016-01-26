@@ -25,25 +25,22 @@ describe 'abiquo::certificate' do
     end
 
     it 'creates the /etc/pki/abiquo directory' do
-        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
         expect(chef_run).to create_directory("/etc/pki/abiquo")
     end
 
     it 'creates a self signed certificate' do
-        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
         expect(chef_run).to create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
         resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to notify('service[apache2]').to(:restart).delayed
     end
     
     it 'creates does not overwrite self signed certificate' do
-        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
+        allow(::File).to receive(:file?).and_return(true)
         resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to do_nothing
     end
 
     it 'installs the certificate in the java trust store' do
-        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
         resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to do_nothing
         expect(resource).to subscribe_to("ssl_certificate[#{chef_run.node['abiquo']['certificate']['common_name']}]").on(:import).immediately

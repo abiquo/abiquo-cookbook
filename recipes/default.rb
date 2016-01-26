@@ -19,10 +19,6 @@ selinux_state "SELinux Permissive" do
     action :permissive
 end
 
-package 'yum-utils' do
-  action :install
-end
-
 include_recipe "abiquo::repository"
 
 if node['abiquo']['profile'] == 'monitoring'

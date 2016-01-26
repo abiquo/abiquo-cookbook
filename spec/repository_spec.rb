@@ -100,4 +100,9 @@ describe 'abiquo::repository' do
             :options => '--nogpgcheck'
         )
     end
+
+    it 'installs yum-utils package' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to install_package('yum-utils')
+    end
 end

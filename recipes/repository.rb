@@ -58,7 +58,6 @@ yum_repository "abiquo-nightly" do
     gpgcheck false
     gpgkey gpg_keys
     action :create
-    subscribes :create, "package[abiquo-release-ee]", :immediately
     notifies :delete, 'directory[/var/cache/yum]', :immediately
     notifies :run, 'execute[clean-yum-cache]', :immediately
     not_if { node['abiquo']['yum']['nightly-repo'].nil? }
@@ -69,4 +68,8 @@ end
 package "abiquo-release-ee" do
     options "--nogpgcheck"
     action :install
+end
+
+package 'yum-utils' do
+  action :install
 end

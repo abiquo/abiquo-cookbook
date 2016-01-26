@@ -27,29 +27,19 @@ module Abiquo
         end
 
         def abiquo_packages
-            pkgs_cmd = shell_out("repoquery --installed 'abiquo-*' --qf '%{name}'").run_command
-            pkgs_cmd_out = pkgs_cmd.stdout.split
-            print "OUT : #{pkgs_cmd_out.inspect}"
-            pkgs_cmd_out
+            pkgs_cmd = shell_out!("repoquery --installed 'abiquo-*' --qf '%{name}'")
+            pkgs_cmd.stdout.split
         end
 
         def abiquo_update_available
             upgrade = false
-            puts "Abiquo PKGs : #{abiquo_packages.inspect}"
-            abiquo_packages = ['abiquo-api']
-            abiquo_packages.each do |pkg|
-                installed_cmd = shell_out("repoquery --installed #{pkg} --qf '%{version}-%{release}'")
-                installed = installed_cmd.run_command.stdout
-                puts "Installed : #{installed}"
-                available_cmd = shell_out("repoquery #{pkg} --qf '%{version}-%{release}'")
-                available = available_cmd.run_command.stdout
-                puts "Available : #{available}"
-                unless installed.eql? available
-                    upgrade = true
-                    break
-                end
-            end
-            puts "Upgrade : #{upgrade.class}"
+            installed_pkgs = abiquo_packages.join(" ")
+            
+            installed_cmd = shell_out!("repoquery --installed #{installed_pkgs}")
+            installed = installed_cmd.stdout
+            available_cmd = shell_out!("repoquery #{installed_pkgs}")
+            available = available_cmd.stdout
+            upgrade = true unless available.eql? installed
             upgrade
         end
     end

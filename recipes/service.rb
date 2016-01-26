@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_service
+# Recipe:: service
 #
 # Copyright 2014, Abiquo
 #
@@ -45,12 +45,14 @@ when "v2v"
     webapp = "bpm-async"
 end
 
-abiquo_wait_for_webapp webapp do
-    host "localhost"
-    port node['abiquo']['tomcat']['http-port']
-    retries 3   # Retry if Tomcat is still not started
-    retry_delay 5
-    action :nothing
-    subscribes :wait, "service[abiquo-tomcat]"
-    only_if { node['abiquo']['tomcat']['wait-for-webapps'] }
+if webapp
+    abiquo_wait_for_webapp webapp do
+        host "localhost"
+        port node['abiquo']['tomcat']['http-port']
+        retries 3   # Retry if Tomcat is still not started
+        retry_delay 5
+        action :nothing
+        subscribes :wait, "service[abiquo-tomcat]"
+        only_if { node['abiquo']['tomcat']['wait-for-webapps'] }
+    end
 end
