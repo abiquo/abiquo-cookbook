@@ -15,7 +15,6 @@
 require 'chef/platform'
 
 module Abiquo
-
     module Packages
         include Chef::Mixin::ShellOut
 
@@ -25,6 +24,33 @@ module Abiquo
             end
             # New signing key for Abiquo 3.2.2
             keys << "file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo"
+        end
+
+        def abiquo_packages
+            pkgs_cmd = shell_out("repoquery --installed 'abiquo-*' --qf '%{name}'").run_command
+            pkgs_cmd_out = pkgs_cmd.stdout.split
+            print "OUT : #{pkgs_cmd_out.inspect}"
+            pkgs_cmd_out
+        end
+
+        def abiquo_update_available
+            upgrade = false
+            puts "Abiquo PKGs : #{abiquo_packages.inspect}"
+            abiquo_packages = ['abiquo-api']
+            abiquo_packages.each do |pkg|
+                installed_cmd = shell_out("repoquery --installed #{pkg} --qf '%{version}-%{release}'")
+                installed = installed_cmd.run_command.stdout
+                puts "Installed : #{installed}"
+                available_cmd = shell_out("repoquery #{pkg} --qf '%{version}-%{release}'")
+                available = available_cmd.run_command.stdout
+                puts "Available : #{available}"
+                unless installed.eql? available
+                    upgrade = true
+                    break
+                end
+            end
+            puts "Upgrade : #{upgrade.class}"
+            upgrade
         end
     end
 end

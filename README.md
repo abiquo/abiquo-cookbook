@@ -47,6 +47,7 @@ The cookbook contains the following recipes:
 * `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
 * `recipe[abiquo::monitoring]` - Installs an Abiquo monitoring node with KairosDB and Cassandra
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
+* `recipe[abiquo::service]` - Manages Abiquo tomcat service
 
 # Attributes
 

@@ -24,6 +24,7 @@ recipe 'abiquo::certificate', 'Installs a custom SSL certificate in the Apache'
 recipe 'abiquo::install_jce', 'Installs the JCE unlimited strength jurisdiction policy files'
 recipe 'abiquo::monitoring', 'Installs an Abiquo monitoring node with a Cassandra backed KairosDB'
 recipe 'abiquo::install_ext_services', 'Installs Abiquo supporting services (MariaDB, RabbitMQ, Redis)'
+recipe 'abiquo::service', 'Manages Abiquo tomcat service'
 
 supports 'centos', '>= 6.5'
 

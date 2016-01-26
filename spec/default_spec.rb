@@ -35,6 +35,11 @@ describe 'abiquo::default' do
         expect(chef_run).to permissive_selinux_state("SELinux Permissive")
     end
 
+    it 'installs yum-utils package' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to install_package('yum-utils')
+    end
+
     %w{monolithic server v2v remoteservices kvm}.each do |profile|
         it "includes the recipes for the #{profile} profile" do
             chef_run.node.set['abiquo']['profile'] = profile

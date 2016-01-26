@@ -24,7 +24,7 @@ ssl_certificate node['abiquo']['certificate']['common_name'] do
   namespace node['abiquo']['certificate']
   cert_path node['abiquo']['certificate']['file']
   key_path  node['abiquo']['certificate']['key_file']
-  not_if "/usr/bin/test -f /etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.crt"
+  not_if { ::File.file? "/etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.crt" }
   notifies :restart, 'service[apache2]'
 end
 

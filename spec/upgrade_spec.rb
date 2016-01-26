@@ -20,6 +20,59 @@ describe 'abiquo::upgrade' do
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("service abiquo-tomcat stop").and_return(true)
+
+        pkgs_cmd = double('pkgs_cmd')
+        allow(pkgs_cmd).to receive(:run_command)
+        allow(pkgs_cmd).to receive(:stdout)
+            .and_return("abiquo-api\nabiquo-toto")
+        allow(Mixlib::ShellOut).to receive(:shell_out)
+            .with("repoquery --installed 'abiquo-*' --qf '%{name}'")
+            .and_return(pkgs_cmd)
+
+        installed_cmd_d = double('installed_cmd')
+        allow(installed_cmd_d).to receive(:run_command)
+        allow(installed_cmd_d).to receive(:stdout).and_return("3.6.1-85.el6")
+        allow(Mixlib::ShellOut).to receive(:shell_out)
+            .with("repoquery --installed 'abiquo-api' --qf '%{name}'")
+            .and_return(installed_cmd_d)
+
+        available_cmd_d = double('available_cmd')
+        allow(available_cmd_d).to receive(:run_command)
+        allow(available_cmd_d).to receive(:stdout).and_return("3.6.3-207.el6")
+        allow(Mixlib::ShellOut).to receive(:shell_out)
+            .with("repoquery 'abiquo-api' --qf '%{name}'")
+            .and_return(available_cmd_d)
+    end
+
+    it 'does nothing if profile is monitoring' do
+        chef_run.node.set['abiquo']['profile'] = 'monitoring'
+        chef_run.converge('apache2::default',described_recipe)
+
+        chef_run.converge('apache2::default',described_recipe)
+        resource = chef_run.find_resource(:service, 'abiquo-tomcat')
+        expect(resource).to be nil
+        resource = chef_run.find_resource(:service, 'abiquo-aim')
+        expect(resource).to be nil
+    end
+
+    it 'does nothing if no updates available' do
+        chef_run.converge('apache2::default',described_recipe)
+        resource = chef_run.find_resource(:service, 'abiquo-tomcat')
+        expect(resource).to be nil
+        resource = chef_run.find_resource(:service, 'abiquo-aim')
+        expect(resource).to be nil
+        resource = chef_run.find_resource(:package, 'abiquo-api')
+        expect(resource).to be nil
+    end
+
+    it 'performs upgrade if there are new rpms' do
+        chef_run.converge('apache2::default',described_recipe)
+        resource = chef_run.find_resource(:service, 'abiquo-tomcat')
+        expect(resource).not_to be nil
+        resource = chef_run.find_resource(:service, 'abiquo-aim')
+        expect(resource).not_to be nil
+        resource = chef_run.find_resource(:package, 'abiquo-api')
+        expect(resource).not_to be nil
     end
 
     it 'stops the monolithic service' do
@@ -49,10 +102,7 @@ describe 'abiquo::upgrade' do
     end
 
     it 'upgrades the abiquo packages' do
-        chef_run.converge('apache2::default',described_recipe)
-        expect(chef_run).to run_execute('yum-upgrade-abiquo').with(
-            :command => 'yum -y upgrade abiquo-*'
-        )
+        
     end
 
     it 'does not run liquibase if not configured' do
@@ -82,6 +132,8 @@ describe 'abiquo::upgrade' do
             :cwd => '/usr/share/doc/abiquo-server/database',
             :command => 'abiquo-liquibase -h localhost -P 3306 -u root update'
         )
+        resource = chef_run.find_resource(:execute, 'liquibase-update')
+        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 
     it 'runs the liquibase update with custom attributes' do
@@ -92,6 +144,8 @@ describe 'abiquo::upgrade' do
             :cwd => '/usr/share/doc/abiquo-server/database',
             :command => 'abiquo-liquibase -h 127.0.0.1 -P 3306 -u root -p abiquo update'
         )
+        resource = chef_run.find_resource(:execute, 'liquibase-update')
+        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 
     it 'notifies the monolithic service to restart' do

@@ -15,33 +15,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-svc = node['abiquo']['profile'] == 'kvm' ? 'abiquo-aim' : 'abiquo-tomcat'
-service svc do
-    action :stop
+Chef::Recipe.send(:include, Abiquo::Packages)
+
+unless node['abiquo']['profile'].eql? "monitoring"
+  if abiquo_update_available
+    log "Abiquo updates available."
+
+    svc = node['abiquo']['profile'] == 'kvm' ? 'abiquo-aim' : 'abiquo-tomcat'
+    service svc do
+        action :stop
+    end
+
+    include_recipe "abiquo::repository"
+
+    abiquo_packages.each do |pkg|
+      package "#{pkg}" do
+        action :upgrade
+        notifies :run, "execute[liquibase-update]", :immediately
+      end
+    end
+
+    liquibase_cmd = "abiquo-liquibase -h #{node['abiquo']['db']['host']} "
+    liquibase_cmd += "-P #{node['abiquo']['db']['port']} "
+    liquibase_cmd += "-u #{node['abiquo']['db']['user']} "
+    liquibase_cmd += "-p #{node['abiquo']['db']['password']} " unless node['abiquo']['db']['password'].nil?
+    liquibase_cmd += "update"
+
+    execute "liquibase-update" do
+        command liquibase_cmd
+        cwd '/usr/share/doc/abiquo-server/database'
+        only_if { (node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server') && node['abiquo']['db']['upgrade'] }
+        action :nothing
+        notifies :restart, "service[abiquo-tomcat]"
+    end
+
+    include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
+  else
+    log "No Abiquo updates found."
+  end
 end
-
-include_recipe "abiquo::repository"
-
-# Wildcards can't be used with the regular resource package, so just run the command
-execute "yum-upgrade-abiquo" do
-    command 'yum -y upgrade abiquo-*'
-    notifies :start, "service[#{svc}]"
-end
-
-liquibase_cmd = "abiquo-liquibase -h #{node['abiquo']['db']['host']} "
-liquibase_cmd += "-P #{node['abiquo']['db']['port']} "
-liquibase_cmd += "-u #{node['abiquo']['db']['user']} "
-liquibase_cmd += "-p #{node['abiquo']['db']['password']} " unless node['abiquo']['db']['password'].nil?
-liquibase_cmd += "update"
-
-execute "liquibase-update" do
-    command liquibase_cmd
-    cwd '/usr/share/doc/abiquo-server/database'
-    only_if { (node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server') && node['abiquo']['db']['upgrade'] }
-    notifies :restart, "service[abiquo-tomcat]"
-end
-
-include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
-include_recipe "abiquo::service"
-
-node.run_list.remove("abiquo::upgrade")
