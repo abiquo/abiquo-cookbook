@@ -32,15 +32,12 @@ module Abiquo
         end
 
         def abiquo_update_available
-            upgrade = false
             installed_pkgs = abiquo_packages.join(" ")
-            
             installed_cmd = shell_out!("repoquery --installed #{installed_pkgs}")
             installed = installed_cmd.stdout
             available_cmd = shell_out!("repoquery #{installed_pkgs}")
             available = available_cmd.stdout
-            upgrade = true unless available.eql? installed
-            upgrade
+            not available.eql? installed
         end
     end
 end
