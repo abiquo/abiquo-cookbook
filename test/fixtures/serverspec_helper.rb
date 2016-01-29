@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+begin
+  Gem::Specification.find_by_name('abiquo-api')
+rescue Gem::LoadError
+  require 'rubygems/dependency_installer'
+  Gem::DependencyInstaller.new(Gem::DependencyInstaller::DEFAULT_OPTIONS).install('abiquo-api', '0.0.5')
+end
+
 require 'serverspec'
 
 set :backend, :exec

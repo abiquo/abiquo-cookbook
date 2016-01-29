@@ -15,6 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+gem_package "abiquo-api" do
+  gem_binary '/opt/chef/embedded/bin/gem'
+  action :nothing
+end.run_action(:install)
+
+require 'abiquo-api'
+
 selinux_state "SELinux Permissive" do
     action :permissive
 end

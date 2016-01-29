@@ -11,6 +11,12 @@
 <% node['apache']['listen_ports'].each do |port| %>
 -A INPUT -p tcp -m tcp --dport <%= port %> -j ACCEPT
 <% end %>
+<% if node['abiquo']['install_ext_services'] %>
+# RabbitMQ
+-A INPUT -p tcp -m tcp --dport 5672 -j ACCEPT
+# MySQL
+-A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
+<% end %>
 <% end %>
 
 <% if node['abiquo']['profile'] == "kvm" %>

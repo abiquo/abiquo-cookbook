@@ -30,6 +30,11 @@ describe 'abiquo::default' do
         stub_command("/usr/bin/mysql -h localhost -P 3306 -uroot kinton -e 'SELECT 1'").and_return(true)
     end
 
+    it 'installs the abiquo-api gem' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to install_gem_package('abiquo-api')
+    end
+
     it 'changes selinux to permissive' do
         chef_run.converge(described_recipe)
         expect(chef_run).to permissive_selinux_state("SELinux Permissive")

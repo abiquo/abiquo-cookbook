@@ -6,8 +6,9 @@ gem 'berkshelf', '~> 4.0.1'
 gem 'foodcritic', '~> 6.0.0', :group => :lint
 gem 'chefspec', '~> 4.4.0', :group => :unit
 
-group :integration do
+group :integration, :test, :development do
     gem 'serverspec', '~> 2.24.1'
     gem 'test-kitchen', '~> 1.4.2'
     gem 'kitchen-vagrant', '~> 0.19.0'
+    gem 'abiquo-api', '~> 0.0.5'
 end

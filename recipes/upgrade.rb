@@ -15,8 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-return unless ::File.executable?('/usr/bin/repoquery')
-
 Chef::Recipe.send(:include, Abiquo::Packages)
 
 return if node['abiquo']['profile'].eql? "monitoring"

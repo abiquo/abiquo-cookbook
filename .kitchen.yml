@@ -65,3 +65,22 @@ suites:
     attributes:
       abiquo:
         profile: monitoring
+  - name: lwrp
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::install_kvm]
+      - recipe[abiquo::setup_kvm]
+      - recipe[abiquo::upgrade]
+      - recipe[abiquo_test::default]
+    attributes:
+      set_fqdn: monolithic.abiquo.com
+      abiquo:
+        tomcat:
+          wait-for-webapps: true
+        profile: monolithic
+        ui_address_type: set_fqdn
+        properties:
+          abiquo.datacenter.id: test
+          abiquo.virtualfactory.kvm.fullVirt: false
+          abiquo.appliancemanager.repositoryLocation: "127.0.1.1:/opt/vm_repository"
+          abiquo.appliancemanager.checkMountedRepository: false

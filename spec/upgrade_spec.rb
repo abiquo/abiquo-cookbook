@@ -49,18 +49,6 @@ describe 'abiquo::upgrade' do
         allow(available).to receive(:stdout).and_return("abiquo-api-0:3.6.3-207.el6.noarch\nabiquo-server-0:3.6.3-207.el6.noarch\n")
     end
 
-    it 'does nothing if repoquery is not installed' do
-        allow(::File).to receive(:executable?).with('/usr/bin/repoquery').and_return(false)
-        
-        chef_run.converge('apache2::default',described_recipe)
-        resource = chef_run.find_resource(:service, 'abiquo-tomcat')
-        expect(resource).to be_nil
-        resource = chef_run.find_resource(:service, 'abiquo-aim')
-        expect(resource).to be_nil
-        resource = chef_run.find_resource(:package, 'abiquo-api')
-        expect(resource).to be_nil
-    end
-
     it 'logs a message if there are upgrades' do
         chef_run.converge('apache2::default',described_recipe)
         expect(chef_run).to write_log("Abiquo updates available.")

@@ -20,4 +20,52 @@ if defined?(ChefSpec)
     def wait_abiquo_wait_for_port(service_name)
         ChefSpec::Matchers::ResourceMatcher.new(:abiquo_wait_for_port, :wait, service_name)
     end
+
+    def create_abiquo_datacenter(dc_name)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_datacenter, :create, dc_name)
+    end
+
+    def delete_abiquo_datacenter(dc_name)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_datacenter, :delete, dc_name)
+    end
+
+    def create_abiquo_rack(rack_name)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_rack, :create, rack_name)
+    end
+
+    def delete_abiquo_rack(rack_name)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_rack, :delete, rack_name)
+    end
+
+    def create_abiquo_remote_service(rs_uri)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_remote_service, :create, rs_uri)
+    end
+
+    def delete_abiquo_remote_service(rs_uri)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_remote_service, :delete, rs_uri)
+    end
+
+    def create_abiquo_public_cloud_region(pcr_name)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_public_cloud_region, :create, pcr_name)
+    end
+
+    def delete_abiquo_public_cloud_region(pcr_name)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_public_cloud_region, :delete, pcr_name)
+    end
+
+    def create_abiquo_machine(machine_ip)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_machine, :create, machine_ip)
+    end
+
+    def delete_abiquo_machine(machine_ip)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_machine, :delete, machine_ip)
+    end
+
+    def create_abiquo_license(code)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_license, :create, code)
+    end
+
+    def delete_abiquo_license(code)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_license, :delete, code)
+    end
 end

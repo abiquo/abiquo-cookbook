@@ -13,6 +13,7 @@ an existing Abiquo installation using the latest nightly builds.
 # Requirements
 
 * CentOS >= 6.5
+* Chef >= 12.5
 
 This cookbook depends on the following cookbooks:
 

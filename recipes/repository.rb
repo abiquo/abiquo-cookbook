@@ -70,6 +70,8 @@ package "abiquo-release-ee" do
     action :install
 end
 
-package 'yum-utils' do
-  action :install
+p = package 'yum-utils' do
+  action :nothing
 end
+
+p.run_action(:install)
