@@ -22,4 +22,12 @@ describe 'Monitoring packages' do
     it 'has the kairosdb package installed' do
         expect(package('kairosdb')).to be_installed
     end
+
+    it 'has the delorean package installed' do
+        expect(package('abiquo-delorean')).to be_installed
+    end
+
+    it 'has the emmett package installed' do
+        expect(package('abiquo-emmett')).to be_installed
+    end
 end

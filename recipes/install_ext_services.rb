@@ -27,6 +27,9 @@ when "monolithic", "server"
 when "remoteservices"
     packages = %w{redis}
     services = %w{redis}
+when "monitoring"
+    packages = %w{MariaDB-server MariaDB-client}
+    services = %w{mysql}
 end
 
 packages.each do |pkg|

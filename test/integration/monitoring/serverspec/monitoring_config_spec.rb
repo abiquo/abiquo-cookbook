@@ -24,4 +24,14 @@ describe 'Monitoring configuration' do
     it 'java 8 is the default one' do
         expect(command('java -version').stderr).to contain('java version "1.8')
     end
+
+    it 'has delorean properly configured' do
+        expect(file('/opt/abiquo/watchtower/delorean/etc/delorean-base.conf')).to exist
+        expect(file('/opt/abiquo/watchtower/delorean/etc/delorean.conf')).to exist
+    end
+
+    it 'has emmett properly configured' do
+        expect(file('/opt/abiquo/watchtower/emmett/etc/emmett-base.conf')).to exist
+        expect(file('/opt/abiquo/watchtower/emmett/etc/emmett.conf')).to exist
+    end
 end

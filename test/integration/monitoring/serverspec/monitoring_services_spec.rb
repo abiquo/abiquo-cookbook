@@ -26,6 +26,7 @@ describe 'Monitoring services' do
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 9160 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 7000 -j ACCEPT')
+        expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 36638 -j ACCEPT')
         expect(iptables).to have_rule('-P INPUT DROP')
 
         # Cannot use have_rule with comma
@@ -38,9 +39,21 @@ describe 'Monitoring services' do
         expect(port(9160)).to be_listening
         expect(port(7000)).to be_listening
     end
+
     it 'has the kairosdb service running' do
         expect(service('kairosdb')).to be_enabled
         expect(service('kairosdb')).to be_running
         expect(port(8080)).to be_listening
+    end
+    
+    it 'has the delorean service running' do
+        expect(service('abiquo-delorean')).to be_enabled
+        expect(service('abiquo-delorean')).to be_running
+    end
+
+    it 'has the emmett service running' do
+        expect(service('abiquo-emmett')).to be_enabled
+        expect(service('abiquo-emmett')).to be_running
+        expect(port(36638)).to be_listening
     end
 end

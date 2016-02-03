@@ -53,7 +53,6 @@ describe 'abiquo::setup_server' do
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:restart).delayed
-
         expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.rabbitmq.host\ =\ 127.0.0.1/)
     end
 
@@ -70,7 +69,6 @@ describe 'abiquo::setup_server' do
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat-start]').to(:restart).delayed
-
         expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.docker.registry\ =\ http:\/\/localhost:5000/)
     end
 

@@ -58,10 +58,21 @@ default['abiquo']['tomcat']['wait-for-webapps'] = false
 default['abiquo']['aim']['port'] = 8889
 
 # Configure monitoring node
-default['abiquo']['cassandra']['cluster_name'] = 'abiquo'
-default['abiquo']['kairosdb']['version'] = '0.9.4'
-default['abiquo']['kairosdb']['release'] = '6'
-default['abiquo']['kairosdb']['port'] = 8080
+default['abiquo']['monitoring']['cassandra']['cluster_name'] = 'abiquo'
+default['abiquo']['monitoring']['kairosdb']['version'] = '0.9.4'
+default['abiquo']['monitoring']['kairosdb']['release'] = '6'
+default['abiquo']['monitoring']['kairosdb']['host'] = 'localhost'
+default['abiquo']['monitoring']['kairosdb']['port'] = 8080
+default['abiquo']['monitoring']['rabbitmq']['host'] = 'localhost'
+default['abiquo']['monitoring']['rabbitmq']['port'] = 5672
+default['abiquo']['monitoring']['rabbitmq']['username'] = 'guest'
+default['abiquo']['monitoring']['rabbitmq']['password'] = 'guest'
+default['abiquo']['monitoring']['db']['host'] = 'localhost'
+default['abiquo']['monitoring']['db']['port'] = 3306
+default['abiquo']['monitoring']['db']['username'] = 'root'
+default['abiquo']['monitoring']['db']['password'] = ''
+default['abiquo']['monitoring']['db']['install'] = true
+default['abiquo']['monitoring']['emmett']['port'] = 36638
 
 # Override the Apache proxy configuration
 override['apache']['proxy']['order'] = "allow,deny"
@@ -91,6 +102,7 @@ when "monolithic", "server"
     default['abiquo']['properties']['abiquo.server.mail.password'] = 'none'
     default['abiquo']['properties']['abiquo.redis.host'] = '127.0.0.1'
     default['abiquo']['properties']['abiquo.redis.port'] = 6379
+    default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
 
     if node['abiquo']['ui_address_type'] != "fixed"
         default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node[node['abiquo']['ui_address_type']]}/api"
@@ -99,4 +111,5 @@ when "monolithic", "server"
     end
 when "remoteservices"
     default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
+    default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
 end

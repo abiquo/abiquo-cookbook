@@ -2,7 +2,7 @@ Abiquo Cookbook
 ===============
 
 [![Build Status](https://travis-ci.org/abiquo/abiquo-cookbook.svg?branch=master)](https://travis-ci.org/abiquo/abiquo-cookbook)
-[![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.6.0-blue.svg?style=flat)](https://supermarket.chef.io/cookbooks/abiquo)
+[![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.7.0-blue.svg?style=flat)](https://supermarket.chef.io/cookbooks/abiquo)
 [![Chef Version](http://img.shields.io/badge/chef-v11.16-orange.svg?style=flat)](https://www.chef.io)
 
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
@@ -68,7 +68,7 @@ Attribute | Description | Type | Default
 `['db']['port']` | The database port used when running the database upgrade | Integer | 3306
 `['db']['user']` | The database user used when running the database upgrade | String | "root"
 `['db']['password']` | The database password used when running the database upgrade | String | nil
-`['db']['install']` | Install the database when installing the Monolithic profile | Boolean | true
+`['db']['install']` | Install the database when installing the Monolithic or Server profile | Boolean | true
 `['db']['upgrade']` | Run the database upgrade when upgrading the monolithic profile | Boolean | true
 `['aim']['port']` | In a KVM, the port where the Abiquo AIM agent will listen | Integer | 8889
 `['tomcat']['http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
@@ -76,10 +76,21 @@ Attribute | Description | Type | Default
 `['tomcat']['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
 `['ssl']['certificatefile']` | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
 `['ssl']['keyfile']` | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
-`['kairosdb']['port']` | The host where KairosDB is listening | Integer | 8080
-`['kairosdb']['version']` | The version of KairosDB to install in the monitoring node | String | "0.9.4"
-`['kairosdb']['release']` | The release of the configured KairosDB version to install in the monitoring node | String | "6"
-`['cassandra']['cluster_name']` | The name for the Cassandra cluster in the monitoring node | String | "abiquo"
+`['monitoring']['kairosdb']['host']` | The host where KairosDB is listening | Integer | "localhost"
+`['monitoring']['kairosdb']['port']` | The port where KairosDB is listening | Integer | 8080
+`['monitoring']['kairosdb']['version']` | The version of KairosDB to install in the monitoring node | String | "0.9.4"
+`['monitoring']['kairosdb']['release']` | The release of the configured KairosDB version to install in the monitoring node | String | "6"
+`['monitoring']['db']['host']` | The monitoring database host | String | "localhost"
+`['monitoring']['db']['port']` | The monitoring database port | Integer | 3306
+`['monitoring']['db']['user']` | The monitoring database user | String | "root"
+`['monitoring']['db']['password']` | The monitoring database password | String | ""
+`['monitoring']['db']['install']` | Install the monitoring database when installing the monitoring node | Boolean | true
+`['monitoring']['rabbitmq']['host']` | The RabbitMQ host where the monitoring system will notify alerts | String | "localhost"
+`['monitoring']['rabbitmq']['port']` | The RabbitMQ listening port for the monitoring system notifications | Integer | 5672 
+`['monitoring']['rabbitmq']['user']` | The RabbitMQ user for the monitoring system notifications | String | "guest"
+`['monitoring']['rabbitmq']['password']` | The RabbitMQ password for the monitoring system notifications | String | "guest"
+`['monitoring']['emmett']['port']` | The port where the Emmett service is listening | Integer | 36638
+`['monitoring']['cassandra']['cluster_name']` | The name for the Cassandra cluster in the monitoring node | String | "abiquo"
 
 # Resources and providers
 

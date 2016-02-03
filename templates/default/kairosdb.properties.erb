@@ -20,7 +20,7 @@ kairosdb.reporter.schedule=0 */1 * * * ?
 
 #===============================================================================
 # Set to 0 to turn off HTTP port
-kairosdb.jetty.port=<%= node['abiquo']['kairosdb']['port'] %>
+kairosdb.jetty.port=<%= node['abiquo']['monitoring']['kairosdb']['port'] %>
 kairosdb.jetty.static_web_root=webroot
 
 # To enable SSL uncomment the following lines and specify the path to the keyStore and its password and port

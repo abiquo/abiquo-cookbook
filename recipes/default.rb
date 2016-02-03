@@ -20,13 +20,8 @@ selinux_state "SELinux Permissive" do
 end
 
 include_recipe "abiquo::repository"
-
-if node['abiquo']['profile'] == 'monitoring'
-    include_recipe "abiquo::monitoring"
-else
-    include_recipe "abiquo::install_#{node['abiquo']['profile']}"
-    include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
-end
+include_recipe "abiquo::install_#{node['abiquo']['profile']}"
+include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
 
 include_recipe "iptables"
 iptables_rule "firewall-common"

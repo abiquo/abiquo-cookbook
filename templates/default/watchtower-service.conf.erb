@@ -1,0 +1,27 @@
+include file("/opt/abiquo/watchtower/<%= @watchtower_service %>/etc/<%= @watchtower_service %>-base.conf")
+
+<%= @watchtower_service %> {
+    database {
+        url = "jdbc:mysql://<%= node['abiquo']['monitoring']['db']['host'] %>:<%= node['abiquo']['monitoring']['db']['port'] %>/watchtower"
+        username = "<%= node['abiquo']['monitoring']['db']['username'] %>"
+        password = "<%= node['abiquo']['monitoring']['db']['passwrod'] %>"
+    }
+
+    kairosdb {
+        host = "<%= node['abiquo']['monitoring']['kairosdb']['host'] %>"
+        port = <%= node['abiquo']['monitoring']['kairosdb']['port'] %>
+    }
+    
+    <% if @watchtower_service == "emmett" %>
+        service {
+            port = <%= node['abiquo']['monitoring']['emmett']['port'] %>
+        }
+    <% end %>
+}
+
+amqp.rabbitmq {
+    host = "<%= node['abiquo']['monitoring']['rabbitmq']['host'] %>"
+    port = <%= node['abiquo']['monitoring']['rabbitmq']['port'] %>
+    username = "<%= node['abiquo']['monitoring']['rabbitmq']['username'] %>"
+    password = "<%= node['abiquo']['monitoring']['rabbitmq']['password'] %>"
+}

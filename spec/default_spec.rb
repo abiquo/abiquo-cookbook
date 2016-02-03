@@ -24,6 +24,7 @@ describe 'abiquo::default' do
     
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
+        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root watchtower -e 'SELECT 1'").and_return(false)
     end
 
     it 'changes selinux to permissive' do
@@ -31,27 +32,15 @@ describe 'abiquo::default' do
         expect(chef_run).to permissive_selinux_state("SELinux Permissive")
     end
 
-    %w{monolithic server v2v remoteservices kvm}.each do |profile|
+    %w{monolithic server v2v remoteservices kvm monitoring}.each do |profile|
         it "includes the recipes for the #{profile} profile" do
             chef_run.node.set['abiquo']['profile'] = profile
-            stub_command('/usr/sbin/httpd -t').and_return(true) if profile == 'monolithic'
             chef_run.converge(described_recipe)
-
             expect(chef_run).to include_recipe('abiquo::repository')
             expect(chef_run).to include_recipe("abiquo::install_#{profile}")
             expect(chef_run).to include_recipe("abiquo::setup_#{profile}")
         end
-    end
 
-    it 'includes the recipes for the monitoring profile' do
-        chef_run.node.set['abiquo']['profile'] = 'monitoring'
-        chef_run.converge(described_recipe)
-
-        expect(chef_run).to include_recipe('abiquo::repository')
-        expect(chef_run).to include_recipe('abiquo::monitoring')
-    end
-
-    %w{monolithic server v2v remoteservices kvm monitoring}.each do |profile|
         it "configures the #{profile} firewall" do
             chef_run.node.set['abiquo']['profile'] = profile
             chef_run.converge(described_recipe)
