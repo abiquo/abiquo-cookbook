@@ -3,6 +3,10 @@ abiquo CHANGELOG
 
 ## 0.6.0
 
+* Added custom firewall templates for each profile.
+* General recipe refactor to include the 'server' and 'v2v' profiles.
+* Created a Kitchen suite to use nightly build branches. 
+
 ## 0.5.0
 
 * Configured the firewall in the kvm profile.
