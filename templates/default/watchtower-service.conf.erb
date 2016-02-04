@@ -3,7 +3,7 @@ include file("/opt/abiquo/watchtower/<%= @watchtower_service %>/etc/<%= @watchto
 <%= @watchtower_service %> {
     database {
         url = "jdbc:mysql://<%= node['abiquo']['monitoring']['db']['host'] %>:<%= node['abiquo']['monitoring']['db']['port'] %>/watchtower"
-        username = "<%= node['abiquo']['monitoring']['db']['username'] %>"
+        username = "<%= node['abiquo']['monitoring']['db']['user'] %>"
         password = "<%= node['abiquo']['monitoring']['db']['passwrod'] %>"
     }
 

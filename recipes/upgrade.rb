@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Chef::Recipe.send(:include, Abiquo::Commands)
+
 svc = node['abiquo']['profile'] == 'kvm' ? 'abiquo-aim' : 'abiquo-tomcat'
 service svc do
     action :stop
@@ -28,14 +30,9 @@ execute "yum-upgrade-abiquo" do
     notifies :start, "service[#{svc}]"
 end
 
-liquibase_cmd = "abiquo-liquibase -h #{node['abiquo']['db']['host']} "
-liquibase_cmd += "-P #{node['abiquo']['db']['port']} "
-liquibase_cmd += "-u #{node['abiquo']['db']['user']} "
-liquibase_cmd += "-p #{node['abiquo']['db']['password']} " unless node['abiquo']['db']['password'].nil?
-liquibase_cmd += "update"
-
+liquibasecmd = liquibase_cmd("update", node['abiquo']['db'])
 execute "liquibase-update" do
-    command liquibase_cmd
+    command liquibasecmd
     cwd '/usr/share/doc/abiquo-server/database'
     only_if { (node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server') && node['abiquo']['db']['upgrade'] }
 end

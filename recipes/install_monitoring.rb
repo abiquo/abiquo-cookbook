@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Chef::Recipe.send(:include, Abiquo::Commands)
+
 kairosdb_package = "kairosdb-#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}.rpm"
 kairosdb_url = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{kairosdb_package}"
 
@@ -49,12 +51,7 @@ include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_ser
 end
 
 if node['abiquo']['monitoring']['db']['install']
-    mysqlcmd = "/usr/bin/mysql -h #{node['abiquo']['monitoring']['db']['host']}"
-    mysqlcmd += " -P #{node['abiquo']['monitoring']['db']['port']}"
-    mysqlcmd += " -u #{node['abiquo']['monitoring']['db']['username']}"
-    unless node['abiquo']['monitoring']['db']['password'].nil? or node['abiquo']['monitoring']['db']['password'].empty?
-        mysqlcmd += " -p #{node['abiquo']['monitoring']['db']['password']}"
-    end
+    mysqlcmd = mysql_cmd node['abiquo']['monitoring']['db']
 
     execute "install-watchtower-database" do
         command "#{mysqlcmd} < /usr/share/doc/abiquo-watchtower/database/watchtower_schema.sql"

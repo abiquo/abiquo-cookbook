@@ -27,4 +27,27 @@ module Abiquo
             keys << "file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo"
         end
     end
+
+    module Commands
+        def mysql_cmd(props)
+            mysqlcmd = "/usr/bin/mysql -h #{props['host']}"
+            mysqlcmd += " -P #{props['port']}"
+            mysqlcmd += " -u #{props['user']}"
+            unless props['password'].nil? or props['password'].empty?
+                mysqlcmd += " -p #{props['password']}"
+            end
+            mysqlcmd
+        end
+
+        def liquibase_cmd(command, props)
+            liquibasecmd = "abiquo-liquibase -h #{props['host']}"
+            liquibasecmd += " -P #{props['port']}"
+            liquibasecmd += " -u #{props['user']}"
+            unless props['password'].nil? or props['password'].empty?
+                liquibasecmd += " -p #{props['password']}"
+            end
+            liquibasecmd += " #{command}"
+            liquibasecmd
+        end
+    end
 end
