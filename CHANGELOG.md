@@ -3,6 +3,7 @@ abiquo CHANGELOG
 
 ## 0.7.0
 
+* Monitoring nodes can be upgraded
 * Install Watchtower services in the monitoring node
 
 ## 0.6.0
