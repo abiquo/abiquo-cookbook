@@ -51,10 +51,13 @@ describe 'abiquo::default' do
         expect(chef_run).to include_recipe('abiquo::monitoring')
     end
 
-    it 'configures the firewall' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('iptables')
-        expect(chef_run).to enable_iptables_rule('firewall-policy-drop')
-        expect(chef_run).to enable_iptables_rule('firewall-abiquo')
+    %w{monolithic server v2v remoteservices kvm monitoring}.each do |profile|
+        it "configures the #{profile} firewall" do
+            chef_run.node.set['abiquo']['profile'] = profile
+            chef_run.converge(described_recipe)
+            expect(chef_run).to include_recipe('iptables')
+            expect(chef_run).to enable_iptables_rule('firewall-common')
+            expect(chef_run).to enable_iptables_rule("firewall-#{profile}")
+        end
     end
 end

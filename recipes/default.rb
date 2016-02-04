@@ -29,5 +29,5 @@ else
 end
 
 include_recipe "iptables"
-iptables_rule "firewall-policy-drop"
-iptables_rule "firewall-abiquo"
+iptables_rule "firewall-common"
+iptables_rule "firewall-#{node['abiquo']['profile']}"

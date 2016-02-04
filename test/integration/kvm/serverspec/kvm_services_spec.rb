@@ -26,6 +26,7 @@ describe 'KVM services' do
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8889 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 16509 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 16514 -j ACCEPT')
+        expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 6000:6999 -j ACCEPT')
         expect(iptables).to have_rule('-P INPUT DROP')
 
         # Cannot use have_rule with comma

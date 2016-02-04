@@ -62,6 +62,8 @@ describe 'Server services' do
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8009 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8010 -j ACCEPT')
+        expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 5672 -j ACCEPT')
+        expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT')
         expect(iptables).to have_rule('-P INPUT DROP')
 
         # Cannot use have_rule with comma

@@ -79,6 +79,8 @@ default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
 default['abiquo']['properties']['abiquo.rabbitmq.port'] = 5672
+default['abiquo']['properties']['abiquo.vncport.min'] = 6000
+default['abiquo']['properties']['abiquo.vncport.max'] = 6999
 
 case node['abiquo']['profile']
 when "monolithic", "server"

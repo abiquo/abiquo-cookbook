@@ -1,0 +1,9 @@
+# Enable the Abiquo AIM port
+-A INPUT -p tcp -m tcp --dport <%= node['abiquo']['aim']['port'] %> -j ACCEPT
+
+# Enable the Libvirt ports: TCP, TLS
+-A INPUT -p tcp -m tcp --dport 16509 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 16514 -j ACCEPT
+
+# Enable VNC ports
+-A INPUT -p tcp -m tcp --dport <%= node['abiquo']['properties']['abiquo.vncport.min'] %>:<%= node['abiquo']['properties']['abiquo.vncport.max']%> -j ACCEPT
