@@ -17,25 +17,33 @@ require 'spec_helper'
 describe 'abiquo::upgrade' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
-    it 'stops the monolithic service' do
-        chef_run.node.set['abiquo']['profile'] = 'monolithic'
-        chef_run.converge(described_recipe)
-        expect(chef_run).to stop_service('abiquo-tomcat')
-        expect(chef_run).to_not stop_service('abiquo-aim')
+    %w{monolithic remoteservices server v2v}.each do |profile|
+        it "stops the #{profile} services" do
+            chef_run.node.set['abiquo']['profile'] = profile
+            chef_run.converge(described_recipe)
+            expect(chef_run).to stop_service('abiquo-tomcat')
+            expect(chef_run).to_not stop_service('abiquo-aim')
+            expect(chef_run).to_not stop_service('abiquo-delorean')
+            expect(chef_run).to_not stop_service('abiquo-emmett')
+        end
     end
 
-    it 'stops the remoteservices service' do
-        chef_run.node.set['abiquo']['profile'] = 'remoteservices'
-        chef_run.converge(described_recipe)
-        expect(chef_run).to stop_service('abiquo-tomcat')
-        expect(chef_run).to_not stop_service('abiquo-aim')
-    end
-
-    it 'stops the kvm service' do
+    it 'stops the kvm services' do
         chef_run.node.set['abiquo']['profile'] = 'kvm'
         chef_run.converge(described_recipe)
         expect(chef_run).to_not stop_service('abiquo-tomcat')
+        expect(chef_run).to_not stop_service('abiquo-delorean')
+        expect(chef_run).to_not stop_service('abiquo-emmett')
         expect(chef_run).to stop_service('abiquo-aim')
+    end
+
+    it 'stops the monitoring services' do
+        chef_run.node.set['abiquo']['profile'] = 'monitoring'
+        chef_run.converge(described_recipe)
+        expect(chef_run).to_not stop_service('abiquo-tomcat')
+        expect(chef_run).to_not stop_service('abiquo-aim')
+        expect(chef_run).to stop_service('abiquo-delorean')
+        expect(chef_run).to stop_service('abiquo-emmett')
     end
 
     it 'includes the repository recipe' do
@@ -57,18 +65,13 @@ describe 'abiquo::upgrade' do
         expect(chef_run).to_not run_execute('liquibase-update')
     end
 
-    it 'does not run liquibase when kvm' do
-        chef_run.node.set['abiquo']['db']['upgrade'] = true
-        chef_run.node.set['abiquo']['profile'] = 'kvm'
-        chef_run.converge(described_recipe)
-        expect(chef_run).to_not run_execute('liquibase-update')
-    end
-
-    it 'does not run liquibase when remoteservices' do
-        chef_run.node.set['abiquo']['db']['upgrade'] = true
-        chef_run.node.set['abiquo']['profile'] = 'remoteservices'
-        chef_run.converge(described_recipe)
-        expect(chef_run).to_not run_execute('liquibase-update')
+    %w{kvm remoteservices monitoring}.each do |profile|
+        it "does not run liquibase when #{profile}" do
+            chef_run.node.set['abiquo']['db']['upgrade'] = true
+            chef_run.node.set['abiquo']['profile'] = profile
+            chef_run.converge(described_recipe)
+            expect(chef_run).to_not run_execute('liquibase-update')
+        end
     end
 
     it 'runs the liquibase update when monolithic' do
@@ -89,18 +92,13 @@ describe 'abiquo::upgrade' do
         )
     end
 
-    it 'notifies the monolithic service to restart' do
-        chef_run.node.set['abiquo']['profile'] = 'monolithic'
-        chef_run.converge(described_recipe)
-        resource = chef_run.execute('yum-upgrade-abiquo')
-        expect(resource).to notify('service[abiquo-tomcat]').to(:start).delayed
-    end
-
-    it 'notifies the remoteservices service to restart' do
-        chef_run.node.set['abiquo']['profile'] = 'remoteservices'
-        chef_run.converge(described_recipe)
-        resource = chef_run.execute('yum-upgrade-abiquo')
-        expect(resource).to notify('service[abiquo-tomcat]').to(:start).delayed
+    %w{monolithic remoteservices server v2v}.each do |profile|
+        it "notifies the #{profile} service to restart" do
+            chef_run.node.set['abiquo']['profile'] = profile
+            chef_run.converge(described_recipe)
+            resource = chef_run.execute('yum-upgrade-abiquo')
+            expect(resource).to notify('service[abiquo-tomcat]').to(:start).delayed
+        end
     end
 
     it 'notifies the kvm service to restart' do
@@ -110,7 +108,15 @@ describe 'abiquo::upgrade' do
         expect(resource).to notify('service[abiquo-aim]').to(:start).delayed
     end
 
-    %w(monolithic remoteservices kvm).each do |profile|
+    it 'notifies the monitoring services to restart' do
+        chef_run.node.set['abiquo']['profile'] = 'monitoring'
+        chef_run.converge(described_recipe)
+        resource = chef_run.execute('yum-upgrade-abiquo')
+        expect(resource).to notify('service[abiquo-delorean]').to(:start).delayed
+        expect(resource).to notify('service[abiquo-emmett]').to(:start).delayed
+    end
+
+    %w(monolithic remoteservices kvm monitoring server v2v).each do |profile|
         it "includes the #{profile} setup recipe" do
             chef_run.node.set['abiquo']['profile'] = profile
             chef_run.converge(described_recipe)

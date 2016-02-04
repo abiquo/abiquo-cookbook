@@ -53,6 +53,7 @@ suites:
   - name: monitoring
     run_list:
       - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
     attributes:
       abiquo:
         profile: monitoring

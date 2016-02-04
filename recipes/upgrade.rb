@@ -17,9 +17,19 @@
 
 Chef::Recipe.send(:include, Abiquo::Commands)
 
-svc = node['abiquo']['profile'] == 'kvm' ? 'abiquo-aim' : 'abiquo-tomcat'
-service svc do
-    action :stop
+case node['abiquo']['profile']
+when "kvm"
+    services = %w{abiquo-aim}
+when "monitoring"
+    services = %w{abiquo-delorean abiquo-emmett}
+else
+    services = %w{abiquo-tomcat}
+end
+
+services.each  do |svc|
+    service svc do
+        action :stop
+    end
 end
 
 include_recipe "abiquo::repository"
@@ -27,7 +37,9 @@ include_recipe "abiquo::repository"
 # Wildcards can't be used with the regular resource package, so just run the command
 execute "yum-upgrade-abiquo" do
     command 'yum -y upgrade abiquo-*'
-    notifies :start, "service[#{svc}]"
+    services.each  do |svc|
+        notifies :start, "service[#{svc}]"
+    end
 end
 
 liquibasecmd = liquibase_cmd("update", node['abiquo']['db'])
