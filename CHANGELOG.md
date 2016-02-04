@@ -1,6 +1,10 @@
 abiquo CHANGELOG
 ================
 
+## 0.7.0
+
+* Install Watchtower services in the monitoring node
+
 ## 0.6.0
 
 * Added custom firewall templates for each profile.
