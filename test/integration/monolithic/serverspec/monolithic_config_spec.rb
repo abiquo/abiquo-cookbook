@@ -55,4 +55,10 @@ describe 'Monolithic configuration' do
     it 'has the abiquo properties file' do
         expect(file('/opt/abiquo/config/abiquo.properties')).to exist
     end
+
+    it 'has the M user properly configured' do
+        expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.identity = default_outbound_api_user") 
+        # Credential is auto generated but at least we want to check it is set
+        expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.credential = ") 
+    end
 end
