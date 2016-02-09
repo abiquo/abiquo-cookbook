@@ -33,7 +33,8 @@ ruby_block "extract_m_user_password" do
     Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)      
     mysql_command = 'mysql kinton -B --skip-column-names -e "select COMMENTS from DATABASECHANGELOG where ID = \'default_user_for_m\'"'
     mysql_command_out = shell_out!(mysql_command)
-    node.set['abiquo']['properties']['abiquo.m.credential'] = mysql_command_out.stdout.gsub("\n", "")
+    credential = mysql_command_out.stdout.gsub("\n", "") 
+    node.set['abiquo']['properties']['abiquo.m.credential'] = credential unless node['abiquo']['properties']['abiquo.m.credential'] 
   end
   action :run
 end
