@@ -1,4 +1,4 @@
-include file("/opt/abiquo/watchtower/<%= @watchtower_service %>/etc/<%= @watchtower_service %>-base.conf")
+include file("/etc/abiquo/watchtower/<%= @watchtower_service %>-base.conf")
 
 <%= @watchtower_service %> {
     database {

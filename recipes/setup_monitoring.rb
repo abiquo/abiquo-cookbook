@@ -34,14 +34,14 @@ end
         subscribes :restart, "service[kairosdb]"
     end
     
-    file "/opt/abiquo/watchtower/#{wts}/etc/#{wts}-base.conf" do
+    file "/etc/abiquo/watchtower/#{wts}-base.conf" do
         owner "root"
         group "root"
-        content lazy { ::IO.read("/opt/abiquo/watchtower/#{wts}/etc/#{wts}.conf") }
+        content lazy { ::IO.read("/etc/abiquo/watchtower/#{wts}.conf") }
         action :create
     end
 
-    template "/opt/abiquo/watchtower/#{wts}/etc/#{wts}.conf" do
+    template "/etc/abiquo/watchtower/#{wts}.conf" do
         source "watchtower-service.conf.erb"
         owner "root"
         group "root"

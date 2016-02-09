@@ -49,14 +49,14 @@ describe 'abiquo::setup_monitoring' do
         end
 
         it "creates the #{wts} base file" do
-            expect(chef_run).to create_file("/opt/abiquo/watchtower/#{wts}/etc/#{wts}-base.conf").with(
+            expect(chef_run).to create_file("/etc/abiquo/watchtower/#{wts}-base.conf").with(
                 :owner => 'root',
                 :group => 'root'
             )
         end
 
         it "renders the #{wts} configuration file" do
-            expect(chef_run).to create_template("/opt/abiquo/watchtower/#{wts}/etc/#{wts}.conf").with(
+            expect(chef_run).to create_template("/etc/abiquo/watchtower/#{wts}.conf").with(
                 :source => 'watchtower-service.conf.erb',
                 :owner => 'root',
                 :group => 'root'

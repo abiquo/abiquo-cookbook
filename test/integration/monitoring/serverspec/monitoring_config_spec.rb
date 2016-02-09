@@ -26,12 +26,14 @@ describe 'Monitoring configuration' do
     end
 
     it 'has delorean properly configured' do
-        expect(file('/opt/abiquo/watchtower/delorean/etc/delorean-base.conf')).to exist
-        expect(file('/opt/abiquo/watchtower/delorean/etc/delorean.conf')).to exist
+        expect(file('/etc/abiquo/watchtower/delorean-base.conf')).to exist
+        expect(file('/etc/abiquo/watchtower/delorean.conf')).to exist
+        expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('delorean {')
     end
 
     it 'has emmett properly configured' do
-        expect(file('/opt/abiquo/watchtower/emmett/etc/emmett-base.conf')).to exist
-        expect(file('/opt/abiquo/watchtower/emmett/etc/emmett.conf')).to exist
+        expect(file('/etc/abiquo/watchtower/emmett-base.conf')).to exist
+        expect(file('/etc/abiquo/watchtower/emmett.conf')).to exist
+        expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('emmett {')
     end
 end
