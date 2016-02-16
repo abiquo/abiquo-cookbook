@@ -52,6 +52,9 @@ suites:
         profile: kvm
   - name: monitoring
     run_list:
+      # Install RabbitMQ first, as Delorean and Emmet need it
+      - recipe[abiquo::repository]
+      - recipe[rabbitmq]
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
     attributes:
