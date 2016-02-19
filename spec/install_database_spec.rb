@@ -17,16 +17,24 @@ require 'spec_helper'
 describe 'abiquo::install_database' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
+    before do
+        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(false)
+    end
+
     it 'creates the database' do
         expect(chef_run).to run_execute('create-database').with(
-            :command => '/usr/bin/mysql -e "CREATE DATABASE IF NOT EXISTS kinton"'
+            :command => "/usr/bin/mysql -h localhost -P 3306 -u root -e 'CREATE DATABASE kinton'"
         )
+        resource = chef_run.execute('create-database')
+        expect(resource).to notify("execute[install-database]").to(:run).immediately
     end
 
     it 'installs the database' do
-        expect(chef_run).to run_execute('install-database').with(
-            :command => '/usr/bin/mysql kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql'
-        )
+        resource = chef_run.execute('install-database')
+        expect(resource).to do_nothing
+        expect(resource.command).to eq('/usr/bin/mysql -h localhost -P 3306 -u root kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql')
+        expect(resource).to notify('ruby_block[extract-m-user-password]').to(:run).immediately
+        expect(resource).to notify('execute[install-license]').to(:run).immediately
     end
 
     it 'does not install the license if not provided' do
@@ -41,13 +49,13 @@ describe 'abiquo::install_database' do
     it 'installs the license if configured' do
         chef_run.node.set['abiquo']['license'] = 'foo'
         chef_run.converge(described_recipe)
-        expect(chef_run).to run_execute('install-license').with(
-            :command => '/usr/bin/mysql kinton -e "INSERT INTO license (data) VALUES (\'foo\');"'
-        )
+        resource = chef_run.execute('install-license')
+        expect(resource).to do_nothing
+        expect(resource.command).to eq('/usr/bin/mysql -h localhost -P 3306 -u root kinton -e "INSERT INTO license (data) VALUES (\'foo\');"')
     end
 
     it 'extracts default m user password' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to run_ruby_block("extract_m_user_password")
+        resource = chef_run.ruby_block('extract-m-user-password')
+        expect(resource).to do_nothing
     end
 end

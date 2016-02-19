@@ -3,7 +3,7 @@ Abiquo Cookbook
 
 [![Build Status](https://travis-ci.org/abiquo/abiquo-cookbook.svg?branch=master)](https://travis-ci.org/abiquo/abiquo-cookbook)
 [![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.7.0-blue.svg?style=flat)](https://supermarket.chef.io/cookbooks/abiquo)
-[![Chef Version](http://img.shields.io/badge/chef-v11.16-orange.svg?style=flat)](https://www.chef.io)
+[![Chef Version](http://img.shields.io/badge/chef-v12.5.1-orange.svg?style=flat)](https://www.chef.io)
 
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
 It allows to provision an Abiquo Server, the Remote Services server, standalone V2V
@@ -12,17 +12,17 @@ an existing Abiquo installation using the latest nightly builds.
 
 # Requirements
 
-* CentOS >= 6.5
+* CentOS >= 6.7
 
 This cookbook depends on the following cookbooks:
 
 * apache2
-* ark
 * cassandra-dse
 * iptables
+* java
 * java-management
-* selfsigned\_certificate
 * selinux
+* ssl_certificate
 * yum
 
 # Recipes
@@ -47,6 +47,7 @@ The cookbook contains the following recipes:
 * `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
 * `recipe[abiquo::monitoring]` - Installs an Abiquo monitoring node with KairosDB and Cassandra
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
+* `recipe[abiquo::service]` - Manages Abiquo tomcat service
 
 # Attributes
 
@@ -62,20 +63,18 @@ Attribute | Description | Type | Default
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['license']` | The Abiquo license to install | String | nil
 `['properties']` | Hash with additional Abiquo properties to add to the Abiquo configuration file | Hash | {}
-`['yum']['repository']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.2/os/x86_64"
+`['yum']['base-repo']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/os/x86_64"
+`['yum']['update-repo']` | The Abiquo updates yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/updates/x86_64"
 `['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
 `['db']['host']` | The database host used when running the database upgrade | String | "localhost""
 `['db']['port']` | The database port used when running the database upgrade | Integer | 3306
 `['db']['user']` | The database user used when running the database upgrade | String | "root"
 `['db']['password']` | The database password used when running the database upgrade | String | nil
-`['db']['install']` | Install the database when installing the Monolithic or Server profile | Boolean | true
 `['db']['upgrade']` | Run the database upgrade when upgrading the monolithic profile | Boolean | true
 `['aim']['port']` | In a KVM, the port where the Abiquo AIM agent will listen | Integer | 8889
 `['tomcat']['http-port']` | The port where the Tomcat listens to HTTP traffic | Integer | 8009
 `['tomcat']['ajp-port']` | The port where the Tomcat listens to AJP traffic | Integer | 8010
 `['tomcat']['wait-for-webapps']` | If Chef will wait for the webapps to be running after restarting Tomcat | Boolean | false
-`['ssl']['certificatefile']` | The path to the SSL certificate | String | "/etc/pki/tls/certs/ca.cert"
-`['ssl']['keyfile']` | The path to the certificate's key | String | "/etc/pki/tls/private/ca.key"
 `['monitoring']['kairosdb']['host']` | The host where KairosDB is listening | Integer | "localhost"
 `['monitoring']['kairosdb']['port']` | The port where KairosDB is listening | Integer | 8080
 `['monitoring']['kairosdb']['version']` | The version of KairosDB to install in the monitoring node | String | "0.9.4"
@@ -91,6 +90,14 @@ Attribute | Description | Type | Default
 `['monitoring']['rabbitmq']['password']` | The RabbitMQ password for the monitoring system notifications | String | "guest"
 `['monitoring']['emmett']['port']` | The port where the Emmett service is listening | Integer | 36638
 `['monitoring']['cassandra']['cluster_name']` | The name for the Cassandra cluster in the monitoring node | String | "abiquo"
+`['certificate']['common_name']` | Common name for the generated certificate | String | node['fqdn']
+`['certificate']['organization']` | Organization for the generated certificate | String | "Abiquo"
+`['certificate']['department']` | Department for the generated certificate | String | "Engineering"
+`['certificate']['country']` | Country for the generated certificate | String | "ES"
+`['certificate']['source']` | Source for the generated certificate | String | "self-signed"
+`['certificate']['file']` | If `['certificate']['file']` is false, use this file as certificate | String | '/etc/pki/tls/certs/localhost.crt'
+`['certificate']['key_file']` | If `['certificate']['file']` is false, use this file as the certificate private key | String | '/etc/pki/tls/private/localhost.key'
+`['certificate']['ca_file']` | If `['certificate']['file']` is false, use this file as tha CA certificate | String | nil
 
 # Resources and providers
 
@@ -149,20 +156,23 @@ in the run list:
 * `recipe[abiquo]` - To perform an installation from scratch
 * `recipe[abiquo::upgrade]` - To upgrade an existing installation
 
-The available profiles are: `monolithic`, `remoteservices`, `server`, `v2v` and `kvm`.
+The available profiles are: `monolithic`, `remoteservices`, `server`, `v2v`, `kvm` and `monitoring`.
 
-When installing the Abiquo Monolithic profile, you may also want to set the `node['selfsigned_certificate']['cn']`
-attribute to match the hostname of the node. You can also use it together with the [hostname](http://community.opscode.com/cookbooks/hostname) cookbook to make sure the node will have it properly configured.
+When installing the Abiquo Monolithic profile, you may also want to set the `node['abiquo']['certificate']`
+properties so the right certificate is used or a self-signed one is generated. You can also use it together
+with the [hostname](http://community.opscode.com/cookbooks/hostname) cookbook to make sure the node will have it properly configured.
 
 # Testing
 
-In order to test the cookbook you will need to install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/). Once installed you can run the unit and integration tests as follows:
+In order to test the cookbook you will need to install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/).
+Once installed you can run the unit and integration tests as follows:
 
     bundle install
     bundle exec rake          # Run the unit and style tests
     bundle exec rake kitchen  # Run the integration tests
 
-The tests and Gemfile have been developed using Ruby 2.1.5, and that is the recommended Ruby version to use to run the tests. Other versions may cause conflicts with the versions of the gems Bundler will install.
+The tests and Gemfile have been developed using Ruby 2.1.5, and that is the recommended Ruby version to use to run the tests.
+Other versions may cause conflicts with the versions of the gems Bundler will install.
 
 # License and Authors
 

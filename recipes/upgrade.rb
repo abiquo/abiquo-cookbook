@@ -15,7 +15,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+return unless ::File.executable?('/usr/bin/repoquery')
+
+Chef::Recipe.send(:include, Abiquo::Packages)
 Chef::Recipe.send(:include, Abiquo::Commands)
+
+unless abiquo_update_available
+    log "No Abiquo updates found."
+    return
+end
+
+log "Abiquo updates available."
 
 case node['abiquo']['profile']
 when "kvm"
@@ -34,11 +44,15 @@ end
 
 include_recipe "abiquo::repository"
 
-# Wildcards can't be used with the regular resource package, so just run the command
-execute "yum-upgrade-abiquo" do
-    command 'yum -y upgrade abiquo-*'
-    services.each  do |svc|
-        notifies :start, "service[#{svc}]"
+abiquo_packages.each do |pkg|
+    package pkg do
+        action :upgrade
+    end
+end
+
+services.each  do |svc|
+    service svc do
+        action :start
     end
 end
 
@@ -47,6 +61,9 @@ execute "liquibase-update" do
     command liquibasecmd
     cwd '/usr/share/doc/abiquo-server/database'
     only_if { (node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server') && node['abiquo']['db']['upgrade'] }
+    action :nothing
+    subscribes :run, "package[abiquo-server]", :immediately
+    notifies :restart, "service[abiquo-tomcat]" if node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server'
 end
 
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"

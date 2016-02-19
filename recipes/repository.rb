@@ -19,12 +19,13 @@ Chef::Recipe.send(:include, Abiquo::Packages)
 
 execute "clean-yum-cache" do
     command "yum clean all"
+    action :nothing
 end
 
 directory "/var/cache/yum" do
     ignore_failure true
     recursive true
-    action :delete
+    action :nothing
 end
 
 gpg_keys = gpg_key_files.join(" ")
@@ -36,6 +37,8 @@ yum_repository "abiquo-base" do
     gpgkey gpg_keys
     action :create
     subscribes :create, "package[abiquo-release-ee]", :immediately
+    notifies :delete, 'directory[/var/cache/yum]', :immediately
+    notifies :run, 'execute[clean-yum-cache]', :immediately
 end
 
 yum_repository "abiquo-updates" do
@@ -45,6 +48,8 @@ yum_repository "abiquo-updates" do
     gpgkey gpg_keys
     action :create
     subscribes :create, "package[abiquo-release-ee]", :immediately
+    notifies :delete, 'directory[/var/cache/yum]', :immediately
+    notifies :run, 'execute[clean-yum-cache]', :immediately
 end
 
 yum_repository "abiquo-nightly" do
@@ -53,6 +58,8 @@ yum_repository "abiquo-nightly" do
     gpgcheck false
     gpgkey gpg_keys
     action :create
+    notifies :delete, 'directory[/var/cache/yum]', :immediately
+    notifies :run, 'execute[clean-yum-cache]', :immediately
     not_if { node['abiquo']['yum']['nightly-repo'].nil? }
 end
 
@@ -60,5 +67,9 @@ end
 # be validated when installing it.
 package "abiquo-release-ee" do
     options "--nogpgcheck"
+    action :install
+end
+
+package 'yum-utils' do
     action :install
 end

@@ -15,7 +15,7 @@
 require 'spec_helper'
 
 describe 'abiquo::setup_monolithic' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+    let(:chef_run) { ChefSpec::SoloRunner.new.converge('apache2::default', described_recipe) }
 
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)

@@ -25,10 +25,10 @@ include_recipe "apache2::mod_ssl"
     end
 end
 
-include_recipe "abiquo::install_jce"
+include_recipe "java::oracle_jce"
 include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
 
-%w{server sosreport-plugins}.each do |pkg|
+%w{server sosreport-plugins tutorials}.each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
@@ -38,6 +38,10 @@ include_recipe "abiquo::certificate"
 
 web_app "abiquo" do
     template "abiquo.conf.erb"
+    server_name node['abiquo']['certificate']['common_name'] 
+    cert_file node['abiquo']['certificate']['file']
+    key_file node['abiquo']['certificate']['key_file']
+    ca_file node['abiquo']['certificate']['ca_file']
 end
 
-include_recipe "abiquo::install_database" if node['abiquo']['db']['install']
+include_recipe "abiquo::install_database"

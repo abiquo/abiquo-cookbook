@@ -15,26 +15,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Chef::Recipe.send(:include, Abiquo::Commands)
+
+mysqlcmd = mysql_cmd(node['abiquo']['db'])
+
 execute "create-database" do
-    command '/usr/bin/mysql -e "CREATE DATABASE IF NOT EXISTS kinton"'
+    command "#{mysqlcmd} -e 'CREATE DATABASE kinton'"
+    not_if "#{mysqlcmd} kinton -e 'SELECT 1'"
+    notifies :run, "execute[install-database]", :immediately
 end
 
 execute "install-database" do
-    command "/usr/bin/mysql kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
+    command "#{mysqlcmd} kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
+    action :nothing
+    notifies :run, "ruby_block[extract-m-user-password]", :immediately
+    notifies :run, "execute[install-license]", :immediately
 end
 
 execute "install-license" do
-    command "/usr/bin/mysql kinton -e \"INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}');\""
+    command "#{mysqlcmd} kinton -e \"INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}');\""
+    action :nothing
     not_if { node['abiquo']['license'].nil? || node['abiquo']['license'].empty? }
 end
 
-ruby_block "extract_m_user_password" do
-  block do
-    Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)      
-    mysql_command = 'mysql kinton -B --skip-column-names -e "select COMMENTS from DATABASECHANGELOG where ID = \'default_user_for_m\'"'
-    mysql_command_out = shell_out!(mysql_command)
-    credential = mysql_command_out.stdout.gsub("\n", "") 
-    node.set['abiquo']['properties']['abiquo.m.credential'] = credential unless node['abiquo']['properties']['abiquo.m.credential'] 
-  end
-  action :run
+ruby_block "extract-m-user-password" do
+    block do
+        Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)      
+        mysql_command = "#{mysqlcmd} kinton -B --skip-column-names -e \"select COMMENTS from DATABASECHANGELOG where ID = 'default_user_for_m'\""
+        mysql_command_out = shell_out!(mysql_command)
+        node.set['abiquo']['properties']['abiquo.m.credential'] = mysql_command_out.stdout.gsub("\n", "")
+    end
+    action :nothing
 end

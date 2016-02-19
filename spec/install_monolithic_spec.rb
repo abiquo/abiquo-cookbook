@@ -15,10 +15,17 @@
 require 'spec_helper'
 
 describe 'abiquo::install_monolithic' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+    let(:chef_run) do
+        ChefSpec::SoloRunner.new do |node|
+            node.set['abiquo']['certificate']['common_name'] = 'test.local'
+        end.converge('apache2::default',described_recipe,'abiquo::service')
+    end
+    let(:cn) { 'test.local' }
 
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
+        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
+        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(true)
     end
 
     %w{server remoteservices v2v}.each do |recipe|

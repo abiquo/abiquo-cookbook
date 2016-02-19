@@ -30,8 +30,8 @@ describe 'abiquo::install_v2v' do
     # The apache webapp calls can be tested because it is not a LWRP
     # but a definition and does not exist in the resource list
 
-    it 'includes the install_jce recipe' do
-        expect(chef_run).to include_recipe('abiquo::install_jce')
+    it 'includes the java oracle jce recipe' do
+        expect(chef_run).to include_recipe('java::oracle_jce')
     end
 
     %w{rpcbind redis}.each do |svc|

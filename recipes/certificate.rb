@@ -15,12 +15,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "selfsigned_certificate"
-
-service "apache2" do
-    action :reload
+directory '/etc/pki/abiquo' do
+    recursive true
+    action :create
 end
 
-java_management_truststore_certificate "abiquo" do
-    file "#{node['selfsigned_certificate']['destination']}server.crt"
+ssl_certificate node['abiquo']['certificate']['common_name'] do
+    namespace node['abiquo']['certificate']
+    cert_path node['abiquo']['certificate']['file']
+    key_path  node['abiquo']['certificate']['key_file']
+    not_if { ::File.file? "/etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.crt" }
+    notifies :restart, 'service[apache2]'
+end
+
+java_management_truststore_certificate node['abiquo']['certificate']['common_name'] do
+    file node['abiquo']['certificate']['file']
+    action :nothing
+    subscribes :import, "ssl_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
+    notifies :restart, "service[abiquo-tomcat]"
 end

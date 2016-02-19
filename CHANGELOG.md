@@ -3,6 +3,10 @@ abiquo CHANGELOG
 
 ## 0.7.0
 
+* Configured resources to be idempotent and avoid unwanted restarts.
+* Configure a generic recipe to manage teh Abiquo Tomcat service.
+* Better management for SSL certificates.
+* Remove the need for the ark cookbook.
 * Monitoring nodes can be upgraded
 * Install Watchtower services in the monitoring node
 

@@ -37,8 +37,8 @@ default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
 default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0.1:/opt/vm_repository"
 
 # Yum repository configuration
-default['abiquo']['yum']['base-repo'] = "http://mirror.abiquo.com/abiquo/3.6/os/x86_64"
-default['abiquo']['yum']['updates-repo'] = "http://mirror.abiquo.com/abiquo/3.6/updates/x86_64"
+default['abiquo']['yum']['base-repo'] = "http://mirror.abiquo.com/abiquo/3.8/os/x86_64"
+default['abiquo']['yum']['updates-repo'] = "http://mirror.abiquo.com/abiquo/3.8/updates/x86_64"
 default['abiquo']['yum']['nightly-repo'] = nil
 
 # Database configuration
@@ -46,13 +46,26 @@ default['abiquo']['db']['host'] = "localhost"
 default['abiquo']['db']['port'] = 3306
 default['abiquo']['db']['user'] = "root"
 default['abiquo']['db']['password'] = nil
-default['abiquo']['db']['install'] = true
 default['abiquo']['db']['upgrade'] = true
 
 # Tomcat configuration 
 default['abiquo']['tomcat']['http-port'] = 8009
 default['abiquo']['tomcat']['ajp-port'] = 8010
 default['abiquo']['tomcat']['wait-for-webapps'] = false
+
+# Wheter or not to generate a self signed certificate
+# for this host. If not, provide path to certificate,
+# private key and optionally a CA cert. The cookbook
+# does not manage the certificate files path provided
+# for non generated certificates.
+default['abiquo']['certificate']['common_name'] = node['fqdn']
+default['abiquo']['certificate']['organization'] = 'Abiquo'
+default['abiquo']['certificate']['department'] = 'Engineering'
+default['abiquo']['certificate']['country'] = 'ES'
+default['abiquo']['certificate']['source'] = 'self-signed'
+default['abiquo']['certificate']['file'] = "/etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.crt"
+default['abiquo']['certificate']['key_file'] = "/etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.key"
+default['abiquo']['certificate']['ca_file'] = nil
 
 # Configure abiquo KVM
 default['abiquo']['aim']['port'] = 8889
@@ -83,9 +96,10 @@ override['apache']['proxy']['allow_from'] = "all"
 # TODO: Configure these attributes in a way that they don't have precedence over user config
 override['java']['oracle']['accept_oracle_download_terms'] = true
 override['java']['java_home'] = "/usr/java/default"
+override['java']['jdk_version'] = 8
 
 # Default properties
-default['abiquo']['properties']['abiquo.datacenter.id'] = node['fqdn']
+default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
 default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'guest'
 default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
@@ -110,6 +124,7 @@ when "monolithic", "server"
         default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['abiquo']['ui_address']}/api"
     end
 when "remoteservices"
+    default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint']
     default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
     default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
 end
