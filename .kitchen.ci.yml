@@ -1,5 +1,5 @@
 platforms:
-  - name: centos-6.5
+  - name: centos-6.7
     driver_config:
       customize:
         memory: 1024
