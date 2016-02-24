@@ -32,6 +32,11 @@ describe 'abiquo::repository' do
         expect(resource.recursive).to eq(true)
     end
 
+    it 'configures the epel repository' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to include_recipe('yum-epel')
+    end
+
     it 'creates the base repository' do
         chef_run.converge(described_recipe)
         expect(chef_run).to create_yum_repository('abiquo-base').with(

@@ -30,6 +30,8 @@ end
 
 gpg_keys = gpg_key_files.join(" ")
 
+include_recipe "yum-epel"
+
 yum_repository "abiquo-base" do
     description "Abiquo base repository"
     baseurl node['abiquo']['yum']['base-repo']

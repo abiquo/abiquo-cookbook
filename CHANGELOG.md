@@ -3,6 +3,7 @@ abiquo CHANGELOG
 
 ## 0.7.0
 
+* Added the EPEL repository.
 * Configured resources to be idempotent and avoid unwanted restarts.
 * Configure a generic recipe to manage teh Abiquo Tomcat service.
 * Better management for SSL certificates.
