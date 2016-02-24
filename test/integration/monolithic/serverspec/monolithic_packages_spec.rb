@@ -15,6 +15,10 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Monolithic packages' do
+    it 'has the epel-release package installed' do
+        expect(package('epel-release')).to be_installed
+    end
+
     it 'has the system packages installed' do
         %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk ec2-api-tools}.each do |pkg|
             expect(package(pkg)).to be_installed

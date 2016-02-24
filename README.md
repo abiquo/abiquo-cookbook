@@ -24,7 +24,6 @@ This cookbook depends on the following cookbooks:
 * selinux
 * ssl_certificate
 * yum
-* yum-epel
 
 # Recipes
 

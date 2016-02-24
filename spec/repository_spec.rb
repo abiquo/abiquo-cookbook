@@ -32,9 +32,9 @@ describe 'abiquo::repository' do
         expect(resource.recursive).to eq(true)
     end
 
-    it 'configures the epel repository' do
+    it 'installs the epel-release package' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('yum-epel')
+        expect(chef_run).to install_package('epel-release')
     end
 
     it 'creates the base repository' do
@@ -51,7 +51,7 @@ describe 'abiquo::repository' do
         )
 
         resource = chef_run.find_resource(:yum_repository, 'abiquo-base')
-expect(resource).to subscribe_to('package[abiquo-release-ee]').on(:create)
+        expect(resource).to subscribe_to('package[abiquo-release-ee]').on(:create)
         expect(resource).to notify('directory[/var/cache/yum]').to(:delete).immediately
         expect(resource).to notify('execute[clean-yum-cache]').to(:run).immediately
     end
