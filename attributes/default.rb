@@ -78,8 +78,8 @@ default['abiquo']['monitoring']['kairosdb']['host'] = 'localhost'
 default['abiquo']['monitoring']['kairosdb']['port'] = 8080
 default['abiquo']['monitoring']['rabbitmq']['host'] = 'localhost'
 default['abiquo']['monitoring']['rabbitmq']['port'] = 5672
-default['abiquo']['monitoring']['rabbitmq']['username'] = 'guest'
-default['abiquo']['monitoring']['rabbitmq']['password'] = 'guest'
+default['abiquo']['monitoring']['rabbitmq']['username'] = 'abiquo'
+default['abiquo']['monitoring']['rabbitmq']['password'] = 'abiquo'
 default['abiquo']['monitoring']['db']['host'] = 'localhost'
 default['abiquo']['monitoring']['db']['port'] = 3306
 default['abiquo']['monitoring']['db']['user'] = 'root'
@@ -100,8 +100,8 @@ override['java']['jdk_version'] = 8
 
 # Default properties
 default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
-default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'guest'
-default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'guest'
+default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'abiquo'
+default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'abiquo'
 default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
 default['abiquo']['properties']['abiquo.rabbitmq.port'] = 5672
 default['abiquo']['properties']['abiquo.vncport.min'] = 6000

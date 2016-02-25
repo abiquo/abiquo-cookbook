@@ -26,6 +26,7 @@ describe 'abiquo::install_monolithic' do
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
         stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(true)
+        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
     end
 
     %w{server remoteservices v2v}.each do |recipe|

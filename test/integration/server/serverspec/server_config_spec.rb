@@ -57,4 +57,9 @@ describe 'Server configuration' do
         # Credential is auto generated but at least we want to check it is set
         expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.credential = ") 
     end
+
+    it 'has a user in rabbit for Abiquo' do
+        expect(command('rabbitmqctl list_users').stdout).to match(/abiquo.*administrator/)
+        expect(command('rabbitmqctl list_permissions').stdout).to match(/abiquo\t.*\t.*\t.*/)
+    end
 end

@@ -28,6 +28,7 @@ describe 'abiquo::default' do
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/mysql -h localhost -P 3306 -u root watchtower -e 'SELECT 1'").and_return(false)
         stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(true)
+        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
     end
 
     it 'changes selinux to permissive' do

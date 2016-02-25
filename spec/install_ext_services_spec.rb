@@ -17,6 +17,10 @@ require 'spec_helper'
 describe 'abiquo::install_ext_services' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
+    before do
+        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
+    end
+
     it 'uninstalls mysql-libs package' do
         chef_run.converge(described_recipe)
         expect(chef_run).to purge_package('mysql-libs')
@@ -67,5 +71,24 @@ describe 'abiquo::install_ext_services' do
         chef_run.converge(described_recipe)
         expect(chef_run).to enable_service("mysql")
         expect(chef_run).to start_service("mysql")
+    end
+
+    it "creates a rabbit user for Abiquo" do
+        chef_run.converge(described_recipe)
+
+        resource = chef_run.find_resource(:execute, 'create-abiquo-rabbit-user')
+        expect(resource).to do_nothing
+        expect(resource.command).to eq('rabbitmqctl add_user abiquo abiquo')
+        expect(resource).to subscribe_to('service[rabbitmq-server]').on(:run).delayed
+
+        resource = chef_run.find_resource(:execute, 'set-abiquo-rabbit-user-administrator')
+        expect(resource).to do_nothing
+        expect(resource.command).to eq('rabbitmqctl set_user_tags abiquo administrator')
+        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
+
+        resource = chef_run.find_resource(:execute, 'set-abiquo-rabbit-user-permissions')
+        expect(resource).to do_nothing
+        expect(resource.command).to eq("rabbitmqctl set_permissions -p / abiquo '.*' '.*' '.*'")
+        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
     end
 end
