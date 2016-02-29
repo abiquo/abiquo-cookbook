@@ -26,7 +26,7 @@ describe 'Monolithic packages' do
     end
 
     it 'has the abiquo packages installed' do
-        %w{server remote-services v2v sosreport-plugins}.each do |pkg|
+        %w{server remote-services v2v sosreport-plugins tutorials websockify}.each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
         end
     end

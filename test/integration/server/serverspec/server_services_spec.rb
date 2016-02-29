@@ -52,6 +52,12 @@ describe 'Server services' do
         expect(port(8010)).to be_listening
     end
 
+    it 'has websockify running' do
+        expect(service('websockify')).to be_enabled
+        expect(service('websockify')).to be_running
+        expect(port(41337)).to be_listening
+    end
+
     it 'has selinux configured as permissive' do
         expect(selinux).to be_permissive
     end
