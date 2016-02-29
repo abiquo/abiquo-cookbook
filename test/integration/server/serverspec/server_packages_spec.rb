@@ -26,7 +26,7 @@ describe 'Server packages' do
     end
 
     it 'has the abiquo packages installed' do
-        %w{server sosreport-plugins}.each do |pkg|
+        %w{server sosreport-plugins tutorials websockify}.each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
         end
     end

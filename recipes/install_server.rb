@@ -19,7 +19,7 @@ include_recipe "apache2"
 include_recipe "apache2::mod_proxy_ajp"
 include_recipe "apache2::mod_ssl"
 
-%w{liquibase jdk}.each do |pkg|
+%w{liquibase jdk libxslt libxml2}.each do |pkg|
     package pkg do
         action :install
     end
@@ -28,10 +28,14 @@ end
 include_recipe "java::oracle_jce"
 include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
 
-%w{server sosreport-plugins tutorials}.each do |pkg|
+%w{server sosreport-plugins tutorials websockify}.each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
+end
+
+service 'websockify' do
+    action [:enable, :start]
 end
 
 include_recipe "abiquo::certificate"

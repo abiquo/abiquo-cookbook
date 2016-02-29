@@ -36,18 +36,24 @@ describe 'abiquo::install_server' do
         expect(chef_run).to include_recipe('apache2::mod_ssl')
     end
 
-    %w{liquibase jdk}.each do |pkg|
+    %w{liquibase jdk libxml2 libxslt}.each do |pkg|
         it "installs the #{pkg} package" do
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
             expect(chef_run).to install_package(pkg)
         end
     end
 
-    %w{abiquo-server abiquo-sosreport-plugins abiquo-tutorials}.each do |pkg|
+    %w{abiquo-server abiquo-sosreport-plugins abiquo-tutorials abiquo-websockify}.each do |pkg|
         it "installs the #{pkg} abiquo package" do
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
             expect(chef_run).to install_package(pkg)
         end
+    end
+
+    it 'enables the websockify service' do
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+        expect(chef_run).to enable_service('websockify')
+        expect(chef_run).to start_service('websockify')
     end
 
     it 'includes the certificate recipe' do
