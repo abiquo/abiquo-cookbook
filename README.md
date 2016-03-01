@@ -36,16 +36,16 @@ The cookbook contains the following recipes:
 * `recipe[abiquo::install_remoteservices]` - Installs the Abiquo Remote Services
 * `recipe[abiquo::install_v2v]` - Installs an standalone V2V Server
 * `recipe[abiquo::install_kvm]` - Installs the KVM hypervisor
+* `recipe[abiquo::install_monitoring]` - Installs an Abiquo Monitoring node with Cassandra and kairosDB
 * `recipe[abiquo::setup_monolithic]` - Configures the Abiquo Monolithic Server
 * `recipe[abiquo::setup_server]` - Configures the Abiquo Server
 * `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
 * `recipe[abiquo::setup_v2v]` - Configures an standalone V2V Server
 * `recipe[abiquo::setup_kvm]` - Configures the KVM hypervisor
+* `recipe[abiquo::setup_monitoring]` - Configures the Abiquo Monitoring node
 * `recipe[abiquo::upgrade]` - Upgrades an Abiquo Platform
 * `recipe[abiquo::install_database]` - Installs the Abiquo database
 * `recipe[abiquo::install_ext_services]` - Installs the Abiquo supporting services like Redis, RabbitMQ, etc.
-* `recipe[abiquo::install_jce]` - Installs the JCE unlimited strength jurisdiction policy files
-* `recipe[abiquo::monitoring]` - Installs an Abiquo monitoring node with KairosDB and Cassandra
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
 * `recipe[abiquo::service]` - Manages Abiquo tomcat service
 
