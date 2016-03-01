@@ -60,6 +60,9 @@ suites:
         profile: kvm
   - name: monitoring
     run_list:
+      # The Delorean service needs a running RabbitMQ instance
+      - recipe[abiquo::repository]
+      - recipe[rabbitmq]
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
     attributes:
