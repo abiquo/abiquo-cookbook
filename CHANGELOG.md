@@ -1,6 +1,8 @@
 abiquo CHANGELOG
 ================
 
+## 0.8.0
+
 ## 0.7.0
 
 * Install the websockify package for VM remote access.
