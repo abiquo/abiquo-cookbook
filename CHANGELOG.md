@@ -3,6 +3,8 @@ abiquo CHANGELOG
 
 ## 0.7.0
 
+* Install the websockify package for VM remote access.
+* Configure an Abiquo user in RabbitMQ
 * Added the EPEL repository.
 * Configured resources to be idempotent and avoid unwanted restarts.
 * Configure a generic recipe to manage teh Abiquo Tomcat service.
