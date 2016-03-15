@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_v2v
+# Recipe:: install_monitoring
 #
 # Copyright 2014, Abiquo
 #
@@ -15,16 +15,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package 'jdk'
-
-include_recipe "java::oracle_jce"
-
-%w{v2v sosreport-plugins}.each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
+# Enable the KairosDB port
+firewall_rule 'kairosdb' do
+  port     node['abiquo']['monitoring']['kairosdb']['port']
+  command  :allow
 end
 
-service 'rpcbind' do
-    action [:enable, :start]
+# Enable the Cassandra clients port
+firewall_rule 'cassandra-rpc' do
+  port     node['cassandra']['config']['rpc_port']
+  command  :allow
+end
+
+# Enable the Cassandra inter-node communication port
+firewall_rule 'cassandra-storage' do
+  port     node['cassandra']['config']['storage_port']
+  command  :allow
+end
+
+# Enable Emmett port
+firewall_rule 'emmett' do
+  port     node['abiquo']['monitoring']['emmett']['port']
+  command  :allow
 end

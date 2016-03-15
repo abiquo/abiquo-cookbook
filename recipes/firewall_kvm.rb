@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_v2v
+# Recipe:: install_monitoring
 #
 # Copyright 2014, Abiquo
 #
@@ -15,16 +15,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package 'jdk'
-
-include_recipe "java::oracle_jce"
-
-%w{v2v sosreport-plugins}.each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
+# Enable the Abiquo AIM port
+firewall_rule 'AIM' do
+  port     node['abiquo']['aim']['port']
+  command  :allow
 end
 
-service 'rpcbind' do
-    action [:enable, :start]
+# Enable the Libvirt ports: TCP, TLS
+firewall_rule 'libvirt-16509' do
+  port     16509
+  command  :allow
 end
+
+firewall_rule 'libvirt-16514' do
+  port     16514
+  command  :allow
+end
+
+# Enable VNC ports
+firewall_rule 'vnc' do
+  port     node['abiquo']['properties']['abiquo.vncport.min']..node['abiquo']['properties']['abiquo.vncport.max']
+  command  :allow
+end
+

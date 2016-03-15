@@ -15,18 +15,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package "mysql-libs" do
-    ignore_failure true
-    action :purge
+%w{mysql-libs mariadb-libs}.each do |pkg|
+    package pkg do
+        ignore_failure true
+        action :purge
+    end
 end
 
 case node['abiquo']['profile']
 when "monolithic", "server"
-    packages = %w{MariaDB-server MariaDB-client redis rabbitmq-server}
-    services = %w{mysql redis rabbitmq-server}
+    case node['platform']
+    when 'redhat', 'centos'
+        packages = %w{MariaDB-server MariaDB-client redis rabbitmq-server}
+        services = %w{mysql redis rabbitmq-server}
+    when 'ubuntu'
+        packages = %w{MariaDB-server MariaDB-client redis-server redis-tools rabbitmq-server}
+        services = %w{mysql redis-server rabbitmq-server}
+    end
 when "remoteservices"
-    packages = %w{redis}
-    services = %w{redis}
+    case node['platform']
+    when 'redhat', 'centos'
+        packages = %w{redis}
+        services = %w{redis}
+    when 'ubuntu'
+        packages = %w{redis-server redis-tools}
+        services = %w{redis-server}
+    end
 when "monitoring"
     packages = %w{MariaDB-server MariaDB-client}
     services = %w{mysql}

@@ -29,6 +29,9 @@ default['abiquo']['install_ext_services'] = true
 default['abiquo']['ui_address_type'] = 'fqdn'
 default['abiquo']['ui_address'] = node['fqdn']
 
+# Firewall
+default['firewall']['allow_ssh'] = true
+
 # Common properties
 default['abiquo']['license'] = nil
 
@@ -36,10 +39,14 @@ default['abiquo']['license'] = nil
 default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
 default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0.1:/opt/vm_repository"
 
-# Yum repository configuration
-default['abiquo']['yum']['base-repo'] = "http://mirror.abiquo.com/abiquo/3.8/os/x86_64"
-default['abiquo']['yum']['updates-repo'] = "http://mirror.abiquo.com/abiquo/3.8/updates/x86_64"
+# Repository configuration
+default['abiquo']['repo'] = "cell"
+default['abiquo']['yum']['base-repo'] = nil
+default['abiquo']['yum']['updates-repo'] = nil
 default['abiquo']['yum']['nightly-repo'] = nil
+default['abiquo']['apt']['base-repo'] = nil
+default['abiquo']['apt']['updates-repo'] = nil
+default['abiquo']['apt']['nightly-repo'] = nil
 
 # Database configuration
 default['abiquo']['db']['host'] = "localhost"
@@ -72,6 +79,7 @@ default['abiquo']['aim']['port'] = 8889
 
 # Configure monitoring node
 default['abiquo']['monitoring']['cassandra']['cluster_name'] = 'abiquo'
+default['cassandra']['cluster_name'] = 'abiquo'
 default['abiquo']['monitoring']['kairosdb']['version'] = '0.9.4'
 default['abiquo']['monitoring']['kairosdb']['release'] = '6'
 default['abiquo']['monitoring']['kairosdb']['host'] = 'localhost'

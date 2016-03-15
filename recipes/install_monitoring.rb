@@ -17,15 +17,28 @@
 
 Chef::Recipe.send(:include, Abiquo::Commands)
 
-kairosdb_package = "kairosdb-#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}.rpm"
-kairosdb_url = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{kairosdb_package}"
+case node['platform']
+when 'centos', 'redhat'
+    kairosdb_package = "kairosdb-#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}.rpm"
+    kairosdb_url = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{kairosdb_package}"
+when 'ubuntu'
+    kairosdb_package = "kairosdb_#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}_all.deb"
+    kairosdb_url = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{kairosdb_package}"
+end
 
 remote_file "#{Chef::Config[:file_cache_path]}/#{kairosdb_package}" do
     source kairosdb_url
 end
 
-package "kairosdb" do
-    source "#{Chef::Config[:file_cache_path]}/#{kairosdb_package}"
+case node['platform']
+when 'centos', 'redhat'
+    package "kairosdb" do
+        source "#{Chef::Config[:file_cache_path]}/#{kairosdb_package}"
+    end
+when 'ubuntu'
+    dpkg_package "kairosdb" do
+        source "#{Chef::Config[:file_cache_path]}/#{kairosdb_package}"
+    end
 end
 
 package "jdk" do

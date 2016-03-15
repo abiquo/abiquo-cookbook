@@ -19,7 +19,7 @@ include_recipe "apache2"
 include_recipe "apache2::mod_proxy_ajp"
 include_recipe "apache2::mod_ssl"
 
-%w{liquibase jdk libxslt libxml2}.each do |pkg|
+%w{liquibase jdk}.each do |pkg|
     package pkg do
         action :install
     end
@@ -40,8 +40,19 @@ end
 
 include_recipe "abiquo::certificate"
 
+case node['platform']
+when 'redhat', 'centos'
+    if node['platform_version'].start_with? "7"
+        template_file = "abiquo.conf.2.4.erb"
+    else
+        template_file = "abiquo.conf.2.2.erb"
+    end
+when 'ubuntu'
+    template_file = "abiquo.conf.2.4.erb"
+end
+
 web_app "abiquo" do
-    template "abiquo.conf.erb"
+    template template_file
     server_name node['abiquo']['certificate']['common_name'] 
     cert_file node['abiquo']['certificate']['file']
     key_file node['abiquo']['certificate']['key_file']

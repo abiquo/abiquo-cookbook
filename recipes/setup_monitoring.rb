@@ -28,16 +28,11 @@ template '/opt/kairosdb/conf/kairosdb.properties' do
 end
 
 %w{delorean emmett}.each do |wts|
-    service "abiquo-#{wts}" do
-        action :enable
-        # They still don't handle well reconnections, so restart them when needed
-        subscribes :restart, "service[kairosdb]"
-    end
-    
     file "/etc/abiquo/watchtower/#{wts}-base.conf" do
         owner "root"
         group "root"
         content lazy { ::IO.read("/etc/abiquo/watchtower/#{wts}.conf") }
+        not_if "test -f /etc/abiquo/watchtower/#{wts}-base.conf"
         action :create
     end
 
@@ -49,9 +44,15 @@ end
         action :create
         notifies :restart, "service[abiquo-#{wts}]"
     end
+
+    service "abiquo-#{wts}" do
+        action :enable
+        # They still don't handle well reconnections, so restart them when needed
+        subscribes :restart, "service[kairosdb]"
+    end
 end
 
-# KairosDB might fail to start as C* takes some time until it is started
+# KairosDB might fail to start as Cassandra takes some time until it is started
 # Restart Kairos once everything is up and running
 abiquo_wait_for_port "cassandra" do
     port node['cassandra']['config']['rpc_port'].to_i

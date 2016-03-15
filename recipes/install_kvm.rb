@@ -19,7 +19,7 @@ package "qemu-kvm" do
     action :install
 end
 
-%w{cloud-node sosreport-plugins}.each do |pkg|
+%w{aim sosreport-plugins}.each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end

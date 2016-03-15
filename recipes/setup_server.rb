@@ -15,7 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-template "/var/www/html/ui/config/client-config-custom.json" do
+case node['platform']
+when 'centos', 'redhat'
+    ui_custom_file = "/var/www/html/ui/config/client-config-custom.json"
+when 'ubuntu'
+    ui_custom_file = "/var/www/ui/config/client-config-custom.json"
+end
+
+template "#{ui_custom_file}" do
     source "ui-config.json.erb"
     owner "root"
     group "root"

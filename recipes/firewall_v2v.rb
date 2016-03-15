@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_v2v
+# Recipe:: install_monitoring
 #
 # Copyright 2014, Abiquo
 #
@@ -15,16 +15,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package 'jdk'
-
-include_recipe "java::oracle_jce"
-
-%w{v2v sosreport-plugins}.each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
-end
-
-service 'rpcbind' do
-    action [:enable, :start]
-end
+include_recipe "abiquo::firewall_tomcat"

@@ -33,6 +33,7 @@ module Abiquo
 
         def abiquo_update_available
             installed_pkgs = abiquo_packages.join(" ")
+            return false if installed_pkgs.eql? ""
             installed_cmd = shell_out!("repoquery --installed #{installed_pkgs}")
             installed = installed_cmd.stdout
             available_cmd = shell_out!("repoquery #{installed_pkgs}")

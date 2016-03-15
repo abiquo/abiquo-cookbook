@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_v2v
+# Recipe:: install_monitoring
 #
 # Copyright 2014, Abiquo
 #
@@ -15,16 +15,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package 'jdk'
-
-include_recipe "java::oracle_jce"
-
-%w{v2v sosreport-plugins}.each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
+firewall 'default' do
+  action :install
 end
 
-service 'rpcbind' do
-    action [:enable, :start]
+firewall_rule 'loopback' do
+  interface 'lo'
+  command :allow
+end
+
+unless node['platform_family'].eql? 'debian'
+  firewall_rule 'related-stablished' do
+    stateful [:related, :established]
+    command :allow
+  end
+end
+
+firewall_rule 'icmp' do
+  protocol :icmp
+  command :allow
 end

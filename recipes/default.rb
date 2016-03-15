@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-selinux_state "SELinux Permissive" do
-    action :permissive
+if node['platform'].eql? 'redhat' or node['platform'].eql? 'centos'
+  selinux_state "SELinux Permissive" do
+      action :permissive
+  end
 end
 
+include_recipe "abiquo::firewall"
 include_recipe "abiquo::repository"
 include_recipe "abiquo::install_#{node['abiquo']['profile']}"
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
-
-include_recipe "iptables"
-iptables_rule "firewall-common"
-iptables_rule "firewall-#{node['abiquo']['profile']}"
+include_recipe "abiquo::firewall_#{node['abiquo']['profile']}"

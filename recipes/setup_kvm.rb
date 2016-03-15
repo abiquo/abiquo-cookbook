@@ -24,12 +24,14 @@ unless node['abiquo']['nfs']['location'].nil? # ~FC023
     end
 end
 
-template "/etc/sysconfig/libvirt-guests" do
-    source "libvirt-guests.erb"
-    owner "root"
-    group "root"
-    action :create
-    notifies :restart, "service[abiquo-aim]"
+if node['platform'].eql? 'centos' or node['platform'].eql? 'redhat'
+    template "/etc/sysconfig/libvirt-guests" do
+        source "libvirt-guests.erb"
+        owner "root"
+        group "root"
+        action :create
+        notifies :restart, "service[abiquo-aim]"
+    end
 end
 
 template "/etc/abiquo-aim.ini" do

@@ -30,12 +30,14 @@ recipe 'abiquo::install_ext_services', 'Installs Abiquo supporting services (Mar
 recipe 'abiquo::service', 'Manages Abiquo tomcat service'
 
 supports 'centos', '>= 6.7'
+supports 'ubuntu', '14.04'
 
 depends 'apache2', '~> 3.1.0'
 depends 'cassandra-dse', '~> 4.1.0'
-depends 'iptables', '~> 2.0.1'
+depends 'firewall', '~> 2.5.0'
 depends 'java', '~> 1.39.0'
 depends 'java-management', '~> 1.0.3'
 depends 'selinux', '~> 0.9.0'
 depends 'ssl_certificate', '~> 1.11.0'
 depends 'yum', '~> 3.8.2'
+depends 'apt', '~> 2.9.2'

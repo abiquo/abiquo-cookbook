@@ -15,65 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Chef::Recipe.send(:include, Abiquo::Packages)
-
-execute "clean-yum-cache" do
-    command "yum clean all"
-    action :nothing
-end
-
-directory "/var/cache/yum" do
-    ignore_failure true
-    recursive true
-    action :nothing
-end
-
-package "epel-release" do
-    action :install
-end
-
-gpg_keys = gpg_key_files.join(" ")
-
-yum_repository "abiquo-base" do
-    description "Abiquo base repository"
-    baseurl node['abiquo']['yum']['base-repo']
-    gpgcheck true
-    gpgkey gpg_keys
-    action :create
-    subscribes :create, "package[abiquo-release-ee]", :immediately
-    notifies :delete, 'directory[/var/cache/yum]', :immediately
-    notifies :run, 'execute[clean-yum-cache]', :immediately
-end
-
-yum_repository "abiquo-updates" do
-    description "Abiquo updates repository"
-    baseurl node['abiquo']['yum']['updates-repo']
-    gpgcheck true
-    gpgkey gpg_keys
-    action :create
-    subscribes :create, "package[abiquo-release-ee]", :immediately
-    notifies :delete, 'directory[/var/cache/yum]', :immediately
-    notifies :run, 'execute[clean-yum-cache]', :immediately
-end
-
-yum_repository "abiquo-nightly" do
-    description "Abiquo nightly packages"
-    baseurl node['abiquo']['yum']['nightly-repo']
-    gpgcheck false
-    gpgkey gpg_keys
-    action :create
-    notifies :delete, 'directory[/var/cache/yum]', :immediately
-    notifies :run, 'execute[clean-yum-cache]', :immediately
-    not_if { node['abiquo']['yum']['nightly-repo'].nil? }
-end
-
-# This package contains the gpgkey file, so the signature cannot
-# be validated when installing it.
-package "abiquo-release-ee" do
-    options "--nogpgcheck"
-    action :install
-end
-
-package 'yum-utils' do
-    action :install
+case node['platform']
+when 'redhat', 'centos'
+    include_recipe 'abiquo::repository_rpm'
+when 'ubuntu'
+    include_recipe 'abiquo::repository_deb'
 end
