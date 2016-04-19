@@ -79,8 +79,11 @@ describe 'abiquo::install_monitoring' do
 
     it 'installs the database by default' do
         chef_run.converge(described_recipe)
+        expect(chef_run).to run_execute('create-watchtower-database').with(
+            :command => '/usr/bin/mysql -h localhost -P 3306 -u root -e \'CREATE SCHEMA watchtower\''
+        )
         expect(chef_run).to run_execute('install-watchtower-database').with(
-            :command => '/usr/bin/mysql -h localhost -P 3306 -u root < /usr/share/doc/abiquo-watchtower/database/watchtower_schema.sql'
+            :command => '/usr/bin/mysql -h localhost -P 3306 -u root watchtower < /usr/share/doc/abiquo-watchtower/database/watchtower_schema.sql'
         )
     end
 

@@ -68,3 +68,5 @@ suites:
     attributes:
       abiquo:
         profile: monitoring
+      rabbitmq:
+        version: 3.5.4
