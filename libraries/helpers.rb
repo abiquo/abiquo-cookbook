@@ -47,7 +47,7 @@ module Abiquo
             mysqlcmd += " -P #{props['port']}"
             mysqlcmd += " -u #{props['user']}"
             unless props['password'].nil? or props['password'].empty?
-                mysqlcmd += " -p #{props['password']}"
+                mysqlcmd += " -p#{props['password']}"
             end
             mysqlcmd
         end

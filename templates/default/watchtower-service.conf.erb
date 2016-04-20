@@ -4,7 +4,7 @@ include file("/etc/abiquo/watchtower/<%= @watchtower_service %>-base.conf")
     database {
         url = "jdbc:mysql://<%= node['abiquo']['monitoring']['db']['host'] %>:<%= node['abiquo']['monitoring']['db']['port'] %>/watchtower"
         username = "<%= node['abiquo']['monitoring']['db']['user'] %>"
-        password = "<%= node['abiquo']['monitoring']['db']['passwrod'] %>"
+        password = "<%= node['abiquo']['monitoring']['db']['password'] %>"
     }
 
     kairosdb {

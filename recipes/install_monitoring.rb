@@ -51,6 +51,10 @@ include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_ser
 end
 
 if node['abiquo']['monitoring']['db']['install']
+    package "MariaDB-client" do
+    	action :install
+    end
+
     mysqlcmd = mysql_cmd node['abiquo']['monitoring']['db']
     
     execute "create-watchtower-database" do
