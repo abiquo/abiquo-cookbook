@@ -47,18 +47,18 @@ end
 execute "create-abiquo-rabbit-user" do
     command "rabbitmqctl add_user #{node['abiquo']['properties']['abiquo.rabbitmq.username']} #{node['abiquo']['properties']['abiquo.rabbitmq.username']}"
     action :nothing
-    subscribes :run, "service[rabbitmq-server]"
+    subscribes :run, "service[rabbitmq-server]", :immediately
     not_if "rabbitmqctl list_users | egrep -q '^#{node['abiquo']['properties']['abiquo.rabbitmq.username']}.*'"
 end
 
 execute "set-abiquo-rabbit-user-administrator" do
     command "rabbitmqctl set_user_tags #{node['abiquo']['properties']['abiquo.rabbitmq.username']} administrator"
     action :nothing
-    subscribes :run, "execute[create-abiquo-rabbit-user]"
+    subscribes :run, "execute[create-abiquo-rabbit-user]", :immediately
 end
 
 execute "set-abiquo-rabbit-user-permissions" do
     command "rabbitmqctl set_permissions -p / #{node['abiquo']['properties']['abiquo.rabbitmq.username']} '.*' '.*' '.*'"
     action :nothing
-    subscribes :run, "execute[create-abiquo-rabbit-user]"
+    subscribes :run, "execute[create-abiquo-rabbit-user]", :immediately
 end

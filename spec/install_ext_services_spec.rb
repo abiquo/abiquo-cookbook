@@ -79,16 +79,16 @@ describe 'abiquo::install_ext_services' do
         resource = chef_run.find_resource(:execute, 'create-abiquo-rabbit-user')
         expect(resource).to do_nothing
         expect(resource.command).to eq('rabbitmqctl add_user abiquo abiquo')
-        expect(resource).to subscribe_to('service[rabbitmq-server]').on(:run).delayed
+        expect(resource).to subscribe_to('service[rabbitmq-server]').on(:run).immediately
 
         resource = chef_run.find_resource(:execute, 'set-abiquo-rabbit-user-administrator')
         expect(resource).to do_nothing
         expect(resource.command).to eq('rabbitmqctl set_user_tags abiquo administrator')
-        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
+        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).immediately
 
         resource = chef_run.find_resource(:execute, 'set-abiquo-rabbit-user-permissions')
         expect(resource).to do_nothing
         expect(resource.command).to eq("rabbitmqctl set_permissions -p / abiquo '.*' '.*' '.*'")
-        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
+        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).immediately
     end
 end
