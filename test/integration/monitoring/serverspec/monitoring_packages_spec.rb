@@ -23,6 +23,10 @@ describe 'Monitoring packages' do
         expect(package('jdk')).to be_installed
     end
 
+    it 'has the mariadb client package installed' do
+        expect(package('MariaDB-client')).to be_installed
+    end
+
     it 'has the kairosdb package installed' do
         expect(package('kairosdb')).to be_installed
     end

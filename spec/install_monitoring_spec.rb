@@ -18,13 +18,14 @@ describe 'abiquo::install_monitoring' do
     let(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
             node.set['abiquo']['profile'] = 'monitoring'
-        end
+            node.set['abiquo']['monitoring']['db']['password'] = 'pass'
+        end.converge(described_recipe)
     end
     let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}-#{chef_run.node['abiquo']['monitoring']['kairosdb']['release']}.rpm" }
     let(:url) { "https://github.com/kairosdb/kairosdb/releases/download/v#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}/#{pkg}" }
 
     before do
-        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root watchtower -e 'SELECT 1'").and_return(false)
+        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root -ppass watchtower -e 'SELECT 1'").and_return(false)
     end
 
     it 'downloads the kairosdb package' do
@@ -78,18 +79,23 @@ describe 'abiquo::install_monitoring' do
     end
 
     it 'installs the database by default' do
-        chef_run.converge(described_recipe, 'abiquo::service')
+        chef_run.node.set['abiquo']['install_ext_services'] = false
+        chef_run.converge(described_recipe)
+        expect(chef_run).to install_package('MariaDB-client')
         expect(chef_run).to run_execute('create-watchtower-database').with(
-            :command => '/usr/bin/mysql -h localhost -P 3306 -u root -e \'CREATE SCHEMA watchtower\''
+            :command => '/usr/bin/mysql -h localhost -P 3306 -u root -ppass -e \'CREATE SCHEMA watchtower\''
         )
         expect(chef_run).to run_execute('install-watchtower-database').with(
-            :command => '/usr/bin/mysql -h localhost -P 3306 -u root watchtower < /usr/share/doc/abiquo-watchtower/database/watchtower_schema.sql'
+            :command => '/usr/bin/mysql -h localhost -P 3306 -u root -ppass watchtower < /usr/share/doc/abiquo-watchtower/database/watchtower_schema.sql'
         )
     end
 
     it 'does not install the database if not configured' do
         chef_run.node.set['abiquo']['monitoring']['db']['install'] = false
-        chef_run.converge(described_recipe, 'abiquo::service')
+        chef_run.node.set['abiquo']['install_ext_services'] = false
+        chef_run.converge(described_recipe)
+        expect(chef_run).to_not install_package('MariaDB-client')
+        expect(chef_run).to_not run_execute('create-watchtower-database')
         expect(chef_run).to_not run_execute('install-watchtower-database')
     end
 end
