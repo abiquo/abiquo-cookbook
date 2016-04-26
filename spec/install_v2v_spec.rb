@@ -15,7 +15,7 @@
 require 'spec_helper'
 
 describe 'abiquo::install_v2v' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe, 'abiquo::service') }
 
     it "installs the jdk package" do
         expect(chef_run).to install_package("jdk")

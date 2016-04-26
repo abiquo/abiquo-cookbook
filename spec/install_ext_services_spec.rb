@@ -22,14 +22,14 @@ describe 'abiquo::install_ext_services' do
     end
 
     it 'uninstalls mysql-libs package' do
-        chef_run.converge(described_recipe)
+        chef_run.converge(described_recipe, 'abiquo::service')
         expect(chef_run).to purge_package('mysql-libs')
     end
 
     %w{monolithic server}.each do |profile|
         it "installs the #{profile} system packages" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge(described_recipe)
+            chef_run.converge(described_recipe, 'abiquo::service')
             %w{MariaDB-server MariaDB-client redis rabbitmq-server}.each do |pkg|
                 expect(chef_run).to install_package(pkg)
             end
@@ -37,7 +37,7 @@ describe 'abiquo::install_ext_services' do
         
         it "configures the #{profile} services" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge(described_recipe)
+            chef_run.converge(described_recipe, 'abiquo::service')
             %w{mysql rabbitmq-server redis}.each do |svc|
                 expect(chef_run).to enable_service(svc)
                 expect(chef_run).to start_service(svc)
@@ -47,20 +47,20 @@ describe 'abiquo::install_ext_services' do
         
     it "installs the remoteservices system packages" do
         chef_run.node.set['abiquo']['profile'] = "remoteservices"
-        chef_run.converge(described_recipe)
+        chef_run.converge(described_recipe, 'abiquo::service')
         expect(chef_run).to install_package("redis")
     end
  
     it "configures the remoteservices services" do
         chef_run.node.set['abiquo']['profile'] = "remoteservices"
-        chef_run.converge(described_recipe)
+        chef_run.converge(described_recipe, 'abiquo::service')
         expect(chef_run).to enable_service("redis")
         expect(chef_run).to start_service("redis")
     end
     
     it "installs the monitoring system packages" do
         chef_run.node.set['abiquo']['profile'] = "monitoring"
-        chef_run.converge(described_recipe)
+        chef_run.converge(described_recipe, 'abiquo::service')
         %w{MariaDB-server MariaDB-client}.each do |pkg|
             expect(chef_run).to install_package(pkg)
         end
@@ -68,27 +68,28 @@ describe 'abiquo::install_ext_services' do
 
     it "configures the monitoring services" do
         chef_run.node.set['abiquo']['profile'] = "monitoring"
-        chef_run.converge(described_recipe)
+        chef_run.converge(described_recipe, 'abiquo::service')
         expect(chef_run).to enable_service("mysql")
         expect(chef_run).to start_service("mysql")
     end
 
     it "creates a rabbit user for Abiquo" do
-        chef_run.converge(described_recipe)
+        chef_run.converge(described_recipe, 'abiquo::service')
 
         resource = chef_run.find_resource(:execute, 'create-abiquo-rabbit-user')
         expect(resource).to do_nothing
         expect(resource.command).to eq('rabbitmqctl add_user abiquo abiquo')
-        expect(resource).to subscribe_to('service[rabbitmq-server]').on(:run).immediately
+        expect(resource).to subscribe_to('service[rabbitmq-server]').on(:run).delayed
 
         resource = chef_run.find_resource(:execute, 'set-abiquo-rabbit-user-administrator')
         expect(resource).to do_nothing
         expect(resource.command).to eq('rabbitmqctl set_user_tags abiquo administrator')
-        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).immediately
+        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
 
         resource = chef_run.find_resource(:execute, 'set-abiquo-rabbit-user-permissions')
         expect(resource).to do_nothing
         expect(resource.command).to eq("rabbitmqctl set_permissions -p / abiquo '.*' '.*' '.*'")
-        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).immediately
+        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
+        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 end
