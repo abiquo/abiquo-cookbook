@@ -90,6 +90,6 @@ describe 'abiquo::install_ext_services' do
         expect(resource).to do_nothing
         expect(resource.command).to eq("rabbitmqctl set_permissions -p / abiquo '.*' '.*' '.*'")
         expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
-        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).immediately
     end
 end
