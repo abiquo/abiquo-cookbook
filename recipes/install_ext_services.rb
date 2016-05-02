@@ -61,5 +61,4 @@ execute "set-abiquo-rabbit-user-permissions" do
     command "rabbitmqctl set_permissions -p / #{node['abiquo']['properties']['abiquo.rabbitmq.username']} '.*' '.*' '.*'"
     action :nothing
     subscribes :run, "execute[create-abiquo-rabbit-user]"
-    notifies :restart, "service[abiquo-tomcat]", :immediately
 end

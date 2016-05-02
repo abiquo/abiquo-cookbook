@@ -73,8 +73,8 @@ describe 'abiquo::install_ext_services' do
         expect(chef_run).to start_service("mysql")
     end
 
-    it "creates a rabbit user for Abiquo" do
-        chef_run.converge(described_recipe, 'abiquo::service')
+    it "creates a rabbit user and sets the permissions" do
+        chef_run.converge(described_recipe)
 
         resource = chef_run.find_resource(:execute, 'create-abiquo-rabbit-user')
         expect(resource).to do_nothing
@@ -90,6 +90,5 @@ describe 'abiquo::install_ext_services' do
         expect(resource).to do_nothing
         expect(resource.command).to eq("rabbitmqctl set_permissions -p / abiquo '.*' '.*' '.*'")
         expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
-        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).immediately
     end
 end

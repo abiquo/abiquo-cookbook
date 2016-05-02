@@ -21,6 +21,17 @@ describe 'abiquo::service' do
         chef_run.converge(described_recipe)
         expect(chef_run).to enable_service('abiquo-tomcat')
         expect(chef_run).to start_service('abiquo-tomcat')
+
+        resource = chef_run.find_resource(:service, 'abiquo-tomcat')
+        expect(resource).to_not subscribe_to('execute[set-abiquo-rabbit-user-permissions]')
+    end
+
+    it 'subscribes to restart if rabbit configuration changed' do
+        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
+        chef_run.converge('abiquo::install_ext_services', described_recipe)
+
+        resource = chef_run.find_resource(:service, 'abiquo-tomcat')
+        expect(resource).to subscribe_to('execute[set-abiquo-rabbit-user-permissions]').on(:restart).immediately
     end
 
     it 'renders tomcat configuration file' do
