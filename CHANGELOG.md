@@ -1,6 +1,10 @@
 abiquo CHANGELOG
 ================
 
+## 0.7.3
+
+* Properly restart tomcat after configuring users in RabbitMQ
+
 ## 0.7.2
 
 * Create the monitoring schema when installing the monitoring nodes
