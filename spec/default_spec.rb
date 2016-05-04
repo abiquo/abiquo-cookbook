@@ -32,14 +32,14 @@ describe 'abiquo::default' do
     end
 
     it 'changes selinux to permissive' do
-        chef_run.converge(described_recipe, 'abiquo::service')
+        chef_run.converge(described_recipe)
         expect(chef_run).to permissive_selinux_state("SELinux Permissive")
     end
 
     %w{monolithic server v2v remoteservices kvm monitoring}.each do |profile|
         it "includes the recipes for the #{profile} profile" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge(described_recipe, 'abiquo::service')
+            chef_run.converge(described_recipe)
             expect(chef_run).to include_recipe('abiquo::repository')
             expect(chef_run).to include_recipe("abiquo::install_#{profile}")
             expect(chef_run).to include_recipe("abiquo::setup_#{profile}")
@@ -47,7 +47,7 @@ describe 'abiquo::default' do
 
         it "configures the #{profile} firewall" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge(described_recipe, 'abiquo::service')
+            chef_run.converge(described_recipe)
             expect(chef_run).to include_recipe('iptables')
             expect(chef_run).to enable_iptables_rule('firewall-common')
             expect(chef_run).to enable_iptables_rule("firewall-#{profile}")
