@@ -20,7 +20,7 @@ describe 'abiquo::default' do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
             node.set['cassandra']['config']['cluster_name'] = 'abiquo'
             node.set['abiquo']['certificate']['common_name'] = 'test.local'
-        end.converge(described_recipe)
+        end
     end
     let(:cn) { 'test.local' }
     

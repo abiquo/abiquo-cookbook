@@ -73,7 +73,7 @@ describe 'abiquo::install_ext_services' do
         expect(chef_run).to start_service("mysql")
     end
 
-    it "creates a rabbit user for Abiquo" do
+    it "creates a rabbit user for and sets the permissions" do
         chef_run.converge(described_recipe)
 
         resource = chef_run.find_resource(:execute, 'create-abiquo-rabbit-user')
