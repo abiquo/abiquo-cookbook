@@ -7,5 +7,6 @@ platforms:
     attributes:
       abiquo:
         yum:
-          nightly-repo: http://10.60.20.42/<%= ENV['CI_BRANCH']%>/rpm
+          updates-repo: http://10.60.20.42/<%= ENV['CI_BRANCH']%>/rpm
+          gpg-check: false
     <% end %>
