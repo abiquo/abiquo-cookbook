@@ -75,29 +75,6 @@ describe 'abiquo::repository' do
         expect(resource).to notify('execute[clean-yum-cache]').to(:run).immediately
     end
 
-    it 'creates does not create the nightly packages repository by default' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to_not create_yum_repository('abiquo-nightly')
-    end
-
-    it 'creates the nightly packages repository' do
-        chef_run.node.set['abiquo']['yum']['nightly-repo'] = 'http://localhost/abiquo/packages/nightly'
-        chef_run.converge(described_recipe)
-        expect(chef_run).to create_yum_repository('abiquo-nightly').with(
-            :description => 'Abiquo nightly packages',
-            :baseurl => 'http://localhost/abiquo/packages/nightly',
-            :gpgcheck => false,
-            :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
-        )
-        resource = chef_run.find_resource(:yum_repository, 'abiquo-nightly')
-        expect(resource).to notify('directory[/var/cache/yum]').to(:delete).immediately
-        expect(resource).to notify('execute[clean-yum-cache]').to(:run).immediately
-    end
-
     it 'installs the abiquo-release-ee package' do
         chef_run.converge(described_recipe)
         expect(chef_run).to install_package('abiquo-release-ee').with(

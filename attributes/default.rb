@@ -39,7 +39,7 @@ default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0
 # Yum repository configuration
 default['abiquo']['yum']['base-repo'] = "http://mirror.abiquo.com/abiquo/3.8/os/x86_64"
 default['abiquo']['yum']['updates-repo'] = "http://mirror.abiquo.com/abiquo/3.8/updates/x86_64"
-default['abiquo']['yum']['nightly-repo'] = nil
+default['abiquo']['yum']['gpg-check'] = true
 
 # Database configuration
 default['abiquo']['db']['host'] = "localhost"

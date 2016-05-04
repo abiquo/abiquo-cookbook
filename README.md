@@ -8,7 +8,7 @@ Abiquo Cookbook
 This cookbook provides several recipes to install an upgrade an Abiquo platform.
 It allows to provision an Abiquo Server, the Remote Services server, standalone V2V
 server, monitoring server and a KVM hypervisor from scratch, as long as upgrading 
-an existing Abiquo installation using the latest nightly builds.
+an existing Abiquo installation.
 
 # Requirements
 
@@ -63,9 +63,9 @@ Attribute | Description | Type | Default
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['license']` | The Abiquo license to install | String | nil
 `['properties']` | Hash with additional Abiquo properties to add to the Abiquo configuration file | Hash | {}
-`['yum']['base-repo']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/os/x86_64"
-`['yum']['update-repo']` | The Abiquo updates yum repository | String | "http://mirror.abiquo.com/abiquo/3.6/updates/x86_64"
-`['yum']['nightly-repo']` | A yum repository with nightly builds | String | nil
+`['yum']['base-repo']` | The main Abiquo yum repository | String | "http://mirror.abiquo.com/abiquo/3.8/os/x86_64"
+`['yum']['update-repo']` | The Abiquo updates yum repository | String | "http://mirror.abiquo.com/abiquo/3.8/updates/x86_64"
+`['yum']['gpg-check']` | Whether or not to validate the package signatures when installing | Boolean | true
 `['db']['host']` | The database host used when running the database upgrade | String | "localhost""
 `['db']['port']` | The database port used when running the database upgrade | Integer | 3306
 `['db']['user']` | The database user used when running the database upgrade | String | "root"

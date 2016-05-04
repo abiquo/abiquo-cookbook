@@ -3,6 +3,20 @@ abiquo CHANGELOG
 
 ## 0.8.0
 
+* Removed the Abiquo nightly repository.
+
+## 0.7.3
+
+* Properly restart tomcat after configuring users in RabbitMQ
+
+## 0.7.2
+
+* Create the monitoring schema when installing the monitoring nodes
+
+## 0.7.1
+
+* Cookbook metadata fixes
+
 ## 0.7.0
 
 * Install the websockify package for VM remote access.
