@@ -22,8 +22,8 @@ end
 
 case node['abiquo']['profile']
 when "monolithic", "server"
-    packages = %w{MariaDB-server MariaDB-client redis rabbitmq-server}
-    services = %w{mysql redis rabbitmq-server}
+    packages = %w{MariaDB-server MariaDB-client redis rabbitmq-server cronie}
+    services = %w{mysql redis rabbitmq-server crond}
 when "remoteservices"
     packages = %w{redis}
     services = %w{redis}
@@ -62,3 +62,4 @@ execute "set-abiquo-rabbit-user-permissions" do
     action :nothing
     subscribes :run, "execute[create-abiquo-rabbit-user]"
 end
+

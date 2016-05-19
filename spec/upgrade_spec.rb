@@ -16,11 +16,16 @@ require 'spec_helper'
 require_relative 'support/packages'
 
 describe 'abiquo::upgrade' do
-    let(:chef_run) { ChefSpec::SoloRunner.new(internal_locale: 'en_US.UTF-8') }
+    let(:chef_run) do
+        ChefSpec::SoloRunner.new(internal_locale: 'en_US.UTF-8') do |node|
+            node.set['abiquo']['certificate']['common_name'] = 'test.local'
+        end
+    end
 
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("service abiquo-tomcat stop").and_return(true)
+        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(false)
         allow(::File).to receive(:executable?).with('/usr/bin/repoquery').and_return(true)
         stub_package_commands(['abiquo-api', 'abiquo-server'])
     end
@@ -34,7 +39,7 @@ describe 'abiquo::upgrade' do
     end
 
     it 'logs a message if there are upgrades' do
-        chef_run.converge('apache2::default', described_recipe)
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
         expect(chef_run).to write_log("Abiquo updates available.")
     end
 
@@ -53,13 +58,24 @@ describe 'abiquo::upgrade' do
     end
 
     it 'performs upgrade if there are new rpms' do
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-        expect(chef_run.find_resource(:service, 'abiquo-tomcat')).not_to be_nil
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service', 'abiquo::install_server')
+        expect(chef_run.find_resource(:service, 'abiquo-tomcat')).to_not be_nil
         expect(chef_run.find_resource(:service, 'abiquo-aim')).to be_nil
-        expect(chef_run.find_resource(:package, 'abiquo-api')).not_to be_nil
+        expect(chef_run.find_resource(:package, 'abiquo-api')).to_not be_nil
     end
 
-    %w{monolithic remoteservices server v2v}.each do |profile|
+    %w{monolithic server}.each do |profile|
+        it "stops the #{profile} services" do
+            chef_run.node.set['abiquo']['profile'] = profile
+            chef_run.converge('apache2::default', described_recipe, 'abiquo::service', 'abiquo::install_server')
+            expect(chef_run).to stop_service('abiquo-tomcat')
+            expect(chef_run).to_not stop_service('abiquo-aim')
+            expect(chef_run).to_not stop_service('abiquo-delorean')
+            expect(chef_run).to_not stop_service('abiquo-emmett')
+        end
+    end
+
+    %w{remoteservices v2v}.each do |profile|
         it "stops the #{profile} services" do
             chef_run.node.set['abiquo']['profile'] = profile
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
@@ -89,12 +105,12 @@ describe 'abiquo::upgrade' do
     end
 
     it 'includes the repository recipe' do
-        chef_run.converge('apache2::default', described_recipe)
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
         expect(chef_run).to include_recipe('abiquo::repository')
     end
 
     it 'upgrades the abiquo packages on monolithic' do
-        chef_run.converge('apache2::default',described_recipe)
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
         %w{abiquo-api abiquo-server}.each do |pkg|
             expect(chef_run).to upgrade_package(pkg)
         end
@@ -102,7 +118,7 @@ describe 'abiquo::upgrade' do
 
     it 'upgrades the abiquo packages on server' do
         chef_run.node.set['abiquo']['profile'] = 'server'
-        chef_run.converge('apache2::default',described_recipe)
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
         %w{abiquo-api abiquo-server}.each do |pkg|
             expect(chef_run).to upgrade_package(pkg)
         end
@@ -138,11 +154,11 @@ describe 'abiquo::upgrade' do
     it 'does not run liquibase if not configured' do
         chef_run.node.set['abiquo']['db']['upgrade'] = false
         chef_run.node.set['abiquo']['profile'] = 'monolithic'
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::install_server', 'abiquo::service')
         expect(chef_run).to_not run_execute('liquibase-update')
     end
 
-    %w{kvm remoteservices monitoring}.each do |profile|
+    %w{kvm remoteservices monitoring v2v}.each do |profile|
         it "does not run liquibase when #{profile}" do
             chef_run.node.set['abiquo']['db']['upgrade'] = true
             chef_run.node.set['abiquo']['profile'] = profile
@@ -152,7 +168,7 @@ describe 'abiquo::upgrade' do
     end
 
     it 'runs the liquibase update when monolithic' do
-        chef_run.converge('apache2::default', described_recipe)
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
         resource = chef_run.find_resource(:execute, 'liquibase-update')
         expect(resource).to subscribe_to("package[abiquo-server]").on(:run).immediately
         expect(resource).to do_nothing
@@ -162,9 +178,10 @@ describe 'abiquo::upgrade' do
     end
 
     it 'runs the liquibase update with custom attributes' do
+        stub_command("/usr/bin/mysql -h 127.0.0.1 -P 3306 -u root -pabiquo kinton -e 'SELECT 1'").and_return(false)
         chef_run.node.set['abiquo']['db']['host'] = '127.0.0.1'
         chef_run.node.set['abiquo']['db']['password'] = 'abiquo'
-        chef_run.converge('apache2::default', described_recipe)
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
         resource = chef_run.find_resource(:execute, 'liquibase-update')
         expect(resource).to subscribe_to("package[abiquo-server]").on(:run).immediately
         expect(resource).to do_nothing
@@ -173,9 +190,21 @@ describe 'abiquo::upgrade' do
         expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 
-    %w{monolithic remoteservices server v2v}.each do |profile|
+    %w{monolithic server}.each do |profile|
         it "starts the #{profile} services" do
             chef_run.node.set['abiquo']['profile'] = profile
+            chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
+            expect(chef_run).to start_service('abiquo-tomcat')
+            expect(chef_run).to_not start_service('abiquo-aim')
+            expect(chef_run).to_not start_service('abiquo-delorean')
+            expect(chef_run).to_not start_service('abiquo-emmett')
+        end
+    end
+
+    %w{remoteservices v2v}.each do |profile|
+        it "starts the #{profile} services" do
+            chef_run.node.set['abiquo']['profile'] = profile
+            # Remote Services and V2V do not need to include the install_server recipe
             chef_run.converge('apache2::default', described_recipe)
             expect(chef_run).to start_service('abiquo-tomcat')
             expect(chef_run).to_not start_service('abiquo-aim')
@@ -202,7 +231,15 @@ describe 'abiquo::upgrade' do
         expect(chef_run).to start_service('abiquo-emmett')
     end
 
-    %w(monolithic remoteservices kvm monitoring server v2v).each do |profile|
+    %w(monolithic server).each do |profile|
+        it "includes the #{profile} setup recipe" do
+            chef_run.node.set['abiquo']['profile'] = profile
+            chef_run.converge('apache2::default', described_recipe, 'abiquo::service', 'abiquo::install_server')
+            expect(chef_run).to include_recipe("abiquo::setup_#{profile}")
+        end
+    end
+
+    %w(remoteservices kvm monitoring v2v).each do |profile|
         it "includes the #{profile} setup recipe" do
             chef_run.node.set['abiquo']['profile'] = profile
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')

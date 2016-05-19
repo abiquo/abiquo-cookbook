@@ -20,7 +20,7 @@ describe 'Server packages' do
     end
 
     it 'has the system packages installed' do
-        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk}.each do |pkg|
+        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk cronie}.each do |pkg|
             expect(package(pkg)).to be_installed
         end
     end
@@ -33,7 +33,7 @@ describe 'Server packages' do
 
     it 'does not have other abiquo installed' do
         %w{remote-services monolithic nodecollector}.each do |pkg|
-            expect(package("abiquo-#{pkg}")).not_to be_installed
+            expect(package("abiquo-#{pkg}")).to_not be_installed
         end
     end
 

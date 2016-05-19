@@ -15,6 +15,11 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Server services' do
+    it 'has crond running' do
+        expect(service('crond')).to be_enabled
+        expect(service('crond')).to be_running
+    end
+
     it 'has mysql running' do
         expect(service('mysql')).to be_enabled
         expect(service('mysql')).to be_running
@@ -70,6 +75,7 @@ describe 'Server services' do
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8010 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 5672 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT')
+        expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 41337 -j ACCEPT')
         expect(iptables).to have_rule('-P INPUT DROP')
 
         # Cannot use have_rule with comma

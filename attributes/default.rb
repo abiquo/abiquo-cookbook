@@ -128,3 +128,9 @@ when "remoteservices"
     default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
     default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
 end
+
+# Configure Abiquo websockify
+default['abiquo']['websockify']['port'] = 41337
+default['abiquo']['websockify']['crt']  = node['abiquo']['certificate']['file']
+default['abiquo']['websockify']['key']  = node['abiquo']['certificate']['key_file']
+

@@ -20,7 +20,7 @@ describe 'Monolithic packages' do
     end
 
     it 'has the system packages installed' do
-        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk ec2-api-tools}.each do |pkg|
+        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk ec2-api-tools cronie}.each do |pkg|
             expect(package(pkg)).to be_installed
         end
     end

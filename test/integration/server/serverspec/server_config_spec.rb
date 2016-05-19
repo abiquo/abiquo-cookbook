@@ -22,6 +22,17 @@ describe 'Server configuration' do
         end
     end
 
+    it 'has websockify service script configured' do
+        expect(file('/etc/init.d/websockify')).to contain("WEBSOCKIFY_PORT=41337")
+        expect(file('/etc/init.d/websockify')).to contain("CERT_FILE=/etc/pki/abiquo/server.abiquo.com.crt")
+        expect(file('/etc/init.d/websockify')).to contain("KEY_FILE=/etc/pki/abiquo/server.abiquo.com.key")
+    end
+
+    it 'has novnc_tokens cron task configured' do
+        expect(file('/etc/cron.d/novnc_tokens')).to_not be_executable
+        expect(file('/etc/cron.d/novnc_tokens')).to contain("* * * * * root /opt/websockify/novnc_tokens.rb -a http://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc")
+    end
+
     it 'has apache mappings to tomcat configured' do
         %w{api m legal}.each do |webapp|
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("<Location /#{webapp}>")
@@ -53,9 +64,9 @@ describe 'Server configuration' do
     end
 
     it 'has the M user properly configured' do
-        expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.identity = default_outbound_api_user") 
+        expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.identity = default_outbound_api_user")
         # Credential is auto generated but at least we want to check it is set
-        expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.credential = ") 
+        expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.credential = ")
     end
 
     it 'has a user in rabbit for Abiquo' do

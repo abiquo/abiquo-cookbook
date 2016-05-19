@@ -38,11 +38,18 @@ service 'websockify' do
     action [:enable, :start]
 end
 
+file "/etc/cron.d/novnc_tokens" do
+    owner "root"
+    group "root"
+    mode  "0644"
+    action :create
+end
+
 include_recipe "abiquo::certificate"
 
 web_app "abiquo" do
     template "abiquo.conf.erb"
-    server_name node['abiquo']['certificate']['common_name'] 
+    server_name node['abiquo']['certificate']['common_name']
     cert_file node['abiquo']['certificate']['file']
     key_file node['abiquo']['certificate']['key_file']
     ca_file node['abiquo']['certificate']['ca_file']

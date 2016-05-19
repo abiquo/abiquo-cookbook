@@ -30,34 +30,34 @@ describe 'abiquo::install_ext_services' do
         it "installs the #{profile} system packages" do
             chef_run.node.set['abiquo']['profile'] = profile
             chef_run.converge(described_recipe)
-            %w{MariaDB-server MariaDB-client redis rabbitmq-server}.each do |pkg|
+            %w{MariaDB-server MariaDB-client redis rabbitmq-server cronie}.each do |pkg|
                 expect(chef_run).to install_package(pkg)
             end
         end
-        
+
         it "configures the #{profile} services" do
             chef_run.node.set['abiquo']['profile'] = profile
             chef_run.converge(described_recipe)
-            %w{mysql rabbitmq-server redis}.each do |svc|
+            %w{mysql rabbitmq-server redis crond}.each do |svc|
                 expect(chef_run).to enable_service(svc)
                 expect(chef_run).to start_service(svc)
             end
         end
     end
-        
+
     it "installs the remoteservices system packages" do
         chef_run.node.set['abiquo']['profile'] = "remoteservices"
         chef_run.converge(described_recipe)
         expect(chef_run).to install_package("redis")
     end
- 
+
     it "configures the remoteservices services" do
         chef_run.node.set['abiquo']['profile'] = "remoteservices"
         chef_run.converge(described_recipe)
         expect(chef_run).to enable_service("redis")
         expect(chef_run).to start_service("redis")
     end
-    
+
     it "installs the monitoring system packages" do
         chef_run.node.set['abiquo']['profile'] = "monitoring"
         chef_run.converge(described_recipe)

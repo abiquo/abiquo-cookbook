@@ -28,4 +28,17 @@ template "/var/www/html/ui/config/client-config-custom.json" do
     notifies :restart, "service[apache2]"
 end
 
+template "/etc/init.d/websockify" do
+    source "websockify.erb"
+    owner "root"
+    group "root"
+    variables({
+        :websockify_port => node['abiquo']['websockify']['port'],
+        :websockify_key => node['abiquo']['websockify']['key'],
+        :websockify_crt => node['abiquo']['websockify']['crt']
+    })
+    action :create
+    notifies :restart, "service[websockify]"
+end
+
 include_recipe "abiquo::service"

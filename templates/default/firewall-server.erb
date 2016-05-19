@@ -9,6 +9,9 @@
 
 # MySQL
 -A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
+
+# Websockify
+-A INPUT -p tcp -m tcp --dport <%= node['abiquo']['websockify']['port'] %> -j ACCEPT
 <% end %>
 
 <%= render "firewall-tomcat.erb" %>
