@@ -56,14 +56,21 @@ if node['abiquo']['monitoring']['db']['install']
     end
 
     mysqlcmd = mysql_cmd node['abiquo']['monitoring']['db']
-    
+
     execute "create-watchtower-database" do
         command "#{mysqlcmd} -e 'CREATE SCHEMA watchtower'"
         not_if "#{mysqlcmd} watchtower -e 'SELECT 1'"
     end
 
     execute "install-watchtower-database" do
-        command "#{mysqlcmd} watchtower < /usr/share/doc/abiquo-watchtower/database/watchtower_schema.sql"
-        not_if "#{mysqlcmd} watchtower -e 'SELECT 1'"
+        command "#{mysqlcmd} watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql"
+        action :nothing
+        subscribes :run, "execute[create-watchtower-database]"
+    end
+
+    execute "run-watchtower-liquibase" do
+      command "/usr/bin/abiquo-watchtower-liquibase update"
+      action :nothing
+      subscribes :run, "execute[install-watchtower-database]"
     end
 end

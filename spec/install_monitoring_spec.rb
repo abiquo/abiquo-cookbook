@@ -86,7 +86,10 @@ describe 'abiquo::install_monitoring' do
             :command => '/usr/bin/mysql -h localhost -P 3306 -u root -ppass -e \'CREATE SCHEMA watchtower\''
         )
         expect(chef_run).to run_execute('install-watchtower-database').with(
-            :command => '/usr/bin/mysql -h localhost -P 3306 -u root -ppass watchtower < /usr/share/doc/abiquo-watchtower/database/watchtower_schema.sql'
+            :command => '/usr/bin/mysql -h localhost -P 3306 -u root -ppass watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql'
+        )
+        expect(chef_run).to run_execute('run-watchtower-liquibase').with(
+            :command => '/usr/bin/abiquo-watchtower-liquibase update'
         )
     end
 
