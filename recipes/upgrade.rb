@@ -66,4 +66,10 @@ execute "liquibase-update" do
     notifies :restart, "service[abiquo-tomcat]" if node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server'
 end
 
+execute "watchtower-liquibase-update" do
+  only_if { node['abiquo']['profile'] == 'monitoring' }
+  command "/usr/bin/abiquo-watchtower-liquibase update"
+  action :nothing
+end
+
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
