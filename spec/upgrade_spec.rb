@@ -190,6 +190,23 @@ describe 'abiquo::upgrade' do
         expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 
+    %w{monolithic server kvm remoteservices v2v}.each do |profile|
+        it "does not run abiquo watchtower liquibase update when upgrading #{profile}" do
+            chef_run.node.set['abiquo']['db']['upgrade'] = true
+            chef_run.node.set['abiquo']['profile'] = profile
+            chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+            expect(chef_run).to_not run_execute('run-watchtower-liquibase')
+        end
+    end
+
+    it 'runs abiquo watchtower liquibase update when upgrading monitoring' do
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
+        resource = chef_run.find_resource(:execute, 'run-watchtower-liquibase')
+        expect(resource).to subscribe_to("package[abiquo-server]").on(:run).immediately
+        expect(resource).to do_nothing
+        expect(resource.command).to eq('abiquo-watchtower-liquibase update')
+    end
+
     %w{monolithic server}.each do |profile|
         it "starts the #{profile} services" do
             chef_run.node.set['abiquo']['profile'] = profile
