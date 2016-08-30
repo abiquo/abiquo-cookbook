@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'chef', '~> 12.5'
+gem 'chef', '~> 12.7.2'
 gem 'berkshelf', '~> 4.0.1'
 
 gem 'foodcritic', '~> 6.0.0', :group => :lint
