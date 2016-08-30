@@ -19,7 +19,7 @@ describe 'abiquo::install_monitoring' do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
             node.set['abiquo']['profile'] = 'monitoring'
             node.set['abiquo']['monitoring']['db']['password'] = 'pass'
-        end.converge(described_recipe)
+        end
     end
     let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}-#{chef_run.node['abiquo']['monitoring']['kairosdb']['release']}.rpm" }
     let(:url) { "https://github.com/kairosdb/kairosdb/releases/download/v#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}/#{pkg}" }
@@ -85,12 +85,14 @@ describe 'abiquo::install_monitoring' do
         expect(chef_run).to run_execute('create-watchtower-database').with(
             :command => '/usr/bin/mysql -h localhost -P 3306 -u root -ppass -e \'CREATE SCHEMA watchtower\''
         )
-        expect(chef_run).to run_execute('install-watchtower-database').with(
-            :command => '/usr/bin/mysql -h localhost -P 3306 -u root -ppass watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql'
-        )
-        expect(chef_run).to run_execute('run-watchtower-liquibase').with(
-            :command => '/usr/bin/abiquo-watchtower-liquibase update'
-        )
+
+        resource = chef_run.find_resource(:execute, 'install-watchtower-database')
+        expect(resource).to subscribe_to('execute[create-watchtower-database]').on(:run).delayed
+        expect(resource).to do_nothing
+        
+        resource = chef_run.find_resource(:execute, 'run-watchtower-liquibase')
+        expect(resource).to subscribe_to('execute[install-watchtower-database]').on(:run).delayed
+        expect(resource).to do_nothing
     end
 
     it 'does not install the database if not configured' do
@@ -99,6 +101,8 @@ describe 'abiquo::install_monitoring' do
         chef_run.converge(described_recipe)
         expect(chef_run).to_not install_package('MariaDB-client')
         expect(chef_run).to_not run_execute('create-watchtower-database')
-        expect(chef_run).to_not run_execute('install-watchtower-database')
+
+        resource = chef_run.find_resource(:execute, 'create-watchtower-database')
+        expect(resource).to_not notify('execute[install-watchtower-database]').to(:run).delayed
     end
 end

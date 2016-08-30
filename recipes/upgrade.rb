@@ -67,11 +67,11 @@ execute "liquibase-update" do
 end
 
 execute "watchtower-liquibase-update" do
-  only_if { node['abiquo']['profile'] == 'monitoring' }
-  command "/usr/bin/abiquo-watchtower-liquibase update"
-  subscribes :run, "package[abiquo-delorean]", :immediately
-  notifies :restart, "service[abiquo-delorean]" if node['abiquo']['profile'] == 'monitoring'
-  action :nothing
+    only_if { node['abiquo']['profile'] == 'monitoring' }
+    command "/usr/bin/abiquo-watchtower-liquibase update"
+    subscribes :run, "package[abiquo-delorean]", :immediately
+    notifies :restart, "service[abiquo-delorean]" if node['abiquo']['profile'] == 'monitoring'
+    action :nothing
 end
 
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"

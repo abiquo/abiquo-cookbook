@@ -39,6 +39,7 @@ end
         group "root"
         content lazy { ::IO.read("/etc/abiquo/watchtower/#{wts}.conf") }
         action :create
+        not_if { ::File.exists? "/etc/abiquo/watchtower/#{wts}-base.conf" }
     end
 
     template "/etc/abiquo/watchtower/#{wts}.conf" do

@@ -10,7 +10,7 @@ transport:
   compression: none
 
 platforms:
-  - name: centos-6.7
+  - name: centos-6.8
     driver_config:
       customize:
         memory: 1024
