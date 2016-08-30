@@ -55,6 +55,12 @@ describe 'abiquo::setup_monitoring' do
             )
         end
 
+        it "avoids creating the #{wts} base file if already exists" do
+            allow(File).to receive(:exists?).and_call_original
+            allow(File).to receive(:exists?).with("/etc/abiquo/watchtower/#{wts}-base.conf").and_return(true)            
+            expect(chef_run).not_to create_file("/etc/abiquo/watchtower/#{wts}-base.conf")
+        end
+
         it "renders the #{wts} configuration file" do
             expect(chef_run).to create_template("/etc/abiquo/watchtower/#{wts}.conf").with(
                 :source => 'watchtower-service.conf.erb',
