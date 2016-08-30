@@ -30,6 +30,9 @@ when "remoteservices"
 when "monitoring"
     packages = %w{MariaDB-server MariaDB-client}
     services = %w{mysql}
+else
+    packages = []
+    services = []
 end
 
 packages.each do |pkg|

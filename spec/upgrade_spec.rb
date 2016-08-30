@@ -193,18 +193,23 @@ describe 'abiquo::upgrade' do
     %w{monolithic server kvm remoteservices v2v}.each do |profile|
         it "does not run abiquo watchtower liquibase update when upgrading #{profile}" do
             chef_run.node.set['abiquo']['db']['upgrade'] = true
+            chef_run.node.set['abiquo']['install_ext_services'] = false
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-            expect(chef_run).to_not run_execute('run-watchtower-liquibase')
+            chef_run.converge('apache2::default', described_recipe, 'abiquo::service', 'abiquo::install_server')
+            resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
+            expect(resource).to do_nothing
         end
     end
 
     it 'runs abiquo watchtower liquibase update when upgrading monitoring' do
-        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
-        resource = chef_run.find_resource(:execute, 'run-watchtower-liquibase')
-        expect(resource).to subscribe_to("package[abiquo-server]").on(:run).immediately
+        chef_run.node.set['abiquo']['profile'] = 'monitoring'
+        chef_run.converge('apache2::default', 'abiquo::install_server', 'abiquo::service', described_recipe)
+        resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
         expect(resource).to do_nothing
         expect(resource.command).to eq('abiquo-watchtower-liquibase update')
+        # We can't test this if there is no explicit resource notifying it, due to how ChefSpec subscription matchers are implemented
+        #expect(resource).to subscribe_to('package[abiquo-delorean]')
+        expect(resource).to notify('service[abiquo-delorean]').to(:restart).delayed
     end
 
     %w{monolithic server}.each do |profile|
