@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_server
+# Recipe:: setup_websockify
 #
 # Copyright 2014, Abiquo
 #
@@ -15,7 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::setup_ui"
-include_recipe "abiquo::setup_websockify"
-
-include_recipe "abiquo::service"
+template "/etc/init.d/websockify" do
+    source "websockify.erb"
+    owner "root"
+    group "root"
+    variables({
+        :websockify_port => node['abiquo']['websockify']['port'],
+        :websockify_key => node['abiquo']['websockify']['key'],
+        :websockify_crt => node['abiquo']['websockify']['crt']
+    })
+    action :create
+    notifies :restart, "service[websockify]"
+end

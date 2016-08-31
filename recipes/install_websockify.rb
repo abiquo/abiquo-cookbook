@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_server
+# Recipe:: install_websockify
 #
 # Copyright 2014, Abiquo
 #
@@ -15,7 +15,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::setup_ui"
-include_recipe "abiquo::setup_websockify"
+%w{libxslt libxml2}.each do |pkg|
+    package pkg do
+        action :install
+    end
+end
 
-include_recipe "abiquo::service"
+package "abiquo-websockify" do
+    action :install
+end
+
+service 'websockify' do
+    action [:enable, :start]
+end
+
+file "/etc/cron.d/novnc_tokens" do
+    owner "root"
+    group "root"
+    mode  "0644"
+    action :create
+end
+
+include_recipe "abiquo::certificate"

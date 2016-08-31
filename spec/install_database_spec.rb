@@ -15,13 +15,14 @@
 require 'spec_helper'
 
 describe 'abiquo::install_database' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+    let(:chef_run) { ChefSpec::SoloRunner.new }
 
     before do
         stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(false)
     end
 
     it 'creates the database' do
+        chef_run.converge(described_recipe)
         expect(chef_run).to run_execute('create-database').with(
             :command => "/usr/bin/mysql -h localhost -P 3306 -u root -e 'CREATE DATABASE kinton'"
         )
@@ -30,6 +31,7 @@ describe 'abiquo::install_database' do
     end
 
     it 'installs the database' do
+        chef_run.converge(described_recipe)
         resource = chef_run.execute('install-database')
         expect(resource).to do_nothing
         expect(resource.command).to eq('/usr/bin/mysql -h localhost -P 3306 -u root kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql')
@@ -38,11 +40,13 @@ describe 'abiquo::install_database' do
     end
 
     it 'does not install the license if not provided' do
+        chef_run.converge(described_recipe)
         expect(chef_run).to_not run_execute('install-license')
     end
 
     it 'does not install the license if it is empty' do
         chef_run.node.set['abiquo']['license'] = ''
+        chef_run.converge(described_recipe)
         expect(chef_run).to_not run_execute('install-license')
     end
 
@@ -55,7 +59,13 @@ describe 'abiquo::install_database' do
     end
 
     it 'extracts default m user password' do
-        resource = chef_run.ruby_block('extract-m-user-password')
-        expect(resource).to do_nothing
+        chef_run.converge(described_recipe)
+        expect(chef_run).to run_ruby_block('extract-m-user-password')
+    end
+
+    it 'does not remove extracted m user password' do
+        chef_run.node.set['abiquo']['properties']['abiquo.m.credential'] = 'blah'
+        chef_run.converge(described_recipe)
+        expect(chef_run).to_not run_ruby_block('extract-m-user-password')
     end
 end

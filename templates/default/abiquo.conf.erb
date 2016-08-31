@@ -15,6 +15,10 @@
     ProxyPreserveHost On
     ProxyTimeout <%= node['apache']['timeout'] %>
 
+    <% node['abiquo']['ui_apache_opts'].each do |opt, val| %>
+    <%= opt %> <%= val %>
+    <% end %>
+
     <Directory "/var/www/html/ui">
         Options MultiViews FollowSymLinks
         AllowOverride None
@@ -29,20 +33,22 @@
         ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/api
     </Location>
 
-    <Location /am>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/am
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/am
-    </Location>
- 
     <Location /m>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/m
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/m
+        ProxyPass http://localhost:<%= node['abiquo']['tomcat']['http-port'] %>/m
+        ProxyPassReverse http://localhost:<%= node['abiquo']['tomcat']['http-port'] %>/m
     </Location>
 
     <Location /legal>
         ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/legal
         ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/legal
     </Location>
+
+<% node['abiquo']['ui_proxies'].each do |path, remote| %>
+    <Location <%= path %>>
+        ProxyPass <%= remote %>
+        ProxyPassReverse <%= remote %>
+    </Location>
+<% end %>
 
     SSLEngine on
     SSLProtocol all -SSLv2

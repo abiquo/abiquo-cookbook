@@ -1,0 +1,4 @@
+# Apache ports
+<% node['apache']['listen_ports'].each do |port| %>
+-A INPUT -p tcp -m tcp --dport <%= port %> -j ACCEPT
+<% end %>

@@ -1,6 +1,3 @@
-# Cookbook Name:: abiquo
-# Recipe:: setup_server
-#
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::setup_ui"
-include_recipe "abiquo::setup_websockify"
+require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-include_recipe "abiquo::service"
+describe 'Server packages' do
+    it 'has the system packages installed' do
+        expect(package('cronie')).to be_installed
+    end
+
+    it 'has the abiquo packages installed' do
+        expect(package("abiquo-websockify")).to be_installed
+    end
+
+    it 'does not have other abiquo installed' do
+        %w{ui server remote-services monolithic nodecollector}.each do |pkg|
+            expect(package("abiquo-#{pkg}")).to_not be_installed
+        end
+    end
+end

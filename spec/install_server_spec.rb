@@ -36,48 +36,19 @@ describe 'abiquo::install_server' do
         expect(chef_run).to include_recipe('apache2::mod_ssl')
     end
 
-    %w{liquibase jdk libxml2 libxslt}.each do |pkg|
+    %w{liquibase jdk}.each do |pkg|
         it "installs the #{pkg} package" do
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
             expect(chef_run).to install_package(pkg)
         end
     end
 
-    %w{abiquo-server abiquo-sosreport-plugins abiquo-tutorials abiquo-websockify}.each do |pkg|
-        it "installs the #{pkg} abiquo package" do
+    %w{server sosreport-plugins}.each do |pkg|
+        it "installs the abiquo-#{pkg} abiquo package" do
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-            expect(chef_run).to install_package(pkg)
+            expect(chef_run).to install_package("abiquo-#{pkg}")
         end
     end
-
-    it 'enables the websockify service' do
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-        expect(chef_run).to enable_service('websockify')
-        expect(chef_run).to start_service('websockify')
-    end
-
-    it 'configures the websockify cron task' do
-      chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-      expect(chef_run).to create_file("/etc/cron.d/novnc_tokens").with(
-          :owner => 'root',
-          :group => 'root',
-          :mode  => '0644'
-      )
-    end
-
-    it 'enables the crond service' do
-      chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-      expect(chef_run).to enable_service('crond')
-      expect(chef_run).to start_service('crond')
-    end
-
-    it 'includes the certificate recipe' do
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-        expect(chef_run).to include_recipe('abiquo::certificate')
-    end
-
-    # The apache webapp calls can be tested because it is not a LWRP
-    # but a definition and does not exist in the resource list
 
     it 'includes the java oracle jce recipe' do
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
@@ -98,5 +69,15 @@ describe 'abiquo::install_server' do
     it 'includes the install-database recipe' do
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         expect(chef_run).to include_recipe('abiquo::install_database')
+    end
+
+    it 'includes the install-ui recipe' do
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+        expect(chef_run).to include_recipe('abiquo::install_ui')
+    end
+
+    it 'includes the install-websockify recipe' do
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+        expect(chef_run).to include_recipe('abiquo::install_websockify')
     end
 end

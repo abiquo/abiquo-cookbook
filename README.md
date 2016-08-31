@@ -12,7 +12,7 @@ an existing Abiquo installation.
 
 # Requirements
 
-* CentOS >= 6.7
+* CentOS >= 6.8
 
 This cookbook depends on the following cookbooks:
 
@@ -24,6 +24,7 @@ This cookbook depends on the following cookbooks:
 * selinux
 * ssl_certificate
 * yum
+* yum-epel
 
 # Recipes
 
@@ -34,12 +35,16 @@ The cookbook contains the following recipes:
 * `recipe[abiquo::install_monolithic]` - Installs an Abiquo Monolithic
 * `recipe[abiquo::install_server]` - Installs an Abiquo Server
 * `recipe[abiquo::install_remoteservices]` - Installs the Abiquo Remote Services
+* `recipe[abiquo::install_ui]` - Installs an Abiquo UI server
+* `recipe[abiquo::install_websockify]` - Installs a Websockify server
 * `recipe[abiquo::install_v2v]` - Installs an standalone V2V Server
 * `recipe[abiquo::install_kvm]` - Installs the KVM hypervisor
 * `recipe[abiquo::install_monitoring]` - Installs an Abiquo Monitoring node with Cassandra and kairosDB
 * `recipe[abiquo::setup_monolithic]` - Configures the Abiquo Monolithic Server
 * `recipe[abiquo::setup_server]` - Configures the Abiquo Server
 * `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
+* `recipe[abiquo::setup_ui]` - Configures the Abiquo UI server
+* `recipe[abiquo::setup_websockify]` - Configures the Websockify server
 * `recipe[abiquo::setup_v2v]` - Configures an standalone V2V Server
 * `recipe[abiquo::setup_kvm]` - Configures the KVM hypervisor
 * `recipe[abiquo::setup_monitoring]` - Configures the Abiquo Monitoring node
@@ -59,6 +64,9 @@ Attribute | Description | Type | Default
 `['install_ext_services']` | Whether or not to install supporting services like MariaDB, Redis, RabbitMQ, etc. | Boolean | true
 `['ui_address_type']` | The attribute to use as the Abiquo UI address: "fqdn", "ipaddress", "fixed" | String | "fqdn"
 `['ui_address']` | When `['ui_address_type']` is `fixed` use this as address | String | node['fqdn']
+`['ui_config']` | Additional parameters to configure on the Abiquo UI | Hash | { }
+`['ui_proxies']` | A collection of reverse proxy directives to configure in Apache | Array | [ ]
+`['ui_apache_opts']` | Additional Apache directives to include in the Abiquo vHost | Hash | { }
 `['nfs']['mountpoint']` | The path where the image repository is mounted | String | "/opt/vm\_repository"
 `['nfs']['location']` | If set, the NFS repository to mount | String | nil
 `['license']` | The Abiquo license to install | String | nil
@@ -156,7 +164,7 @@ in the run list:
 * `recipe[abiquo]` - To perform an installation from scratch
 * `recipe[abiquo::upgrade]` - To upgrade an existing installation
 
-The available profiles are: `monolithic`, `remoteservices`, `server`, `v2v`, `kvm` and `monitoring`.
+The available profiles are: `monolithic`, `remoteservices`, `server`, `ui`, `websockify`, `v2v`, `kvm` and `monitoring`.
 
 When installing the Abiquo Monolithic profile, you may also want to set the `node['abiquo']['certificate']`
 properties so the right certificate is used or a self-signed one is generated. You can also use it together

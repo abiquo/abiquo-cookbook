@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_server
+# Recipe:: install_ui
 #
 # Copyright 2014, Abiquo
 #
@@ -15,7 +15,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::setup_ui"
-include_recipe "abiquo::setup_websockify"
+include_recipe "apache2"
+include_recipe "apache2::mod_proxy_ajp"
+include_recipe "apache2::mod_ssl"
 
-include_recipe "abiquo::service"
+%w{ui tutorials}.each do |pkg|
+    package "abiquo-#{pkg}" do
+        action :install
+    end
+end
+
+include_recipe "abiquo::certificate"
+
+web_app "abiquo" do
+    template "abiquo.conf.erb"
+    server_name node['abiquo']['certificate']['common_name']
+    cert_file node['abiquo']['certificate']['file']
+    key_file node['abiquo']['certificate']['key_file']
+    ca_file node['abiquo']['certificate']['ca_file']
+end

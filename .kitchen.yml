@@ -23,6 +23,16 @@ suites:
       set_fqdn: monolithic.abiquo.com
       abiquo:
         ui_address_type: set_fqdn
+        ui_config:
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+        ui_apache_opts:
+          KeepAlive: "On"
+          MaxKeepAliveRequests: 100
+          KeepAliveTimeout: 60
+        ui_proxies:
+          /am2: http://some_am:8009/am
         certificate:
           common_name: monolithic.abiquo.com
   - name: server
@@ -38,8 +48,39 @@ suites:
           client.backto.url: "http://google.com"
           client.google.maps.key: "trocotro"
           client.test.timeout: 600
+        ui_apache_opts:
+          KeepAlive: "On"
+          MaxKeepAliveRequests: 100
+          KeepAliveTimeout: 60
+        ui_proxies:
+          /am2: http://some_am:8009/am
         certificate:
           common_name: server.abiquo.com
+  - name: ui
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      set_fqdn: server.abiquo.com
+      abiquo:
+        profile: ui
+        ui_address_type: set_fqdn
+        ui_config:
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+        certificate:
+          common_name: server.abiquo.com
+  - name: ws
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      set_fqdn: ws.abiquo.com
+      abiquo:
+        profile: websockify
+        certificate:
+          common_name: ws.abiquo.com
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]

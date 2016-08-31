@@ -45,5 +45,6 @@ ruby_block "extract-m-user-password" do
         mysql_command_out = shell_out!(mysql_command)
         node.set['abiquo']['properties']['abiquo.m.credential'] = mysql_command_out.stdout.gsub("\n", "")
     end
-    action :nothing
+    action :run
+    not_if { node['abiquo']['properties'].has_key? 'abiquo.m.credential' }
 end

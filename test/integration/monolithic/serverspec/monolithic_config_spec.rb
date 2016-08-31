@@ -39,11 +39,22 @@ describe 'Monolithic configuration' do
     end
 
     it 'has apache mappings to tomcat configured' do
-        %w{api am m legal}.each do |webapp|
+        %w{api am legal}.each do |webapp|
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("<Location /#{webapp}>")
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass ajp://localhost:8010/#{webapp}")
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPassReverse ajp://localhost:8010/#{webapp}")
         end
+        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass http://localhost:8009/m")
+    end
+
+    it 'has proxies configured in apache' do
+        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass http://some_am:8009/am")
+    end
+
+    it 'renders Apache directives in config file' do
+       expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("KeepAlive On")
+       expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("MaxKeepAliveRequests 100")
+       expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("KeepAliveTimeout 60") 
     end
 
     it 'has ssl properly configured' do
@@ -56,9 +67,12 @@ describe 'Monolithic configuration' do
 
     it 'has the ui properly configured' do
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to exist
-        # By default the uri will get the hostname (generated from the name of the suite)
+        # The suite is forced to configure the hostname
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://monolithic.abiquo.com/api"')
+        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.backto.url": "http://google.com",')
+        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.test.timeout": 600')
     end
+
 
     it 'has tomcat properly configured' do
         expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')

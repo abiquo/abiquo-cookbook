@@ -29,6 +29,7 @@ default['abiquo']['install_ext_services'] = true
 default['abiquo']['ui_address_type'] = 'fqdn'
 default['abiquo']['ui_address'] = node['fqdn']
 default['abiquo']['ui_config'] = {}
+default['abiquo']['ui_apache_opts'] = {}
 
 # Common properties
 default['abiquo']['license'] = nil
@@ -53,6 +54,13 @@ default['abiquo']['db']['upgrade'] = true
 default['abiquo']['tomcat']['http-port'] = 8009
 default['abiquo']['tomcat']['ajp-port'] = 8010
 default['abiquo']['tomcat']['wait-for-webapps'] = false
+
+case node['abiquo']['profile']
+when 'monolithic'
+    default['abiquo']['ui_proxies'] = { '/am' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/am" }
+else
+    default['abiquo']['ui_proxies'] = {}
+end
 
 # Wheter or not to generate a self signed certificate
 # for this host. If not, provide path to certificate,

@@ -25,12 +25,15 @@ ssl_certificate node['abiquo']['certificate']['common_name'] do
     cert_path node['abiquo']['certificate']['file']
     key_path  node['abiquo']['certificate']['key_file']
     not_if { ::File.file? "/etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.crt" }
-    notifies :restart, 'service[apache2]'
+    not_if { node['abiquo']['profile'] == 'websockify' }
+    only_if { node['abiquo']['certificate']['source'] == 'self-signed' }
+    notifies :restart, 'service[apache2]' unless node['abiquo']['profile'] == 'websockify'
 end
 
 java_management_truststore_certificate node['abiquo']['certificate']['common_name'] do
     file node['abiquo']['certificate']['file']
     action :nothing
     subscribes :import, "ssl_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
-    notifies :restart, "service[abiquo-tomcat]"
+    notifies :restart, "service[abiquo-tomcat]" if node['abiquo']['profile'] == 'server' or node['abiquo']['profile'] == 'monolithic'
+    not_if { node['abiquo']['profile'] == 'ui' or node['abiquo']['profile'] == 'websockify' }
 end

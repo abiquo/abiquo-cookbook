@@ -1,6 +1,3 @@
-# Cookbook Name:: abiquo
-# Recipe:: install_server
-#
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,22 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-%w{liquibase jdk}.each do |pkg|
-    package pkg do
-        action :install
+require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
+
+describe 'Server packages' do
+    it 'has the system packages installed' do
+        expect(package('cronie')).to be_installed
+    end
+
+    it 'has the abiquo packages installed' do
+        %w{ui tutorials}.each do |pkg|
+            expect(package("abiquo-#{pkg}")).to be_installed
+        end
+    end
+
+    it 'does not have other abiquo installed' do
+        %w{websockify server remote-services monolithic nodecollector}.each do |pkg|
+            expect(package("abiquo-#{pkg}")).to_not be_installed
+        end
     end
 end
-
-include_recipe "java::oracle_jce"
-include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
-
-%w{server sosreport-plugins}.each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
-end
-
-include_recipe "abiquo::install_database"
-
-include_recipe "abiquo::install_ui"
-include_recipe "abiquo::install_websockify"
