@@ -19,10 +19,9 @@ module Abiquo
         include Chef::Mixin::ShellOut
 
         def gpg_key_files
-            keys = %w(Abiquo MariaDB RabbitMQ CentOS-6).map do |keyname|
+            keys = %w(Abiquo MariaDB RabbitMQ).map do |keyname|
                 "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-#{keyname}"
             end
-            # New signing key for Abiquo 3.2.2
             keys << "file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo"
         end
 

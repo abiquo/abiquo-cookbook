@@ -28,9 +28,7 @@ directory "/var/cache/yum" do
     action :nothing
 end
 
-package "epel-release" do
-    action :install
-end
+include_recipe "yum-epel"
 
 gpg_keys = gpg_key_files.join(" ")
 
