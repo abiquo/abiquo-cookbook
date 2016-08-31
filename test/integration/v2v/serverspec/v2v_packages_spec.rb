@@ -15,10 +15,6 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Remote Services packages' do
-    it 'has the epel-release package installed' do
-        expect(package('epel-release')).to be_installed
-    end
-
     it 'has the system packages installed' do
         %w{redis jdk ec2-api-tools}.each do |pkg|
             expect(package(pkg)).to be_installed

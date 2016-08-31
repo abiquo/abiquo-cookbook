@@ -29,6 +29,7 @@ recipe 'abiquo::certificate', 'Installs a custom SSL certificate in the Apache'
 recipe 'abiquo::service', 'Manages Abiquo tomcat service'
 
 supports 'centos', '>= 6.7'
+supports 'redhat', '>= 6.7'
 
 depends 'apache2', '~> 3.1.0'
 depends 'cassandra-dse', '~> 4.1.0'
@@ -38,3 +39,4 @@ depends 'java-management', '~> 1.0.3'
 depends 'selinux', '~> 0.9.0'
 depends 'ssl_certificate', '~> 1.11.0'
 depends 'yum', '~> 3.8.2'
+depends 'yum-epel', '~> 0.6.5'

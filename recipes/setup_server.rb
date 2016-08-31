@@ -22,7 +22,8 @@ template "/var/www/html/ui/config/client-config-custom.json" do
     variables({
         :ui_address_type => node['abiquo']['ui_address_type'],
         :ui_address_type_resolved => node[node['abiquo']['ui_address_type']],
-        :ui_address => node['abiquo']['ui_address']
+        :ui_address => node['abiquo']['ui_address'],
+        :ui_props => node['abiquo']['ui_config']
     })
     action :create
     notifies :restart, "service[apache2]"

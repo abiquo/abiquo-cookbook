@@ -1,9 +1,10 @@
+{
 <% if @ui_address_type != "fixed" %>
-{
-    "config.endpoint": "https://<%= @ui_address_type_resolved %>/api"
-}
+    "config.endpoint": "https://<%= @ui_address_type_resolved %>/api",
 <% else %>
-{
-    "config.endpoint": "https://<%= @ui_address %>/api"
-}
+    "config.endpoint": "https://<%= @ui_address %>/api",
 <% end %>
+<% @ui_props.keys.each_with_index do |k, i| %>
+    "<%= k %>": <%= @ui_props[k].class == String ? "\"#{@ui_props[k]}\"" : "#{@ui_props[k]}" %><%= "," if i != @ui_props.count - 1 %>
+<% end %>
+}

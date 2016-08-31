@@ -28,6 +28,7 @@ default['abiquo']['install_ext_services'] = true
 # 'fixed' will setup node['abiquo']['ui_address']
 default['abiquo']['ui_address_type'] = 'fqdn'
 default['abiquo']['ui_address'] = node['fqdn']
+default['abiquo']['ui_config'] = {}
 
 # Common properties
 default['abiquo']['license'] = nil
