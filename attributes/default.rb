@@ -98,6 +98,9 @@ override['java']['oracle']['accept_oracle_download_terms'] = true
 override['java']['java_home'] = "/usr/java/default"
 override['java']['jdk_version'] = 8
 
+# Override Cassandra default configuration to make sure it is always running properly
+override['cassandra']['notify_restart'] = true
+
 # Default properties
 default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
 default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'abiquo'
