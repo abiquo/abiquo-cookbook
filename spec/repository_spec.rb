@@ -32,9 +32,9 @@ describe 'abiquo::repository' do
         expect(resource.recursive).to eq(true)
     end
 
-    it 'installs the epel-release package' do
+    it 'includes the yum-epel recipe' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to install_package('epel-release')
+        expect(chef_run).to include_recipe('yum-epel')
     end
 
     it 'creates the base repository' do
@@ -46,7 +46,6 @@ describe 'abiquo::repository' do
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
 
@@ -65,7 +64,6 @@ describe 'abiquo::repository' do
             :gpgkey => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                       'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-6 ' \
                        'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         )
 

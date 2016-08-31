@@ -15,10 +15,6 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Monitoring packages' do
-    it 'has the epel-release package installed' do
-        expect(package('epel-release')).to be_installed
-    end
-
     it 'has the jdk package installed' do
         expect(package('jdk')).to be_installed
     end

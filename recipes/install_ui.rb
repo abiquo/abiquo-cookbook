@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_server
+# Recipe:: install_ui
 #
 # Copyright 2014, Abiquo
 #
@@ -19,16 +19,13 @@ include_recipe "apache2"
 include_recipe "apache2::mod_proxy_ajp"
 include_recipe "apache2::mod_ssl"
 
-%w{liquibase jdk libxslt libxml2}.each do |pkg|
+%w{libxslt libxml2}.each do |pkg|
     package pkg do
         action :install
     end
 end
 
-include_recipe "java::oracle_jce"
-include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
-
-%w{server sosreport-plugins tutorials websockify}.each do |pkg|
+%w{ui tutorials websockify}.each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
@@ -57,5 +54,3 @@ web_app "abiquo" do
     keepalive_requests node['abiquo']['ui']['keepalive_requests']
     keepalive_timeout node['abiquo']['ui']['keepalive_timeout']
 end
-
-include_recipe "abiquo::install_database"

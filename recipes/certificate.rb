@@ -33,4 +33,5 @@ java_management_truststore_certificate node['abiquo']['certificate']['common_nam
     action :nothing
     subscribes :import, "ssl_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
     notifies :restart, "service[abiquo-tomcat]"
+    not_if { node['abiquo']['profile'] == 'ui' }
 end

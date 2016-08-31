@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_server
+# Recipe:: setup_ui
 #
 # Copyright 2014, Abiquo
 #
@@ -41,5 +41,3 @@ template "/etc/init.d/websockify" do
     action :create
     notifies :restart, "service[websockify]"
 end
-
-include_recipe "abiquo::service"

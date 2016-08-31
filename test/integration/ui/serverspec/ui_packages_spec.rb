@@ -14,21 +14,20 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Monolithic packages' do
+describe 'Server packages' do
     it 'has the system packages installed' do
-        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk ec2-api-tools cronie}.each do |pkg|
-            expect(package(pkg)).to be_installed
-        end
+        expect(package('cronie')).to be_installed
     end
 
     it 'has the abiquo packages installed' do
-        %w{server remote-services v2v sosreport-plugins tutorials websockify}.each do |pkg|
+        %w{ui tutorials websockify}.each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
         end
     end
 
-    it 'has the strong jce encryption policies installed' do
-        expect(file('/usr/java/default/jre/lib/security/local_policy.jar').md5sum).to eq('dabfcb23d7bf9bf5a201c3f6ea9bfb2c')
-        expect(file('/usr/java/default/jre/lib/security/US_export_policy.jar').md5sum).to eq('ef6e8eae7d1876d7f05d765d2c2e0529')
+    it 'does not have other abiquo installed' do
+        %w{server remote-services monolithic nodecollector}.each do |pkg|
+            expect(package("abiquo-#{pkg}")).to_not be_installed
+        end
     end
 end

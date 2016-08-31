@@ -15,6 +15,12 @@
     ProxyPreserveHost On
     ProxyTimeout <%= node['apache']['timeout'] %>
 
+    <% unless @params[:keepalive].nil? or @params[:keepalive] == false %>
+    KeepAlive On
+    MaxKeepAliveRequests <%= @params[:keepalive_requests] %>
+    KeepAliveTimeout <%= @params[:keepalive_timeout] %>
+    <% end %>
+
     <Directory "/var/www/html/ui">
         Options MultiViews FollowSymLinks
         AllowOverride None
@@ -28,15 +34,15 @@
         ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/api
         ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/api
     </Location>
-
+<% if node['abiquo']['profile'] == 'monolithic' %>
     <Location /am>
         ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/am
         ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/am
     </Location>
- 
+ <% end %>
     <Location /m>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/m
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/m
+        ProxyPass http://localhost:<%= node['abiquo']['tomcat']['http-port'] %>/m
+        ProxyPassReverse http://localhost:<%= node['abiquo']['tomcat']['http-port'] %>/m
     </Location>
 
     <Location /legal>

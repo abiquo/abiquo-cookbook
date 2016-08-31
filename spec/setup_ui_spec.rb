@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 
-describe 'abiquo::setup_server' do
+describe 'abiquo::setup_ui' do
     let(:chef_run) do
         ChefSpec::SoloRunner.new do |node|
             node.set['abiquo']['certificate']['common_name'] = 'test.local'
@@ -23,11 +23,10 @@ describe 'abiquo::setup_server' do
 
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(false)
     end
 
     it 'renders ui configuration file' do
-        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
+        chef_run.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
         expect(chef_run).to create_template('/var/www/html/ui/config/client-config-custom.json').with(
             :source => 'ui-config.json.erb',
             :owner => 'root',
@@ -36,16 +35,11 @@ describe 'abiquo::setup_server' do
     end
 
     it 'renders websockify service script' do
-        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
+        chef_run.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
         expect(chef_run).to create_template('/etc/init.d/websockify').with(
             :source => 'websockify.erb',
             :owner => 'root',
             :group => 'root'
         )
-    end
-
-    it "includes the service recipe" do
-        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
-        expect(chef_run).to include_recipe("abiquo::service")
     end
 end

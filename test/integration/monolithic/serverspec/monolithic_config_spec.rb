@@ -15,6 +15,11 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Monolithic configuration' do
+    it 'has the epel repos installed' do
+        expect(file('/etc/yum.repos.d/epel.repo')).to be_file
+        expect(file('/etc/yum.repos.d/epel.repo')).to contain("enabled=1")
+    end
+
     it 'has the yum repositories configured' do
         %w{base updates}.each do |repo|
             expect(yumrepo("abiquo-#{repo}")).to exist
@@ -34,11 +39,12 @@ describe 'Monolithic configuration' do
     end
 
     it 'has apache mappings to tomcat configured' do
-        %w{api am m legal}.each do |webapp|
+        %w{api am legal}.each do |webapp|
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("<Location /#{webapp}>")
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass ajp://localhost:8010/#{webapp}")
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPassReverse ajp://localhost:8010/#{webapp}")
         end
+        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass http://localhost:8009/m")
     end
 
     it 'has ssl properly configured' do
