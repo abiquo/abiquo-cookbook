@@ -28,11 +28,10 @@ ssl_certificate node['abiquo']['certificate']['common_name'] do
     notifies :restart, 'service[apache2]'
 end
 
-unless node['abiquo']['profile'] == 'ui'
-    java_management_truststore_certificate node['abiquo']['certificate']['common_name'] do
-        file node['abiquo']['certificate']['file']
-        action :nothing
-        subscribes :import, "ssl_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
-        notifies :restart, "service[abiquo-tomcat]"
-    end
+java_management_truststore_certificate node['abiquo']['certificate']['common_name'] do
+    file node['abiquo']['certificate']['file']
+    action :nothing
+    subscribes :import, "ssl_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
+    notifies :restart, "service[abiquo-tomcat]"
+    not_if { node['abiquo']['profile'] == 'ui' }
 end

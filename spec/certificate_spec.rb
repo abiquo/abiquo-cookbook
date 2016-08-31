@@ -55,6 +55,6 @@ describe 'abiquo::certificate' do
         chef_run.node.set['abiquo']['profile'] = 'ui'
         chef_run.converge('apache2::default',described_recipe,'abiquo::service')
         resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
-        expect(resource).to be_nil
+        expect(resource).to do_nothing
     end
 end
