@@ -11,6 +11,16 @@ end
 desc 'Run ChefSpec tests'
 RSpec::Core::RakeTask.new(:spec)
 
+desc 'Run Test Kitchen basic integration tests'
+task 'kitchen-basic' do
+    require 'kitchen'
+    Kitchen.logger = Kitchen.default_file_logger
+    config = Kitchen::Config.new
+    config.instances.select { |i| i.name =~ /monolithic/ || i.name =~ /monitoring/ }.each do |instance|
+        instance.test(:always)
+    end
+end
+
 desc 'Run Test Kitchen integration tests'
 task :kitchen do
     require 'kitchen'
