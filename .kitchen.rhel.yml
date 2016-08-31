@@ -1,0 +1,125 @@
+driver:
+  name: vagrant
+  customize:
+    memory: 1024
+
+provisioner:
+  name: chef_solo
+  require_chef_omnibus: 12.5.1
+  data_path: test/fixtures
+
+transport:
+  compression: none
+
+platforms:
+  - name: rhel-6.8
+
+suites:
+  - name: monolithic
+    run_list:
+      - recipe[rhel_subscription::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhel_subscription::deregister]
+    attributes:
+      rhel_subscription:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      set_fqdn: monolithic.abiquo.com
+      abiquo:
+        ui_address_type: set_fqdn
+        certificate:
+          common_name: monolithic.abiquo.com
+  - name: server
+    run_list:
+      - recipe[rhel_subscription::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhel_subscription::deregister]
+    attributes:
+      rhel_subscription:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      set_fqdn: server.abiquo.com
+      abiquo:
+        profile: server
+        ui_address_type: set_fqdn
+        ui_config:
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+        certificate:
+          common_name: server.abiquo.com
+  - name: ui
+    run_list:
+      - recipe[rhel_subscription::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhel_subscription::deregister]
+    attributes:
+      rhel_subscription:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      set_fqdn: server.abiquo.com
+      abiquo:
+        profile: ui
+        ui_address_type: set_fqdn
+        ui_config:
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+        certificate:
+          common_name: server.abiquo.com
+  - name: remoteservices
+    run_list:
+      - recipe[rhel_subscription::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhel_subscription::deregister]
+    attributes:
+      rhel_subscription:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: remoteservices
+  - name: v2v
+    run_list:
+      - recipe[rhel_subscription::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhel_subscription::deregister]
+    attributes:
+      rhel_subscription:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: v2v
+  - name: kvm
+    run_list:
+      - recipe[rhel_subscription::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhel_subscription::deregister]
+    attributes:
+      rhel_subscription:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: kvm
+  - name: monitoring
+    run_list:
+      # The Delorean service needs a running RabbitMQ instance
+      - recipe[rhel_subscription::register]
+      - recipe[abiquo::repository]
+      - recipe[rabbitmq]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhel_subscription::deregister]
+    attributes:
+      rhel_subscription:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: monitoring
+      rabbitmq:
+        version: 3.5.4

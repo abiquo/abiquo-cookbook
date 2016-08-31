@@ -8,3 +8,6 @@ cookbook 'compat_resource', '~> 12.10.6'
 # Used to install RabbitMQ when testing the monitoring
 # recipe with kitchen.
 cookbook 'rabbitmq', '= 4.6.0', group: 'test'
+
+# Test cookbook for RHEL systems
+cookbook 'rhel_subscription', path: 'test/fixtures/cookbooks/rhel_subscription', group: 'test'
