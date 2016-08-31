@@ -39,11 +39,12 @@ describe 'Monolithic configuration' do
     end
 
     it 'has apache mappings to tomcat configured' do
-        %w{api am m legal}.each do |webapp|
+        %w{api am legal}.each do |webapp|
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("<Location /#{webapp}>")
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass ajp://localhost:8010/#{webapp}")
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPassReverse ajp://localhost:8010/#{webapp}")
         end
+        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass http://localhost:8009/m")
     end
 
     it 'has ssl properly configured' do
