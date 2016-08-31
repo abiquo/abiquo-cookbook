@@ -168,6 +168,7 @@ In order to test the cookbook you will need to install [Vagrant](https://www.vag
 Once installed you can run the unit and integration tests as follows:
 
     bundle install
+    bundle exec berks         # Install the cookbook dependencies
     bundle exec rake          # Run the unit and style tests
     bundle exec rake kitchen  # Run the integration tests
 
