@@ -14,7 +14,7 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Server configuration' do
+describe 'UI configuration' do
     it 'has the epel repos installed' do
         expect(file('/etc/yum.repos.d/epel.repo')).to be_file
         expect(file('/etc/yum.repos.d/epel.repo')).to contain("enabled=1")
@@ -47,8 +47,8 @@ describe 'Server configuration' do
     it 'has the ui properly configured' do
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to exist
         # The suite is forced to configure the hostname
-        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.backto.url": "http://google.com",')
-        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.test.timeout": 600,')
+        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.backto.url": "http://google.com"')
+        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.test.timeout": 600')
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://server.abiquo.com/api"')
     end
 end

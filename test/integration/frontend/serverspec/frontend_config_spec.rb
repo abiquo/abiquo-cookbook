@@ -14,7 +14,7 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Server configuration' do
+describe 'Front-end configuration' do
     it 'has the epel repos installed' do
         expect(file('/etc/yum.repos.d/epel.repo')).to be_file
         expect(file('/etc/yum.repos.d/epel.repo')).to contain("enabled=1")
@@ -27,17 +27,6 @@ describe 'Server configuration' do
         end
     end
 
-    it 'has websockify service script configured' do
-        expect(file('/etc/init.d/websockify')).to contain("WEBSOCKIFY_PORT=41337")
-        expect(file('/etc/init.d/websockify')).to contain("CERT_FILE=/etc/pki/abiquo/server.abiquo.com.crt")
-        expect(file('/etc/init.d/websockify')).to contain("KEY_FILE=/etc/pki/abiquo/server.abiquo.com.key")
-    end
-
-    it 'has novnc_tokens cron task configured' do
-        expect(file('/etc/cron.d/novnc_tokens')).to_not be_executable
-        expect(file('/etc/cron.d/novnc_tokens')).to contain("* * * * * root /opt/websockify/novnc_tokens.rb -a https://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc")
-    end
-
     it 'has apache mappings to tomcat configured' do
         %w{api legal}.each do |webapp|
             expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("<Location /#{webapp}>")
@@ -47,22 +36,12 @@ describe 'Server configuration' do
         expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass http://localhost:8009/m")
     end
 
-    it 'has proxies configured in apache' do
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass http://some_am:8009/am")
-    end
-
-    it 'renders Apache directives in config file' do
-       expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("KeepAlive On")
-       expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("MaxKeepAliveRequests 100")
-       expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("KeepAliveTimeout 60") 
-    end
-
     it 'has ssl properly configured' do
         expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLEngine on')
         expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLProtocol all -SSLv2')
         expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW')
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateFile /etc/pki/abiquo/server.abiquo.com.crt')
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateKeyFile /etc/pki/abiquo/server.abiquo.com.key')
+        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateFile /etc/pki/abiquo/frontend.abiquo.com.crt')
+        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateKeyFile /etc/pki/abiquo/frontend.abiquo.com.key')
     end
 
     it 'has the ui properly configured' do
@@ -73,22 +52,14 @@ describe 'Server configuration' do
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://server.abiquo.com/api"')
     end
 
-    it 'has tomcat properly configured' do
-        expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
+    it 'has websockify service script configured' do
+        expect(file('/etc/init.d/websockify')).to contain("WEBSOCKIFY_PORT=41337")
+        expect(file('/etc/init.d/websockify')).to contain("CERT_FILE=/etc/pki/abiquo/frontend.abiquo.com.crt")
+        expect(file('/etc/init.d/websockify')).to contain("KEY_FILE=/etc/pki/abiquo/frontend.abiquo.com.key")
     end
 
-    it 'has the abiquo properties file' do
-        expect(file('/opt/abiquo/config/abiquo.properties')).to exist
-    end
-
-    it 'has the M user properly configured' do
-        expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.identity = default_outbound_api_user")
-        # Credential is auto generated but at least we want to check it is set
-        expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.credential = ")
-    end
-
-    it 'has a user in rabbit for Abiquo' do
-        expect(command('rabbitmqctl list_users').stdout).to match(/abiquo.*administrator/)
-        expect(command('rabbitmqctl list_permissions').stdout).to match(/abiquo\t.*\t.*\t.*/)
+    it 'has novnc_tokens cron task configured' do
+        expect(file('/etc/cron.d/novnc_tokens')).to_not be_executable
+        expect(file('/etc/cron.d/novnc_tokens')).to contain("* * * * * root /opt/websockify/novnc_tokens.rb -a https://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc")
     end
 end

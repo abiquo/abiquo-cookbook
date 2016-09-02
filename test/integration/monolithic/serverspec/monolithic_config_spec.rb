@@ -35,7 +35,7 @@ describe 'Monolithic configuration' do
 
     it 'has novnc_tokens cron task configured' do
         expect(file('/etc/corn.d/novnc_tokens')).to_not be_executable
-        expect(file('/etc/cron.d/novnc_tokens')).to contain("* * * * * root /opt/websockify/novnc_tokens.rb -a http://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc")
+        expect(file('/etc/cron.d/novnc_tokens')).to contain("* * * * * root /opt/websockify/novnc_tokens.rb -a https://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc")
     end
 
     it 'has apache mappings to tomcat configured' do

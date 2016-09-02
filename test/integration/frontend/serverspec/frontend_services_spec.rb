@@ -14,7 +14,7 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'UI services' do
+describe 'Front-end services' do
     it 'has apache running' do
         expect(service('httpd')).to be_enabled
         expect(service('httpd')).to be_running
@@ -32,9 +32,21 @@ describe 'UI services' do
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT')
         expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT')
+        expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 41337 -j ACCEPT')
         expect(iptables).to have_rule('-P INPUT DROP')
 
         # Cannot use have_rule with comma
         expect(command('iptables -S | grep -- "-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"').exit_status).to eq 0
+    end
+
+    it 'has crond running' do
+        expect(service('crond')).to be_enabled
+        expect(service('crond')).to be_running
+    end
+
+    it 'has websockify running' do
+        expect(service('websockify')).to be_enabled
+        expect(service('websockify')).to be_running
+        expect(port(41337)).to be_listening
     end
 end

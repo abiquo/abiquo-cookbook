@@ -14,7 +14,7 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Server packages' do
+describe 'Websockify packages' do
     it 'has the system packages installed' do
         expect(package('cronie')).to be_installed
     end

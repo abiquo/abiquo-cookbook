@@ -14,7 +14,7 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Server configuration' do
+describe 'Websockify configuration' do
     it 'has the epel repos installed' do
         expect(file('/etc/yum.repos.d/epel.repo')).to be_file
         expect(file('/etc/yum.repos.d/epel.repo')).to contain("enabled=1")
@@ -35,6 +35,6 @@ describe 'Server configuration' do
 
     it 'has novnc_tokens cron task configured' do
         expect(file('/etc/cron.d/novnc_tokens')).to_not be_executable
-        expect(file('/etc/cron.d/novnc_tokens')).to contain("* * * * * root /opt/websockify/novnc_tokens.rb -a http://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc")
+        expect(file('/etc/cron.d/novnc_tokens')).to contain("* * * * * root /opt/websockify/novnc_tokens.rb -a https://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc")
     end
 end

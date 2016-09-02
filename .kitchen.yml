@@ -20,9 +20,9 @@ suites:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
     attributes:
-      set_fqdn: monolithic.abiquo.com
       abiquo:
-        ui_address_type: set_fqdn
+        ui_config:
+          config.endpoint: "https://monolithic.abiquo.com/api"
         ui_apache_opts:
           KeepAlive: "On"
           MaxKeepAliveRequests: 100
@@ -36,11 +36,10 @@ suites:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
     attributes:
-      set_fqdn: server.abiquo.com
       abiquo:
         profile: server
-        ui_address_type: set_fqdn
         ui_config:
+          config.endpoint: "https://server.abiquo.com/api"
           client.backto.url: "http://google.com"
           client.google.maps.key: "trocotro"
           client.test.timeout: 600
@@ -52,16 +51,29 @@ suites:
           /am2: http://some_am:8009/am
         certificate:
           common_name: server.abiquo.com
+  - name: frontend
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: frontend
+        ui_config:
+          config.endpoint: "https://server.abiquo.com/api"
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+        certificate:
+          common_name: frontend.abiquo.com
   - name: ui
     run_list:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
     attributes:
-      set_fqdn: server.abiquo.com
       abiquo:
         profile: ui
-        ui_address_type: set_fqdn
         ui_config:
+          config.endpoint: "https://server.abiquo.com/api"
           client.backto.url: "http://google.com"
           client.google.maps.key: "trocotro"
           client.test.timeout: 600
@@ -72,7 +84,6 @@ suites:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
     attributes:
-      set_fqdn: ws.abiquo.com
       abiquo:
         profile: websockify
         certificate:

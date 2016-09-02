@@ -35,5 +35,5 @@ java_management_truststore_certificate node['abiquo']['certificate']['common_nam
     action :nothing
     subscribes :import, "ssl_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
     notifies :restart, "service[abiquo-tomcat]" if node['abiquo']['profile'] == 'server' or node['abiquo']['profile'] == 'monolithic'
-    not_if { node['abiquo']['profile'] == 'ui' or node['abiquo']['profile'] == 'websockify' }
+    only_if { node['abiquo']['profile'] == 'monolithic' or node['abiquo']['profile'] == 'server' }
 end

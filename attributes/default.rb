@@ -23,14 +23,6 @@ default['abiquo']['profile'] = "monolithic"
 # Set to false if you wish to use existing servers.
 default['abiquo']['install_ext_services'] = true
 
-# Attribute to use to setup UI config file.
-# Change to 'ipaddress' to use IP instead of fqdn.
-# 'fixed' will setup node['abiquo']['ui_address']
-default['abiquo']['ui_address_type'] = 'fqdn'
-default['abiquo']['ui_address'] = node['fqdn']
-default['abiquo']['ui_config'] = {}
-default['abiquo']['ui_apache_opts'] = {}
-
 # Common properties
 default['abiquo']['license'] = nil
 
@@ -54,6 +46,13 @@ default['abiquo']['db']['upgrade'] = true
 default['abiquo']['tomcat']['http-port'] = 8009
 default['abiquo']['tomcat']['ajp-port'] = 8010
 default['abiquo']['tomcat']['wait-for-webapps'] = false
+
+# UI Apache configuration
+default['abiquo']['ui_apache_opts'] = {}
+
+# UI app configuration attributes. These attributes will be rendered
+# in /var/www/html/ui/config/client-config-custom.json
+default['abiquo']['ui_config'] = { "config.endpoint" => "https://#{node['fqdn']}/api" }
 
 case node['abiquo']['profile']
 when 'monolithic'
@@ -129,12 +128,7 @@ when "monolithic", "server"
     default['abiquo']['properties']['abiquo.redis.host'] = '127.0.0.1'
     default['abiquo']['properties']['abiquo.redis.port'] = 6379
     default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
-
-    if node['abiquo']['ui_address_type'] != "fixed"
-        default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node[node['abiquo']['ui_address_type']]}/api"
-    else
-        default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['abiquo']['ui_address']}/api"
-    end
+    default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['fqdn']}/api"
 when "remoteservices"
     default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint']
     default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
@@ -143,6 +137,9 @@ end
 
 # Configure Abiquo websockify
 default['abiquo']['websockify']['port'] = 41337
+default['abiquo']['websockify']['api_url'] = 'https://localhost/api'
+default['abiquo']['websockify']['user'] = 'admin'
+default['abiquo']['websockify']['pass'] = 'xabiquo'
 default['abiquo']['websockify']['crt']  = node['abiquo']['certificate']['file']
 default['abiquo']['websockify']['key']  = node['abiquo']['certificate']['key_file']
 

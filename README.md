@@ -32,25 +32,28 @@ The cookbook contains the following recipes:
 
 * `recipe[abiquo]` - Installs an Abiquo Platform
 * `recipe[abiquo::repository]` - Configures the Abiquo yum repositories
+* `recipe[abiquo::install_ext_services]` - Installs supporting Abiquo databases (MariaDB, Redis) and RabbitMQ
 * `recipe[abiquo::install_monolithic]` - Installs an Abiquo Monolithic
 * `recipe[abiquo::install_server]` - Installs an Abiquo Server
 * `recipe[abiquo::install_remoteservices]` - Installs the Abiquo Remote Services
 * `recipe[abiquo::install_ui]` - Installs an Abiquo UI server
 * `recipe[abiquo::install_websockify]` - Installs a Websockify server
+* `recipe[abiquo::install_frontend]` - Installs Abiquo frontend components (UI + Websockify)
 * `recipe[abiquo::install_v2v]` - Installs an standalone V2V Server
 * `recipe[abiquo::install_kvm]` - Installs the KVM hypervisor
 * `recipe[abiquo::install_monitoring]` - Installs an Abiquo Monitoring node with Cassandra and kairosDB
+* `recipe[abiquo::setup_ext_services]` - Dummy recipe to allow the profile 'ext_services' to be used
 * `recipe[abiquo::setup_monolithic]` - Configures the Abiquo Monolithic Server
 * `recipe[abiquo::setup_server]` - Configures the Abiquo Server
 * `recipe[abiquo::setup_remoteservices]` - Configures the Abiquo Remote Services
 * `recipe[abiquo::setup_ui]` - Configures the Abiquo UI server
 * `recipe[abiquo::setup_websockify]` - Configures the Websockify server
+* `recipe[abiquo::setup_frontend]` - Configures Abiquo frontend components (UI + Websockify)
 * `recipe[abiquo::setup_v2v]` - Configures an standalone V2V Server
 * `recipe[abiquo::setup_kvm]` - Configures the KVM hypervisor
 * `recipe[abiquo::setup_monitoring]` - Configures the Abiquo Monitoring node
 * `recipe[abiquo::upgrade]` - Upgrades an Abiquo Platform
 * `recipe[abiquo::install_database]` - Installs the Abiquo database
-* `recipe[abiquo::install_ext_services]` - Installs the Abiquo supporting services like Redis, RabbitMQ, etc.
 * `recipe[abiquo::certificate]` - Configures the SSL certificates
 * `recipe[abiquo::service]` - Manages Abiquo tomcat service
 
@@ -62,8 +65,6 @@ Attribute | Description | Type | Default
 ----------|-------------|------|--------
 `['profile']` | The profile to install: "monolithic", "server", "remoteservices", "v2v", "kvm" or "monitoring" | String | "monolithic"
 `['install_ext_services']` | Whether or not to install supporting services like MariaDB, Redis, RabbitMQ, etc. | Boolean | true
-`['ui_address_type']` | The attribute to use as the Abiquo UI address: "fqdn", "ipaddress", "fixed" | String | "fqdn"
-`['ui_address']` | When `['ui_address_type']` is `fixed` use this as address | String | node['fqdn']
 `['ui_config']` | Additional parameters to configure on the Abiquo UI | Hash | { }
 `['ui_proxies']` | A collection of reverse proxy directives to configure in Apache | Array | [ ]
 `['ui_apache_opts']` | Additional Apache directives to include in the Abiquo vHost | Hash | { }
@@ -106,6 +107,12 @@ Attribute | Description | Type | Default
 `['certificate']['file']` | If `['certificate']['file']` is false, use this file as certificate | String | '/etc/pki/tls/certs/localhost.crt'
 `['certificate']['key_file']` | If `['certificate']['file']` is false, use this file as the certificate private key | String | '/etc/pki/tls/private/localhost.key'
 `['certificate']['ca_file']` | If `['certificate']['file']` is false, use this file as tha CA certificate | String | nil
+`['websockify']['port']` | The port where the Websockify proxy will listen | Integer | 41337
+`['websockify']['api_url']` | The URL for the noVNC tokens script to connect to | String | 'https://localhost/api'
+`['websockify']['user']` | The user to use to connect to the Abiquo API by the noVNC tokens script | String | 'admin'
+`['websockify']['pass']` | The password for the user used by the noVNC tokens script | String | 'xabiquo'
+`['websockify']['crt']` | The certificate to be used by the Websockify proxy | String | node['abiquo']['certificate']['file']
+`['websockify']['key']` | The key for the certificate to be used by the Websockify proxy | String | node['abiquo']['certificate']['key_file']
 
 # Resources and providers
 
@@ -164,7 +171,18 @@ in the run list:
 * `recipe[abiquo]` - To perform an installation from scratch
 * `recipe[abiquo::upgrade]` - To upgrade an existing installation
 
-The available profiles are: `monolithic`, `remoteservices`, `server`, `ui`, `websockify`, `v2v`, `kvm` and `monitoring`.
+The available profiles are: 
+
+- `monolithic` sets up all Abiquo components in one host.
+- `remoteservices` sets up the Abiquo remote services (except V2V)
+- `server` sets up the Abiquo management components (API, M) plus the frontend components (UI, websockify).
+- `ui` sets up the Abiquo UI
+- `websockify` sets up the Websockify proxy for noVNC connections
+- `frontend` sets up the frontend components, UI and Websockify
+- `v2v` sets up the Abiquo V2V conversion manager
+- `kvm` sets up an Abiquo KVM cloud node
+- `monitoring` sets up the monitoring components of the Abiquo platform
+- `ext_services` sets up the management components' supporting databases (MariaDB, Redis) and the RabbitMQ message bus
 
 When installing the Abiquo Monolithic profile, you may also want to set the `node['abiquo']['certificate']`
 properties so the right certificate is used or a self-signed one is generated. You can also use it together

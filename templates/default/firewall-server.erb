@@ -1,10 +1,4 @@
-<% if node['abiquo']['install_ext_services'] %>
-# RabbitMQ
--A INPUT -p tcp -m tcp --dport 5672 -j ACCEPT
-
-# MySQL
--A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
-<% end %>
+<%= render "firewall-ext_services.erb" if node['abiquo']['install_ext_services'] %>
 <%= render "firewall-ui.erb" %>
 <%= render "firewall-websockify.erb" %>
 <%= render "firewall-tomcat.erb" %>

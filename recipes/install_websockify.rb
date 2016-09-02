@@ -29,11 +29,4 @@ service 'websockify' do
     action [:enable, :start]
 end
 
-file "/etc/cron.d/novnc_tokens" do
-    owner "root"
-    group "root"
-    mode  "0644"
-    action :create
-end
-
 include_recipe "abiquo::certificate"

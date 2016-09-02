@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: setup_ui
+# Recipe:: install_frontend
 #
 # Copyright 2014, Abiquo
 #
@@ -15,11 +15,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-template "/var/www/html/ui/config/client-config-custom.json" do
-    source "ui-config.json.erb"
-    owner "root"
-    group "root"
-    variables({ :ui_props => node['abiquo']['ui_config'] })
-    action :create
-    notifies :restart, "service[apache2]"
-end
+include_recipe "abiquo::install_ui"
+include_recipe "abiquo::install_websockify"

@@ -15,6 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+file "/etc/cron.d/novnc_tokens" do
+    content "* * * * * root /opt/websockify/novnc_tokens.rb -a #{node['abiquo']['websockify']['api_url']} -u #{node['abiquo']['websockify']['user']} -p #{node['abiquo']['websockify']['pass']} -f /opt/websockify/config.vnc"
+    owner "root"
+    group "root"
+    mode  "0644"
+    action :create
+    notifies :restart, "service[websockify]"
+end
+
 template "/etc/init.d/websockify" do
     source "websockify.erb"
     owner "root"
