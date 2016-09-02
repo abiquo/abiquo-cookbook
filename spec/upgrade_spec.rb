@@ -72,6 +72,8 @@ describe 'abiquo::upgrade' do
             expect(chef_run).to_not stop_service('abiquo-aim')
             expect(chef_run).to_not stop_service('abiquo-delorean')
             expect(chef_run).to_not stop_service('abiquo-emmett')
+            expect(chef_run).to stop_service('apache2')
+            expect(chef_run).to stop_service('websockify')
         end
     end
 
@@ -102,6 +104,28 @@ describe 'abiquo::upgrade' do
         expect(chef_run).to_not stop_service('abiquo-aim')
         expect(chef_run).to stop_service('abiquo-delorean')
         expect(chef_run).to stop_service('abiquo-emmett')
+    end
+
+    it 'stops the ui services' do
+        chef_run.node.set['abiquo']['profile'] = 'ui'
+        chef_run.converge(described_recipe)
+        expect(chef_run).to stop_service('apache2')
+        expect(chef_run).to_not stop_service('websockify')
+        expect(chef_run).to_not stop_service('abiquo-aim')
+        expect(chef_run).to_not stop_service('abiquo-tomcat')
+        expect(chef_run).to_not stop_service('abiquo-delorean')
+        expect(chef_run).to_not stop_service('abiquo-emmett')
+    end
+
+    it 'stops the websockify services' do
+        chef_run.node.set['abiquo']['profile'] = 'websockify'
+        chef_run.converge(described_recipe)
+        expect(chef_run).to_not stop_service('apache2')
+        expect(chef_run).to stop_service('websockify')
+        expect(chef_run).to_not stop_service('abiquo-aim')
+        expect(chef_run).to_not stop_service('abiquo-tomcat')
+        expect(chef_run).to_not stop_service('abiquo-delorean')
+        expect(chef_run).to_not stop_service('abiquo-emmett')
     end
 
     it 'includes the repository recipe' do
@@ -220,6 +244,8 @@ describe 'abiquo::upgrade' do
             expect(chef_run).to_not start_service('abiquo-aim')
             expect(chef_run).to_not start_service('abiquo-delorean')
             expect(chef_run).to_not start_service('abiquo-emmett')
+            expect(chef_run).to start_service('apache2')
+            expect(chef_run).to start_service('websockify')
         end
     end
 
@@ -251,6 +277,28 @@ describe 'abiquo::upgrade' do
         expect(chef_run).to_not start_service('abiquo-aim')
         expect(chef_run).to start_service('abiquo-delorean')
         expect(chef_run).to start_service('abiquo-emmett')
+    end
+
+    it 'starts the ui services' do
+        chef_run.node.set['abiquo']['profile'] = 'ui'
+        chef_run.converge(described_recipe)
+        expect(chef_run).to_not start_service('abiquo-tomcat')
+        expect(chef_run).to_not start_service('abiquo-aim')
+        expect(chef_run).to_not start_service('abiquo-delorean')
+        expect(chef_run).to_not start_service('abiquo-emmett')
+        expect(chef_run).to start_service('apache2')
+        expect(chef_run).to_not start_service('websockify')
+    end
+
+    it 'starts the websockify services' do
+        chef_run.node.set['abiquo']['profile'] = 'websockify'
+        chef_run.converge(described_recipe)
+        expect(chef_run).to_not start_service('abiquo-tomcat')
+        expect(chef_run).to_not start_service('abiquo-aim')
+        expect(chef_run).to_not start_service('abiquo-delorean')
+        expect(chef_run).to_not start_service('abiquo-emmett')
+        expect(chef_run).to_not start_service('apache2')
+        expect(chef_run).to start_service('websockify')
     end
 
     %w(monolithic server).each do |profile|

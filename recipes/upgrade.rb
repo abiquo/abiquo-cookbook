@@ -27,16 +27,18 @@ end
 
 log "Abiquo updates available."
 
-case node['abiquo']['profile']
-when "kvm"
-    services = %w{abiquo-aim}
-when "monitoring"
-    services = %w{abiquo-delorean abiquo-emmett}
-else
-    services = %w{abiquo-tomcat}
-end
+services = {
+    'monolithic'        => %w{abiquo-tomcat apache2 websockify},
+    'remoteservices'    => %w{abiquo-tomcat},
+    'server'            => %w{abiquo-tomcat apache2 websockify},
+    'kvm'               => %w{abiquo-aim},
+    'monitoring'        => %w{abiquo-delorean abiquo-emmett},
+    'ui'                => %w{apache2},
+    'v2v'               => %w{abiquo-tomcat},
+    'websockify'        => %w{websockify}
+}
 
-services.each  do |svc|
+services[node['abiquo']['profile']].each  do |svc|
     service svc do
         action :stop
     end
@@ -50,7 +52,7 @@ abiquo_packages.each do |pkg|
     end
 end
 
-services.each  do |svc|
+services[node['abiquo']['profile']].each  do |svc|
     service svc do
         action :start
     end

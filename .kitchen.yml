@@ -67,7 +67,7 @@ suites:
           client.test.timeout: 600
         certificate:
           common_name: server.abiquo.com
-  - name: ws
+  - name: websockify
     run_list:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]

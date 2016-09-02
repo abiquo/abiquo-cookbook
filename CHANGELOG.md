@@ -3,6 +3,10 @@ abiquo CHANGELOG
 
 ## 0.8.0
 
+* Configured the monitoring resources to be idempotent.
+* Fix watchtower schema creation during install and upgrade.
+* Upgrade tests to Centos 6.8.
+* Added ui and websockify profiles.
 * Removed the Abiquo nightly repository.
 
 ## 0.7.3
