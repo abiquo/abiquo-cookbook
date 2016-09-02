@@ -46,7 +46,7 @@ end
         source "watchtower-service.conf.erb"
         owner "root"
         group "root"
-        variables({ :watchtower_service => wts})
+        variables({ :watchtower_service => wts })
         action :create
         notifies :restart, "service[abiquo-#{wts}]"
     end

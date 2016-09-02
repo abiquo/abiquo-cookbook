@@ -23,10 +23,6 @@ suites:
       set_fqdn: monolithic.abiquo.com
       abiquo:
         ui_address_type: set_fqdn
-        ui_config:
-          client.backto.url: "http://google.com"
-          client.google.maps.key: "trocotro"
-          client.test.timeout: 600
         ui_apache_opts:
           KeepAlive: "On"
           MaxKeepAliveRequests: 100

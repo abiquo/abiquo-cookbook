@@ -69,8 +69,6 @@ describe 'Monolithic configuration' do
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to exist
         # The suite is forced to configure the hostname
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://monolithic.abiquo.com/api"')
-        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.backto.url": "http://google.com",')
-        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.test.timeout": 600')
     end
 
 

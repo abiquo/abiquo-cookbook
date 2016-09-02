@@ -15,16 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+if node['abiquo']['ui_address_type'] != "fixed"
+    apiendpoint = "https://#{node[node['abiquo']['ui_address_type']]}/api"
+else
+    apiendpoint = "https://#{node['abiquo']['ui_address']}/api"
+end
+node.set['abiquo']['ui_config']['config.endpoint'] = apiendpoint
+
 template "/var/www/html/ui/config/client-config-custom.json" do
     source "ui-config.json.erb"
     owner "root"
     group "root"
-    variables({
-        :ui_address_type            => node['abiquo']['ui_address_type'],
-        :ui_address_type_resolved   => node[node['abiquo']['ui_address_type']],
-        :ui_address                 => node['abiquo']['ui_address'],
-        :ui_props                   => node['abiquo']['ui_config']
-    })
+    variables({ :ui_props => node['abiquo']['ui_config'] })
     action :create
     notifies :restart, "service[apache2]"
 end

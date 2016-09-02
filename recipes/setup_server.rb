@@ -17,5 +17,4 @@
 
 include_recipe "abiquo::setup_ui"
 include_recipe "abiquo::setup_websockify"
-
 include_recipe "abiquo::service"
