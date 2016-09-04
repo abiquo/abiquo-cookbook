@@ -47,4 +47,5 @@ ruby_block "extract-m-user-password" do
     end
     action :run
     not_if { node['abiquo']['properties'].has_key? 'abiquo.m.credential' }
+    not_if { node['abiquo']['properties'].has_key? 'abiquo.m.accessToken' }
 end
