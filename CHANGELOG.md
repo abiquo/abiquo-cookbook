@@ -1,8 +1,11 @@
 abiquo CHANGELOG
 ================
 
+## 0.9.0
+
 ## 0.8.0
 
+* Added suppoert for RHEL >= 6.7.
 * Simplified the ui configuration by leveraging only the 'ui_config' attribute.
 * Added ext_services profile.
 * Added front-end profile.
