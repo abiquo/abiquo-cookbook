@@ -63,8 +63,14 @@ describe 'abiquo::install_database' do
         expect(chef_run).to run_ruby_block('extract-m-user-password')
     end
 
-    it 'does not remove extracted m user password' do
+    it 'does not remove extracted m user password if credential is present' do
         chef_run.node.set['abiquo']['properties']['abiquo.m.credential'] = 'blah'
+        chef_run.converge(described_recipe)
+        expect(chef_run).to_not run_ruby_block('extract-m-user-password')
+    end
+
+    it 'does not remove extracted m user password if access token is present' do
+        chef_run.node.set['abiquo']['properties']['abiquo.m.accessToken'] = 'blah'
         chef_run.converge(described_recipe)
         expect(chef_run).to_not run_ruby_block('extract-m-user-password')
     end
