@@ -12,7 +12,8 @@ an existing Abiquo installation.
 
 # Requirements
 
-* CentOS >= 6.8
+* CentOS >= 6.7
+* RHEL >= 6.7
 
 This cookbook depends on the following cookbooks:
 
