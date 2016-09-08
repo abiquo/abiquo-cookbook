@@ -15,7 +15,8 @@ desc 'Run Test Kitchen basic integration tests'
 task 'kitchen-basic' do
     require 'kitchen'
     Kitchen.logger = Kitchen.default_file_logger
-    config = Kitchen::Config.new
+    @loader = Kitchen::Loader::YAML.new(local_config: ENV['KITCHEN_LOCAL_YAML'])
+    config = Kitchen::Config.new(loader: @loader)
     config.instances.select { |i| i.name =~ /monolithic/ || i.name =~ /monitoring/ }.each do |instance|
         instance.test(:always)
     end
@@ -25,7 +26,8 @@ desc 'Run Test Kitchen integration tests'
 task :kitchen do
     require 'kitchen'
     Kitchen.logger = Kitchen.default_file_logger
-    Kitchen::Config.new.instances.each do |instance|
+    @loader = Kitchen::Loader::YAML.new(local_config: ENV['KITCHEN_LOCAL_YAML'])
+    Kitchen::Config.new(loader: @loader).instances.each do |instance|
         instance.test(:always)
     end
 end

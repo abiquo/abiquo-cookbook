@@ -202,6 +202,16 @@ Once installed you can run the unit and integration tests as follows:
 The tests and Gemfile have been developed using Ruby 2.1.5, and that is the recommended Ruby version to use to run the tests.
 Other versions may cause conflicts with the versions of the gems Bundler will install.
 
+## RHEL testing
+
+Integration tests for RHEL are specified in a separate ```.kitchen.rhel.yml``` file. They use a vagrant box named ```rhel-6.8``` which you will need to build and add to the host running the tests as described in [bento project repository](https://github.com/chef/bento).
+
+Once the box is available in the host, you can run the tests by specifying the kitchen config file to use and the user and password so the VM can register to RedHat and get a subscription.
+
+```
+$ KITCHEN_LOCAL_YAML=.kitchen.rhel.yml RHN_USERNAME=some_user RHN_PASSWORD=some_pass bundle exec rake kitchen-basic
+```
+
 # License and Authors
 
 * Author:: Ignasi Barrera (ignasi.barrera@abiquo.com)

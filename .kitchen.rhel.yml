@@ -1,0 +1,168 @@
+driver:
+  name: vagrant
+  customize:
+    memory: 2048
+
+provisioner:
+  name: chef_zero
+  require_chef_omnibus: 12.5.1
+  data_path: test/fixtures
+
+transport:
+  compression: none
+
+platforms:
+  - name: rhel-6.8
+
+suites:
+  - name: monolithic
+    run_list:
+      - recipe[rhn_register::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        ui_config:
+          config.endpoint: "https://monolithic.abiquo.com/api"
+        ui_apache_opts:
+          KeepAlive: "On"
+          MaxKeepAliveRequests: 100
+          KeepAliveTimeout: 60
+        ui_proxies:
+          /am2: http://some_am:8009/am
+        certificate:
+          common_name: monolithic.abiquo.com
+  - name: server
+    run_list:
+      - recipe[rhn_register::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: server
+        ui_config:
+          config.endpoint: "https://server.abiquo.com/api"
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+        ui_apache_opts:
+          KeepAlive: "On"
+          MaxKeepAliveRequests: 100
+          KeepAliveTimeout: 60
+        ui_proxies:
+          /am2: http://some_am:8009/am
+        certificate:
+          common_name: server.abiquo.com
+  - name: frontend
+    run_list:
+      - recipe[rhn_register::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: frontend
+        ui_config:
+          config.endpoint: "https://server.abiquo.com/api"
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+        certificate:
+          common_name: frontend.abiquo.com
+  - name: ui
+    run_list:
+      - recipe[rhn_register::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: ui
+        ui_config:
+          config.endpoint: "https://server.abiquo.com/api"
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+        certificate:
+          common_name: server.abiquo.com
+  - name: websockify
+    run_list:
+      - recipe[rhn_register::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: websockify
+        certificate:
+          common_name: ws.abiquo.com
+  - name: remoteservices
+    run_list:
+      - recipe[rhn_register::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: remoteservices
+  - name: v2v
+    run_list:
+      - recipe[rhn_register::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: v2v
+  - name: kvm
+    run_list:
+      - recipe[rhn_register::register]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: kvm
+  - name: monitoring
+    run_list:
+      # The Delorean service needs a running RabbitMQ instance
+      - recipe[rhn_register::register]
+      - recipe[abiquo::repository]
+      - recipe[rabbitmq]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+      - recipe[rhn_register::unregister]
+    attributes:
+      rhn_register:
+        username: <%= ENV['RHN_USERNAME'] %>
+        password: <%= ENV['RHN_PASSWORD'] %>
+      abiquo:
+        profile: monitoring
+      rabbitmq:
+        version: 3.5.4
