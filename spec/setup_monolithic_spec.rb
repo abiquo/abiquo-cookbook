@@ -13,6 +13,7 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/commands'
 
 describe 'abiquo::setup_monolithic' do
     let(:chef_run) do
@@ -23,7 +24,8 @@ describe 'abiquo::setup_monolithic' do
 
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(false)
+        stub_check_db_pass_command("root", "")
+        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
     end
 
     %w{server remoteservices v2v}.each do |recipe|

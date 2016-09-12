@@ -1,0 +1,10 @@
+<Context>
+  <Resource name="jdbc/abiquoDB" auth="Container" type="javax.sql.DataSource"
+               initialSize="10"  suspectTimeout="60"
+               timeBetweenEvictionRunsMillis="30000"
+               minEvictableIdleTimeMillis="60000"
+               maxActive="100" minIdle="10" maxIdle="50" maxWait="10000"
+               removeAbandoned="true" removeAbandonedTimeout="60" logAbandoned="true"
+               username="<%= @db['user'] %>" password="<%= @db['password'] %>"
+               driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://<%= @db['host'] == 'localhost' ? node['ipaddress'] : @db['host'] %>:<%= @db['port'] %>/kinton?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
+</Context>

@@ -58,9 +58,9 @@ services[node['abiquo']['profile']].each  do |svc|
     end
 end
 
-liquibasecmd = liquibase_cmd("update", node['abiquo']['db'])
+lqb_cmd = node['abiquo']['profile'] == 'monitoring' ? liquibase_cmd("update", node['abiquo']['monitoring']['db'], true) : liquibase_cmd("update", node['abiquo']['db'])
 execute "liquibase-update" do
-    command liquibasecmd
+    command lqb_cmd
     cwd '/usr/share/doc/abiquo-server/database'
     only_if { (node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server') && node['abiquo']['db']['upgrade'] }
     action :nothing
@@ -69,11 +69,11 @@ execute "liquibase-update" do
 end
 
 execute "watchtower-liquibase-update" do
-  only_if { node['abiquo']['profile'] == 'monitoring' }
-  command "abiquo-watchtower-liquibase update"
-  subscribes :run, "package[abiquo-delorean]", :immediately
-  notifies :restart, "service[abiquo-delorean]" if node['abiquo']['profile'] == 'monitoring'
-  action :nothing
+    only_if { node['abiquo']['profile'] == 'monitoring' }
+    command lqb_cmd
+    subscribes :run, "package[abiquo-delorean]", :immediately
+    notifies :restart, "service[abiquo-delorean]" if node['abiquo']['profile'] == 'monitoring'
+    action :nothing
 end
 
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"

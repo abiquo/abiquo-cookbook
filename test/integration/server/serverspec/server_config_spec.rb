@@ -77,6 +77,11 @@ describe 'Server configuration' do
         expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
     end
 
+    it 'has DB properly configured' do
+        expect(file('/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml')).to contain('username="abiquo" password="abiquo"')
+        expect(file('/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml')).to contain('username="abiquo" password="abiquo"')
+    end
+
     it 'has the abiquo properties file' do
         expect(file('/opt/abiquo/config/abiquo.properties')).to exist
     end

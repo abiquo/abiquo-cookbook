@@ -13,9 +13,14 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/commands'
 
 describe 'abiquo::service' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
+
+    before do
+        stub_check_db_pass_command("root", "")
+    end
 
     it 'defines the abiquo-tomcat service' do
         chef_run.converge(described_recipe)

@@ -14,6 +14,7 @@
 
 require 'spec_helper'
 require_relative 'support/packages'
+require_relative 'support/commands'
 
 describe 'abiquo::upgrade' do
     let(:chef_run) do
@@ -25,9 +26,10 @@ describe 'abiquo::upgrade' do
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("service abiquo-tomcat stop").and_return(true)
-        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(false)
+        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
         allow(::File).to receive(:executable?).with('/usr/bin/repoquery').and_return(true)
         stub_package_commands(['abiquo-api', 'abiquo-server'])
+        stub_check_db_pass_command("root", "")
     end
 
     it 'does nothing if repoquery is not installed' do
@@ -202,6 +204,7 @@ describe 'abiquo::upgrade' do
     end
 
     it 'runs the liquibase update with custom attributes' do
+        stub_check_db_pass_command("root", "abiquo", "root", "abiquo")
         stub_command("/usr/bin/mysql -h 127.0.0.1 -P 3306 -u root -pabiquo kinton -e 'SELECT 1'").and_return(false)
         chef_run.node.set['abiquo']['db']['host'] = '127.0.0.1'
         chef_run.node.set['abiquo']['db']['password'] = 'abiquo'
@@ -230,7 +233,7 @@ describe 'abiquo::upgrade' do
         chef_run.converge('apache2::default', 'abiquo::install_server', 'abiquo::service', described_recipe)
         resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
         expect(resource).to do_nothing
-        expect(resource.command).to eq('abiquo-watchtower-liquibase update')
+        expect(resource.command).to eq('abiquo-watchtower-liquibase -h localhost -P 3306 -u root update')
         # We can't test this if there is no explicit resource notifying it, due to how ChefSpec subscription matchers are implemented
         #expect(resource).to subscribe_to('package[abiquo-delorean]')
         expect(resource).to notify('service[abiquo-delorean]').to(:restart).delayed

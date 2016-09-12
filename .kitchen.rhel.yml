@@ -47,6 +47,9 @@ suites:
         username: <%= ENV['RHN_USERNAME'] %>
         password: <%= ENV['RHN_PASSWORD'] %>
       abiquo:
+        db:
+          user: abiquo
+          password: abiquo
         profile: server
         ui_config:
           config.endpoint: "https://server.abiquo.com/api"
