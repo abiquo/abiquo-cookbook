@@ -13,6 +13,7 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/commands'
 
 describe 'abiquo::setup_server' do
     let(:chef_run) do
@@ -22,8 +23,9 @@ describe 'abiquo::setup_server' do
     end
 
     before do
+        stub_check_db_pass_command("root", "")
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(false)
+        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
     end
 
     it "includes the service recipe" do
@@ -39,5 +41,27 @@ describe 'abiquo::setup_server' do
     it 'includes the setup-websockify recipe' do
         chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe, 'abiquo::service')
         expect(chef_run).to include_recipe('abiquo::setup_websockify')
+    end
+
+    it 'renders API DB configuration file' do
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe, 'abiquo::service')
+        expect(chef_run).to create_template('/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml').with(
+            :source => 'api-m.xml.erb',
+            :owner => 'root',
+            :group => 'root'
+        )
+        resource = chef_run.template('/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml')
+        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+    end
+
+    it 'renders M DB configuration file' do
+        chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe, 'abiquo::service')
+        expect(chef_run).to create_template('/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml').with(
+            :source => 'api-m.xml.erb',
+            :owner => 'root',
+            :group => 'root'
+        )
+        resource = chef_run.template('/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml')
+        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 end

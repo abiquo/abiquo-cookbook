@@ -25,7 +25,7 @@ describe 'abiquo::install_frontend' do
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
-        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root kinton -e 'SELECT 1'").and_return(true)
+        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(true)
         stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
     end
 

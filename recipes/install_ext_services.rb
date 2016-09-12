@@ -15,13 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Chef::Recipe.send(:include, Abiquo::Commands)
+
 package "mysql-libs" do
     ignore_failure true
     action :purge
 end
 
 case node['abiquo']['profile']
-when "monolithic", "server"
+when "monolithic", "server", "ext_services"
     packages = %w{MariaDB-server MariaDB-client redis rabbitmq-server cronie}
     services = %w{mysql redis rabbitmq-server crond}
 when "remoteservices"
@@ -46,6 +48,14 @@ services.each do |svc|
         action [:enable, :start]
     end
 end
+
+passwords_match = check_db_pass()
+execute "set mysql root pass" do
+    command "/usr/bin/mysql -e 'GRANT ALL PRIVILEGES ON *.* to #{node['abiquo']['db']['user']}@\"%\" IDENTIFIED BY \"#{node['abiquo']['db']['password']}\"'"
+    action :run
+    not_if { passwords_match }
+end
+
 
 execute "create-abiquo-rabbit-user" do
     command "rabbitmqctl add_user #{node['abiquo']['properties']['abiquo.rabbitmq.username']} #{node['abiquo']['properties']['abiquo.rabbitmq.username']}"

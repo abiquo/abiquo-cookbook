@@ -42,17 +42,25 @@ module Abiquo
 
     module Commands
         def mysql_cmd(props)
-            mysqlcmd = "/usr/bin/mysql -h #{props['host']}"
-            mysqlcmd += " -P #{props['port']}"
-            mysqlcmd += " -u #{props['user']}"
-            unless props['password'].nil? or props['password'].empty?
-                mysqlcmd += " -p#{props['password']}"
+            if props['host'] == 'localhost'
+                mysqlcmd = "/usr/bin/mysql"
+            else
+                mysqlcmd = "/usr/bin/mysql -h #{props['host']}"
+                mysqlcmd += " -P #{props['port']}"
+                mysqlcmd += " -u #{props['user']}"
+                unless props['password'].nil? or props['password'].empty?
+                    mysqlcmd += " -p#{props['password']}"
+                end
             end
             mysqlcmd
         end
 
-        def liquibase_cmd(command, props)
-            liquibasecmd = "abiquo-liquibase -h #{props['host']}"
+        def liquibase_cmd(command, props, monitoring=false)
+            if monitoring
+                liquibasecmd = "abiquo-watchtower-liquibase -h #{props['host']}"
+            else
+                liquibasecmd = "abiquo-liquibase -h #{props['host']}"
+            end
             liquibasecmd += " -P #{props['port']}"
             liquibasecmd += " -u #{props['user']}"
             unless props['password'].nil? or props['password'].empty?
@@ -60,6 +68,16 @@ module Abiquo
             end
             liquibasecmd += " #{command}"
             liquibasecmd
+        end
+
+        def check_db_pass
+            current_pass_query = "select Password from mysql.user where User = \"#{node['abiquo']['db']['user']}\" and Host = \"%\""
+            current_pass = shell_out!("/usr/bin/mysql -B --skip-column-names -e '#{current_pass_query}'").stdout
+
+            new_pass_query = "select PASSWORD(\"#{node['abiquo']['db']['password']}\")"
+            new_pass = shell_out!("/usr/bin/mysql -B --skip-column-names -e '#{new_pass_query}'").stdout
+            
+            new_pass == current_pass
         end
     end
 end

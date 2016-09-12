@@ -13,19 +13,21 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/commands'
 
 describe 'abiquo::install_monitoring' do
     let(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
             node.set['abiquo']['profile'] = 'monitoring'
-            node.set['abiquo']['monitoring']['db']['password'] = 'pass'
         end.converge(described_recipe)
     end
     let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}-#{chef_run.node['abiquo']['monitoring']['kairosdb']['release']}.rpm" }
     let(:url) { "https://github.com/kairosdb/kairosdb/releases/download/v#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}/#{pkg}" }
 
     before do
-        stub_command("/usr/bin/mysql -h localhost -P 3306 -u root -ppass watchtower -e 'SELECT 1'").and_return(false)
+        stub_check_db_pass_command("root", "")
+        stub_command("/usr/bin/mysql watchtower -e 'SELECT 1'").and_return(false)
+        stub_check_db_pass_command(chef_run.node['abiquo']['db']['user'], chef_run.node['abiquo']['db']['password'])
     end
 
     it 'downloads the kairosdb package' do
@@ -83,17 +85,17 @@ describe 'abiquo::install_monitoring' do
         chef_run.converge(described_recipe)
         expect(chef_run).to install_package('MariaDB-client')
         expect(chef_run).to run_execute('create-watchtower-database').with(
-            :command => '/usr/bin/mysql -h localhost -P 3306 -u root -ppass -e \'CREATE SCHEMA watchtower\''
+            :command => '/usr/bin/mysql -e \'CREATE SCHEMA watchtower\''
         )
         
         resource = chef_run.execute('install-watchtower-database')
         expect(resource).to do_nothing
-        expect(resource.command).to eq('/usr/bin/mysql -h localhost -P 3306 -u root -ppass watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql')
+        expect(resource.command).to eq('/usr/bin/mysql watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql')
         expect(resource).to subscribe_to('execute[create-watchtower-database]').on(:run).delayed
 
         resource = chef_run.execute('run-watchtower-liquibase')
         expect(resource).to do_nothing
-        expect(resource.command).to eq('/usr/bin/abiquo-watchtower-liquibase update')
+        expect(resource.command).to eq('abiquo-watchtower-liquibase -h localhost -P 3306 -u root update')
         expect(resource).to subscribe_to('execute[install-watchtower-database]').on(:run).delayed
     end
 

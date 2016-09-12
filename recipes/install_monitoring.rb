@@ -55,7 +55,7 @@ if node['abiquo']['monitoring']['db']['install']
     	action :install
     end
 
-    mysqlcmd = mysql_cmd node['abiquo']['monitoring']['db']
+    mysqlcmd = mysql_cmd(node['abiquo']['monitoring']['db'])
 
     execute "create-watchtower-database" do
         command "#{mysqlcmd} -e 'CREATE SCHEMA watchtower'"
@@ -68,8 +68,9 @@ if node['abiquo']['monitoring']['db']['install']
         subscribes :run, "execute[create-watchtower-database]"
     end
 
+    lqb_cmd = liquibase_cmd("update", node['abiquo']['db'], true)
     execute "run-watchtower-liquibase" do
-      command "/usr/bin/abiquo-watchtower-liquibase update"
+      command lqb_cmd
       action :nothing
       subscribes :run, "execute[install-watchtower-database]"
     end
