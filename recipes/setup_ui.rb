@@ -14,12 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+json_settings = Chef::JSONCompat.to_json_pretty(node['abiquo']['ui_config'])
 
-template "/var/www/html/ui/config/client-config-custom.json" do
-    source "ui-config.json.erb"
+file "/var/www/html/ui/config/client-config-custom.json" do
+    content json_settings
     owner "root"
     group "root"
-    variables({ :ui_props => node['abiquo']['ui_config'] })
     action :create
     notifies :restart, "service[apache2]"
 end

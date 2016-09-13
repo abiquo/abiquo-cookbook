@@ -43,6 +43,13 @@ suites:
           client.backto.url: "http://google.com"
           client.google.maps.key: "trocotro"
           client.test.timeout: 600
+          config.languages:
+            - value: en_US
+              name: US English
+              isDefault: true
+          client.themes:
+            - abicloudDefault
+            - someothertheme
         ui_apache_opts:
           KeepAlive: "On"
           MaxKeepAliveRequests: 100

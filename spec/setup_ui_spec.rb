@@ -27,10 +27,11 @@ describe 'abiquo::setup_ui' do
 
     it 'renders ui configuration file' do
         chef_run.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
-        expect(chef_run).to create_template('/var/www/html/ui/config/client-config-custom.json').with(
-            :source => 'ui-config.json.erb',
-            :owner => 'root',
-            :group => 'root'
+        json_settings = Chef::JSONCompat.to_json_pretty(chef_run.node['abiquo']['ui_config'])
+        expect(chef_run).to create_file('/var/www/html/ui/config/client-config-custom.json').with(
+            :content => json_settings,
+            :owner   => 'root',
+            :group   => 'root'
         )
     end
 end
