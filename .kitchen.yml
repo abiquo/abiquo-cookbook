@@ -37,9 +37,6 @@ suites:
       - recipe[abiquo::upgrade]
     attributes:
       abiquo:
-        db:
-          user: abiquo
-          password: ouqiba
         profile: server
         ui_config:
           config.endpoint: "https://server.abiquo.com/api"
