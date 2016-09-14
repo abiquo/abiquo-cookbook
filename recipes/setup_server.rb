@@ -22,7 +22,6 @@ template '/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml' do
     source 'api-m.xml.erb'
     owner 'root'
     group 'root'
-    variables (lazy {{ :db => node['abiquo']['db'] }})
     action :create
     notifies :restart, 'service[abiquo-tomcat]'
 end
@@ -31,7 +30,6 @@ template '/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml' do
     source 'api-m.xml.erb'
     owner 'root'
     group 'root'
-    variables (lazy {{ :db => node['abiquo']['db'] }})
     action :create
     notifies :restart, 'service[abiquo-tomcat]'
 end

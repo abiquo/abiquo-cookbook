@@ -5,6 +5,6 @@
                minEvictableIdleTimeMillis="60000"
                maxActive="100" minIdle="10" maxIdle="50" maxWait="10000"
                removeAbandoned="true" removeAbandonedTimeout="60" logAbandoned="true"
-               username="<%= @db['user'] %>" password="<%= @db['password'] %>"
-               driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://<%= @db['host'] == 'localhost' ? node['ipaddress'] : @db['host'] %>:<%= @db['port'] %>/kinton?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
+               username="<%= node['abiquo']['db']['user'] %>" password="<%= node['abiquo']['db']['password'] %>"
+               driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://<%= node['abiquo']['db']['host'] == 'localhost' ? node['ipaddress'] : node['abiquo']['db']['host'] %>:<%= node['abiquo']['db']['port'] %>/kinton?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
 </Context>
