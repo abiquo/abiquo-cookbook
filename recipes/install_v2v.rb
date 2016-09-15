@@ -29,8 +29,6 @@ include_recipe "java::oracle_jce"
     end
 end
 
-%w{rpcbind redis}.each do |svc|
-  service svc do
-      action [:enable, :start]
-  end
+service 'rpcbind' do
+    action [:enable, :start]
 end

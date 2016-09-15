@@ -96,4 +96,9 @@ describe 'Server configuration' do
         expect(command('rabbitmqctl list_users').stdout).to match(/abiquo.*administrator/)
         expect(command('rabbitmqctl list_permissions').stdout).to match(/abiquo\t.*\t.*\t.*/)
     end
+
+    it 'has a redis user with a proper login shell' do
+        expect(user('redis')).to exist
+        expect(user('redis')).to have_login_shell('/bin/sh')
+    end
 end

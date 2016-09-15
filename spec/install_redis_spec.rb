@@ -1,6 +1,3 @@
-# Cookbook Name:: abiquo
-# Recipe:: install_ext_services
-#
 # Copyright 2014, Abiquo
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Chef::Recipe.send(:include, Abiquo::Commands)
+require 'spec_helper'
 
-case node['abiquo']['profile']
-when "monolithic", "server", "ext_services"
-    recipes = %w{mariadb redis rabbitmq}
-when "remoteservices"
-    recipes = %w{redis}
-when "monitoring"
-    recipes = %w{mariadb}
-else
-    recipes = []
-end
+describe 'abiquo::install_redis' do
+    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+    
+    it 'includes the redisio recipe' do
+        expect(chef_run).to include_recipe('redisio')
+    end
 
-recipes.each do |recipe|
-    include_recipe "abiquo::install_#{recipe}"
+    it 'creates the redis user' do
+        expect(chef_run).to create_user('redis').with({ :shell => '/bin/sh' })
+    end
+
+    it 'includes the redisio::enable recipe' do
+        expect(chef_run).to include_recipe('redisio::enable')
+    end
 end

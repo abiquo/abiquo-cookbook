@@ -3,6 +3,8 @@ abiquo CHANGELOG
 
 ## 0.9.0
 
+* Use official cookbooks to install MAriaDB, RabbitMQ and Redis. 
+
 ## 0.8.0
 
 * Added suppoert for RHEL >= 6.7.

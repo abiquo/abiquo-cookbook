@@ -16,8 +16,8 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Remote Services services' do
     it 'has redis running' do
-        expect(service('redis')).to be_enabled
-        expect(service('redis')).to be_running
+        expect(service('redis-master')).to be_enabled
+        expect(service('redis-master')).to be_running
         expect(port(6379)).to be_listening
     end
 

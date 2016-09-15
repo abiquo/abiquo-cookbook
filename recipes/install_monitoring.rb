@@ -17,6 +17,8 @@
 
 Chef::Recipe.send(:include, Abiquo::Commands)
 
+include_recipe 'mariadb::client'
+
 remote_file "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}" do
     source node['abiquo']['monitoring']['kairosdb_url']
 end
@@ -48,27 +50,37 @@ include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_ser
 end
 
 if node['abiquo']['monitoring']['db']['install']
-    package "MariaDB-client" do
-    	action :install
+
+    mysql2_chef_gem 'default' do
+        provider Chef::Provider::Mysql2ChefGem::Mariadb
+        action :install
     end
 
     mysqlcmd = mysql_cmd(node['abiquo']['monitoring']['db'])
 
-    execute "create-watchtower-database" do
-        command "#{mysqlcmd} -e 'CREATE SCHEMA watchtower'"
-        not_if "#{mysqlcmd} watchtower -e 'SELECT 1'"
+    conn_info = {
+        :host     => node['abiquo']['monitoring']['db']['host'],
+        :username => node['abiquo']['monitoring']['db']['user'],
+        :password => node['abiquo']['monitoring']['db']['password'],
+        :port     => node['abiquo']['monitoring']['db']['port']
+    }
+
+    # Create DB
+    mysql_database 'watchtower' do
+        connection conn_info
+        action :create
+        notifies :run, 'execute[install-watchtower-database]', :immediately
     end
 
     execute "install-watchtower-database" do
         command "#{mysqlcmd} watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql"
         action :nothing
-        subscribes :run, "execute[create-watchtower-database]"
+        notifies :run, "execute[watchtower-liquibase-update]", :immediately
     end
 
     lqb_cmd = liquibase_cmd("update", node['abiquo']['db'], true)
-    execute "run-watchtower-liquibase" do
+    execute "watchtower-liquibase-update" do
       command lqb_cmd
       action :nothing
-      subscribes :run, "execute[install-watchtower-database]"
     end
 end

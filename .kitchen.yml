@@ -38,6 +38,9 @@ suites:
     attributes:
       abiquo:
         profile: server
+        db:
+          user: abiquo
+          password: abiquo
         ui_config:
           config.endpoint: "https://server.abiquo.com/api"
           client.backto.url: "http://google.com"
@@ -126,5 +129,9 @@ suites:
     attributes:
       abiquo:
         profile: monitoring
+        monitoring:
+          rabbitmq:
+            username: guest
+            password: guest
       rabbitmq:
         version: 3.5.4

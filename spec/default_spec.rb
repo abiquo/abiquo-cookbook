@@ -15,6 +15,7 @@
 require 'spec_helper'
 require_relative 'support/matchers'
 require_relative 'support/commands'
+require_relative 'support/queries'
 
 describe 'abiquo::default' do
     let(:chef_run) do
@@ -26,16 +27,21 @@ describe 'abiquo::default' do
     let(:cn) { 'test.local' }
     
     before do
+        stub_queries
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_check_db_pass_command("root", "")
-        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
-        stub_command("/usr/bin/mysql watchtower -e 'SELECT 1'").and_return(false)
         stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
     end
 
     it 'changes selinux to permissive' do
         chef_run.converge(described_recipe)
         expect(chef_run).to permissive_selinux_state("SELinux Permissive")
+    end
+
+    it 'installs the cronie package and enables crond service' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to install_package('cronie')
+        expect(chef_run).to enable_service('crond')
+        expect(chef_run).to start_service('crond')
     end
 
     %w{monolithic server v2v remoteservices kvm monitoring}.each do |profile|

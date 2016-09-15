@@ -26,3 +26,11 @@ include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
 include_recipe "iptables"
 iptables_rule "firewall-common"
 iptables_rule "firewall-#{node['abiquo']['profile']}"
+
+package 'cronie' do
+    action :install
+end
+
+service 'crond' do
+    action [:enable, :start]
+end

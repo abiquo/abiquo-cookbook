@@ -19,33 +19,51 @@ Chef::Recipe.send(:include, Abiquo::Commands)
 
 mysqlcmd = mysql_cmd(node['abiquo']['db'])
 
-execute "create-database" do
-    command "#{mysqlcmd} -e 'CREATE DATABASE kinton'"
-    not_if "#{mysqlcmd} kinton -e 'SELECT 1'"
-    notifies :run, "execute[install-database]", :immediately
+mysql2_chef_gem 'server' do
+    provider Chef::Provider::Mysql2ChefGem::Mariadb
+    action :install
+end
+
+conn_info = {
+    :host     => node['abiquo']['db']['host'],
+    :username => node['abiquo']['db']['user'],
+    :password => node['abiquo']['db']['password'],
+    :port     => node['abiquo']['db']['port']
+}
+
+# Create DB
+mysql_database 'kinton' do
+    connection conn_info
+    action :create
+    notifies :run, 'execute[install-database]', :immediately
 end
 
 execute "install-database" do
     command "#{mysqlcmd} kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
     action :nothing
     notifies :run, "ruby_block[extract-m-user-password]", :immediately
-    notifies :run, "execute[install-license]", :immediately
+    notifies :query, "mysql_database[install-license]", :immediately
 end
 
-execute "install-license" do
-    command "#{mysqlcmd} kinton -e \"INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}');\""
+# Install license if present
+mysql_database 'install-license' do
+    connection conn_info
+    database_name 'kinton'
+    sql "INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}')"
     action :nothing
     not_if { node['abiquo']['license'].nil? || node['abiquo']['license'].empty? }
 end
 
+# Extract M user password from databases
+# Randomly generated after liquibase run
 ruby_block "extract-m-user-password" do
     block do
-        Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)      
-        mysql_command = "#{mysqlcmd} kinton -B --skip-column-names -e \"select COMMENTS from DATABASECHANGELOG where ID = 'default_user_for_m'\""
-        mysql_command_out = shell_out!(mysql_command)
-        node.set['abiquo']['properties']['abiquo.m.credential'] = mysql_command_out.stdout.gsub("\n", "")
+        client = Mysql2::Client.new(conn_info.merge(:database => 'kinton'))
+        query = "select COMMENTS from DATABASECHANGELOG where ID = 'default_user_for_m'"
+        result = client.query(query).first['COMMENTS']
+        node.set['abiquo']['properties']['abiquo.m.credential'] = result
     end
-    action :run
+    action :nothing
     not_if { node['abiquo']['properties'].has_key? 'abiquo.m.credential' }
     not_if { node['abiquo']['properties'].has_key? 'abiquo.m.accessToken' }
 end

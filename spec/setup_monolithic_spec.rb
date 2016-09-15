@@ -14,6 +14,7 @@
 
 require 'spec_helper'
 require_relative 'support/commands'
+require_relative 'support/queries'
 
 describe 'abiquo::setup_monolithic' do
     let(:chef_run) do
@@ -23,9 +24,8 @@ describe 'abiquo::setup_monolithic' do
     end
 
     before do
+        stub_queries
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_check_db_pass_command("root", "")
-        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
     end
 
     %w{server remoteservices v2v}.each do |recipe|

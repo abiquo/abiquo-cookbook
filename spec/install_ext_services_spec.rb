@@ -22,99 +22,25 @@ describe 'abiquo::install_ext_services' do
         stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
     end
 
-    it 'uninstalls mysql-libs package' do
-        stub_check_db_pass_command("root", "")
-        chef_run.converge(described_recipe)
-        expect(chef_run).to purge_package('mysql-libs')
-    end
-
-    %w{monolithic server}.each do |profile|
-        it "installs the #{profile} system packages" do
-            stub_check_db_pass_command("root", "")
+    %w{monolithic server ext_services}.each do |profile|
+        it "includes the necessary recipes for #{profile}" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge(described_recipe)
-            %w{MariaDB-server MariaDB-client redis rabbitmq-server cronie}.each do |pkg|
-                expect(chef_run).to install_package(pkg)
-            end
-        end
-
-        it "configures the #{profile} services" do
-            stub_check_db_pass_command("root", "")
-            chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge(described_recipe)
-            %w{mysql rabbitmq-server redis crond}.each do |svc|
-                expect(chef_run).to enable_service(svc)
-                expect(chef_run).to start_service(svc)
+            chef_run.converge(described_recipe, 'abiquo::service')
+            %w{mariadb redis rabbitmq}.each do |recipe|
+                expect(chef_run).to include_recipe("abiquo::install_#{recipe}")
             end
         end
     end
 
-    it 'does not set the DB password if it is the same' do
-        stub_check_db_pass_command("root", "")
+    it "includes the necessary recipes for remoteservices" do
+        chef_run.node.set['abiquo']['profile'] = 'remoteservices'
         chef_run.converge(described_recipe)
-        resource = chef_run.find_resource(:execute, 'set mysql root pass')
-        expect(resource).to do_nothing
-        expect(resource.command).to eq("/usr/bin/mysql -e 'GRANT ALL PRIVILEGES ON *.* to root@\"%\" IDENTIFIED BY \"\"'")
+        expect(chef_run).to include_recipe("abiquo::install_redis")
     end
 
-    it 'sets the DB password if it is the same' do
-        stub_check_db_pass_command('root', '', 'root', 'secret')
-        chef_run.node.set['abiquo']['db']['password'] = 'secret'
+    it "includes the necessary recipes for monitoring" do
+        chef_run.node.set['abiquo']['profile'] = 'monitoring'
         chef_run.converge(described_recipe)
-        expect(chef_run).to run_execute('set mysql root pass')
-        resource = chef_run.find_resource(:execute, 'set mysql root pass')
-        expect(resource.command).to eq("/usr/bin/mysql -e 'GRANT ALL PRIVILEGES ON *.* to root@\"%\" IDENTIFIED BY \"secret\"'")
-    end
-
-    it "installs the remoteservices system packages" do
-        stub_check_db_pass_command("root", "")
-        chef_run.node.set['abiquo']['profile'] = "remoteservices"
-        chef_run.converge(described_recipe)
-        expect(chef_run).to install_package("redis")
-    end
-
-    it "configures the remoteservices services" do
-        stub_check_db_pass_command("root", "")
-        chef_run.node.set['abiquo']['profile'] = "remoteservices"
-        chef_run.converge(described_recipe)
-        expect(chef_run).to enable_service("redis")
-        expect(chef_run).to start_service("redis")
-    end
-
-    it "installs the monitoring system packages" do
-        stub_check_db_pass_command("root", "")
-        chef_run.node.set['abiquo']['profile'] = "monitoring"
-        chef_run.converge(described_recipe)
-        %w{MariaDB-server MariaDB-client}.each do |pkg|
-            expect(chef_run).to install_package(pkg)
-        end
-    end
-
-    it "configures the monitoring services" do
-        stub_check_db_pass_command("root", "")
-        chef_run.node.set['abiquo']['profile'] = "monitoring"
-        chef_run.converge(described_recipe)
-        expect(chef_run).to enable_service("mysql")
-        expect(chef_run).to start_service("mysql")
-    end
-
-    it "creates a rabbit user and sets the permissions" do
-        stub_check_db_pass_command("root", "")
-        chef_run.converge(described_recipe)
-
-        resource = chef_run.find_resource(:execute, 'create-abiquo-rabbit-user')
-        expect(resource).to do_nothing
-        expect(resource.command).to eq('rabbitmqctl add_user abiquo abiquo')
-        expect(resource).to subscribe_to('service[rabbitmq-server]').on(:run).delayed
-
-        resource = chef_run.find_resource(:execute, 'set-abiquo-rabbit-user-administrator')
-        expect(resource).to do_nothing
-        expect(resource.command).to eq('rabbitmqctl set_user_tags abiquo administrator')
-        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
-
-        resource = chef_run.find_resource(:execute, 'set-abiquo-rabbit-user-permissions')
-        expect(resource).to do_nothing
-        expect(resource.command).to eq("rabbitmqctl set_permissions -p / abiquo '.*' '.*' '.*'")
-        expect(resource).to subscribe_to('execute[create-abiquo-rabbit-user]').on(:run).delayed
+        expect(chef_run).to include_recipe("abiquo::install_mariadb")
     end
 end

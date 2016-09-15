@@ -43,9 +43,9 @@ module Abiquo
     module Commands
         def mysql_cmd(props)
             if props['host'] == 'localhost'
-                mysqlcmd = "/usr/bin/mysql"
+                mysqlcmd = "mysql"
             else
-                mysqlcmd = "/usr/bin/mysql -h #{props['host']}"
+                mysqlcmd = "mysql -h #{props['host']}"
                 mysqlcmd += " -P #{props['port']}"
                 mysqlcmd += " -u #{props['user']}"
                 unless props['password'].nil? or props['password'].empty?
@@ -68,16 +68,6 @@ module Abiquo
             end
             liquibasecmd += " #{command}"
             liquibasecmd
-        end
-
-        def check_db_pass
-            current_pass_query = "select Password from mysql.user where User = \"#{node['abiquo']['db']['user']}\" and Host = \"%\""
-            current_pass = shell_out!("/usr/bin/mysql -B --skip-column-names -e '#{current_pass_query}'").stdout
-
-            new_pass_query = "select PASSWORD(\"#{node['abiquo']['db']['password']}\")"
-            new_pass = shell_out!("/usr/bin/mysql -B --skip-column-names -e '#{new_pass_query}'").stdout
-            
-            new_pass == current_pass
         end
     end
 end

@@ -34,12 +34,6 @@ end
 
 service "abiquo-tomcat" do
     action [:enable, :start]
-    begin
-        # Subscribe to RabbitMQ configuration changes only if the resources are defined
-        subscribes :restart, resources("execute[set-abiquo-rabbit-user-permissions]").to_s, :immediately
-    rescue Chef::Exceptions::ResourceNotFound
-        Chef::Log.info("RabbitMQ configuration has not changed. Skipping restart.")
-    end
 end
 
 case node['abiquo']['profile']

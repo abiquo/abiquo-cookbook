@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_ext_services
+# Recipe:: install_redis
 #
 # Copyright 2014, Abiquo
 #
@@ -15,19 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Chef::Recipe.send(:include, Abiquo::Commands)
+include_recipe 'redisio'
 
-case node['abiquo']['profile']
-when "monolithic", "server", "ext_services"
-    recipes = %w{mariadb redis rabbitmq}
-when "remoteservices"
-    recipes = %w{redis}
-when "monitoring"
-    recipes = %w{mariadb}
-else
-    recipes = []
+user 'redis' do
+    shell '/bin/sh'
 end
 
-recipes.each do |recipe|
-    include_recipe "abiquo::install_#{recipe}"
-end
+include_recipe 'redisio::enable'

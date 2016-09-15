@@ -38,11 +38,31 @@ default['abiquo']['yum']['gpg-check'] = true
 default['abiquo']['yum']['proxy'] = nil
 
 # Database configuration
-default['abiquo']['db']['host'] = "localhost"
+default['abiquo']['db']['host'] = 'localhost'
 default['abiquo']['db']['port'] = 3306
-default['abiquo']['db']['user'] = "root"
+default['abiquo']['db']['user'] = 'root'
+default['abiquo']['db']['from'] = 'localhost'
 default['abiquo']['db']['password'] = nil
 default['abiquo']['db']['upgrade'] = true
+
+# Redis configuration
+default['redisio']['servers'] = [{
+    'name' => '-master',
+    'port' => 6379,
+    'address' => '0.0.0.0'
+}]
+default['redisio']['package_install'] = true
+default['redisio']['version'] = nil
+default['redisio']['package_name'] = 'redis'
+default['redisio']['bin_path'] = '/usr/bin'
+
+# RabbitMQ configuration
+default['abiquo']['rabbitmq']['username'] = 'abiquo'
+default['abiquo']['rabbitmq']['password'] = 'abiquo'
+default['abiquo']['rabbitmq']['tags'] = 'administrator'
+default['abiquo']['rabbitmq']['vhost'] = '/'
+default['rabbitmq']['use_distro_version'] = true
+default['rabbitmq']['port'] = 5672
 
 # Tomcat configuration 
 default['abiquo']['tomcat']['http-port'] = 8009
@@ -87,12 +107,13 @@ default['abiquo']['monitoring']['kairosdb']['host'] = 'localhost'
 default['abiquo']['monitoring']['kairosdb']['port'] = 8080
 default['abiquo']['monitoring']['rabbitmq']['host'] = 'localhost'
 default['abiquo']['monitoring']['rabbitmq']['port'] = 5672
-default['abiquo']['monitoring']['rabbitmq']['username'] = 'abiquo'
-default['abiquo']['monitoring']['rabbitmq']['password'] = 'abiquo'
+default['abiquo']['monitoring']['rabbitmq']['username'] = node['abiquo']['rabbitmq']['username']
+default['abiquo']['monitoring']['rabbitmq']['password'] = node['abiquo']['rabbitmq']['password']
 default['abiquo']['monitoring']['db']['host'] = 'localhost'
 default['abiquo']['monitoring']['db']['port'] = 3306
 default['abiquo']['monitoring']['db']['user'] = 'root'
-default['abiquo']['monitoring']['db']['password'] = ''
+default['abiquo']['monitoring']['db']['password'] = nil
+default['abiquo']['monitoring']['db']['from'] = 'localhost'
 default['abiquo']['monitoring']['db']['install'] = true
 default['abiquo']['monitoring']['emmett']['port'] = 36638
 default['abiquo']['monitoring']['kairosdb_package'] = "kairosdb-#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}.rpm"
@@ -111,8 +132,8 @@ default['cassandra']['notify_restart'] = true
 
 # Default properties
 default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
-default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'abiquo'
-default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'abiquo'
+default['abiquo']['properties']['abiquo.rabbitmq.username'] = node['abiquo']['rabbitmq']['username']
+default['abiquo']['properties']['abiquo.rabbitmq.password'] = node['abiquo']['rabbitmq']['password']
 default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
 default['abiquo']['properties']['abiquo.rabbitmq.port'] = 5672
 default['abiquo']['properties']['abiquo.vncport.min'] = 5900

@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_ext_services
+# Recipe:: install_rabbitmq
 #
 # Copyright 2014, Abiquo
 #
@@ -15,19 +15,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-Chef::Recipe.send(:include, Abiquo::Commands)
+include_recipe 'rabbitmq'
 
-case node['abiquo']['profile']
-when "monolithic", "server", "ext_services"
-    recipes = %w{mariadb redis rabbitmq}
-when "remoteservices"
-    recipes = %w{redis}
-when "monitoring"
-    recipes = %w{mariadb}
-else
-    recipes = []
+rabbitmq_user node['abiquo']['rabbitmq']['username'] do
+    password node['abiquo']['rabbitmq']['password']
+    action :add
 end
 
-recipes.each do |recipe|
-    include_recipe "abiquo::install_#{recipe}"
+rabbitmq_user node['abiquo']['rabbitmq']['username'] do
+    tag node['abiquo']['rabbitmq']['tags']
+    action :set_tags
+end
+
+rabbitmq_user node['abiquo']['rabbitmq']['username'] do
+    vhost node['abiquo']['rabbitmq']['vhost']
+    permissions ".* .* .*"
+    action :set_permissions
+    notifies :restart, 'service[abiquo-tomcat]' unless node['abiquo']['profile'] == 'ext_services'
 end

@@ -71,7 +71,6 @@ describe 'Monolithic configuration' do
         expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://monolithic.abiquo.com/api"')
     end
 
-
     it 'has tomcat properly configured' do
         expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
     end
@@ -93,5 +92,10 @@ describe 'Monolithic configuration' do
     it 'has a user in rabbit for Abiquo' do
         expect(command('rabbitmqctl list_users').stdout).to match(/abiquo.*administrator/)
         expect(command('rabbitmqctl list_permissions').stdout).to match(/abiquo\t.*\t.*\t.*/)
+    end
+
+    it 'has a redis user with a proper login shell' do
+        expect(user('redis')).to exist
+        expect(user('redis')).to have_login_shell('/bin/sh')
     end
 end

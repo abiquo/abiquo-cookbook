@@ -34,10 +34,8 @@ describe 'abiquo::install_v2v' do
         expect(chef_run).to include_recipe('java::oracle_jce')
     end
 
-    %w{rpcbind redis}.each do |svc|
-        it "configures the #{svc} service" do
-            expect(chef_run).to enable_service(svc)
-            expect(chef_run).to start_service(svc)
-        end
+    it "configures the rpcbind service" do
+        expect(chef_run).to enable_service('rpcbind')
+        expect(chef_run).to start_service('rpcbind')
     end
 end

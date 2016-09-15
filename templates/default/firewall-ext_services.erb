@@ -1,8 +1,10 @@
 # RabbitMQ
--A INPUT -p tcp -m tcp --dport 5672 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport <%= node['rabbitmq']['port'] %> -j ACCEPT
 
 # MySQL
--A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport <%= node['mariadb']['mysqld']['port'] %> -j ACCEPT
 
 # Redis
--A INPUT -p tcp -m tcp --dport 6379 -j ACCEPT
+<% node['redisio']['servers'].each do |server| %>
+-A INPUT -p tcp -m tcp --dport <%= server['port'] %> -j ACCEPT
+<% end %>

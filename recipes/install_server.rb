@@ -21,6 +21,7 @@
     end
 end
 
+include_recipe "mariadb::client"
 include_recipe "java::oracle_jce"
 include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
 

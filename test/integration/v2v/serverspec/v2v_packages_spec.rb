@@ -14,7 +14,7 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Remote Services packages' do
+describe 'V2V packages' do
     it 'has the system packages installed' do
         %w{redis jdk ec2-api-tools}.each do |pkg|
             expect(package(pkg)).to be_installed

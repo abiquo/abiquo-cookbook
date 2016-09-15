@@ -14,6 +14,7 @@
 
 require 'spec_helper'
 require_relative 'support/commands'
+require_relative 'support/queries'
 
 describe 'abiquo::setup_server' do
     let(:chef_run) do
@@ -23,9 +24,8 @@ describe 'abiquo::setup_server' do
     end
 
     before do
-        stub_check_db_pass_command("root", "")
+        stub_queries
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
     end
 
     it "includes the service recipe" do

@@ -15,6 +15,7 @@
 require 'spec_helper'
 require_relative 'support/packages'
 require_relative 'support/commands'
+require_relative 'support/queries'
 
 describe 'abiquo::upgrade' do
     let(:chef_run) do
@@ -26,10 +27,9 @@ describe 'abiquo::upgrade' do
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("service abiquo-tomcat stop").and_return(true)
-        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
         allow(::File).to receive(:executable?).with('/usr/bin/repoquery').and_return(true)
         stub_package_commands(['abiquo-api', 'abiquo-server'])
-        stub_check_db_pass_command("root", "")
+        stub_queries
     end
 
     it 'does nothing if repoquery is not installed' do

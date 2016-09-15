@@ -13,51 +13,30 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/queries'
 
 describe 'abiquo::install_database' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
     before do
-        stub_command("/usr/bin/mysql -h somedbserver -P 3306 -u root kinton -e 'SELECT 1'").and_return(false)
-        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
+        stub_queries
+    end
+
+    it 'installs the mysql2 gem' do
+        chef_run.converge(described_recipe)
+        expect(chef_run).to install_mysql2_chef_gem('server')
     end
 
     it 'creates the database' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to run_execute('create-database').with(
-            :command => "/usr/bin/mysql -e 'CREATE DATABASE kinton'"
-        )
-        resource = chef_run.execute('create-database')
-        expect(resource).to notify("execute[install-database]").to(:run).immediately
+        expect(chef_run).to create_mysql_database('kinton')
     end
 
     it 'installs the database' do
         chef_run.converge(described_recipe)
-        resource = chef_run.execute('install-database')
-        expect(resource).to do_nothing
-        expect(resource.command).to eq('/usr/bin/mysql kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql')
-        expect(resource).to notify('ruby_block[extract-m-user-password]').to(:run).immediately
-        expect(resource).to notify('execute[install-license]').to(:run).immediately
-    end
-
-    it 'creates the database on a remote server' do
-        chef_run.node.set['abiquo']['db']['host'] = 'somedbserver'
-        chef_run.converge(described_recipe)
-        expect(chef_run).to run_execute('create-database').with(
-            :command => "/usr/bin/mysql -h somedbserver -P 3306 -u root -e 'CREATE DATABASE kinton'"
-        )
-        resource = chef_run.execute('create-database')
-        expect(resource).to notify("execute[install-database]").to(:run).immediately
-    end
-
-    it 'installs the database' do
-        chef_run.node.set['abiquo']['db']['host'] = 'somedbserver'
-        chef_run.converge(described_recipe)
-        resource = chef_run.execute('install-database')
-        expect(resource).to do_nothing
-        expect(resource.command).to eq('/usr/bin/mysql -h somedbserver -P 3306 -u root kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql')
-        expect(resource).to notify('ruby_block[extract-m-user-password]').to(:run).immediately
-        expect(resource).to notify('execute[install-license]').to(:run).immediately
+        expect(chef_run).to_not run_execute('install-database')
+        resource = chef_run.find_resource(:mysql_database, 'kinton')
+        expect(resource).to notify('execute[install-database]').to(:run).immediately
     end
 
     it 'does not install the license if not provided' do
@@ -68,20 +47,22 @@ describe 'abiquo::install_database' do
     it 'does not install the license if it is empty' do
         chef_run.node.set['abiquo']['license'] = ''
         chef_run.converge(described_recipe)
-        expect(chef_run).to_not run_execute('install-license')
+        expect(chef_run).to_not query_mysql_database('install-license')
     end
 
     it 'installs the license if configured' do
         chef_run.node.set['abiquo']['license'] = 'foo'
         chef_run.converge(described_recipe)
-        resource = chef_run.execute('install-license')
-        expect(resource).to do_nothing
-        expect(resource.command).to eq('/usr/bin/mysql kinton -e "INSERT INTO license (data) VALUES (\'foo\');"')
+        expect(chef_run).to_not query_mysql_database('install-license')
+        resource = chef_run.find_resource(:execute, 'install-database')
+        expect(resource).to notify('mysql_database[install-license]').to(:query).immediately
     end
 
     it 'extracts default m user password' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to run_ruby_block('extract-m-user-password')
+        expect(chef_run).to_not run_ruby_block('extract-m-user-password')
+        resource = chef_run.find_resource(:execute, 'install-database')
+        expect(resource).to notify('ruby_block[extract-m-user-password]').to(:run).immediately
     end
 
     it 'does not remove extracted m user password if credential is present' do

@@ -38,4 +38,9 @@ describe 'Remote Services configuration' do
     it 'has the appliance manager properly configured' do
         expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.appliancemanager.checkMountedRepository = false')
     end
+
+    it 'has a redis user with a proper login shell' do
+        expect(user('redis')).to exist
+        expect(user('redis')).to have_login_shell('/bin/sh')
+    end
 end
