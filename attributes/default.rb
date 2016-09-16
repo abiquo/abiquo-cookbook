@@ -95,6 +95,8 @@ default['abiquo']['monitoring']['db']['user'] = 'root'
 default['abiquo']['monitoring']['db']['password'] = ''
 default['abiquo']['monitoring']['db']['install'] = true
 default['abiquo']['monitoring']['emmett']['port'] = 36638
+default['abiquo']['monitoring']['kairosdb_package'] = "kairosdb-#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}.rpm"
+default['abiquo']['monitoring']['kairosdb_url'] = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{node['abiquo']['monitoring']['kairosdb_package']}"
 
 # Override the Apache proxy configuration
 override['apache']['proxy']['order'] = "allow,deny"
@@ -116,8 +118,8 @@ default['abiquo']['properties']['abiquo.rabbitmq.username'] = 'abiquo'
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = 'abiquo'
 default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
 default['abiquo']['properties']['abiquo.rabbitmq.port'] = 5672
-default['abiquo']['properties']['abiquo.vncport.min'] = 6000
-default['abiquo']['properties']['abiquo.vncport.max'] = 6999
+default['abiquo']['properties']['abiquo.vncport.min'] = 5900
+default['abiquo']['properties']['abiquo.vncport.max'] = 5999
 
 case node['abiquo']['profile']
 when "monolithic", "server"

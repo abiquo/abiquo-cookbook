@@ -17,15 +17,12 @@
 
 Chef::Recipe.send(:include, Abiquo::Commands)
 
-kairosdb_package = "kairosdb-#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}.rpm"
-kairosdb_url = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{kairosdb_package}"
-
-remote_file "#{Chef::Config[:file_cache_path]}/#{kairosdb_package}" do
-    source kairosdb_url
+remote_file "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}" do
+    source node['abiquo']['monitoring']['kairosdb_url']
 end
 
 package "kairosdb" do
-    source "#{Chef::Config[:file_cache_path]}/#{kairosdb_package}"
+    source "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}"
 end
 
 package "jdk" do
