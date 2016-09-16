@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 require_relative 'support/commands'
-require_relative 'support/queries'
+require_relative 'support/stubs'
 
 describe 'abiquo::setup_server' do
     let(:chef_run) do
@@ -26,6 +26,8 @@ describe 'abiquo::setup_server' do
     before do
         stub_queries
         stub_command('/usr/sbin/httpd -t').and_return(true)
+        stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
     end
 
     it "includes the service recipe" do
@@ -63,5 +65,12 @@ describe 'abiquo::setup_server' do
         )
         resource = chef_run.template('/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml')
         expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+    end
+
+    it 'does not configure frontend components if configured' do
+        chef_run.node.set['abiquo']['server']['install_frontend'] = false
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+        expect(chef_run).to_not include_recipe('abiquo::setup_websockify')
+        expect(chef_run).to_not include_recipe('abiquo::setup_ui')
     end
 end

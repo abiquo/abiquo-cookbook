@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 require_relative 'support/commands'
-require_relative 'support/queries'
+require_relative 'support/stubs'
 
 describe 'abiquo::setup_monolithic' do
     let(:chef_run) do
@@ -24,7 +24,7 @@ describe 'abiquo::setup_monolithic' do
     end
 
     before do
-        stub_queries
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
         stub_command('/usr/sbin/httpd -t').and_return(true)
     end
 

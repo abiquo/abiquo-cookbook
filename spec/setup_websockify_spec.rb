@@ -13,6 +13,7 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/stubs'
 
 describe 'abiquo::setup_websockify' do
     let(:chef_run) do
@@ -23,6 +24,7 @@ describe 'abiquo::setup_websockify' do
     end
 
     before do
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
         stub_command('/usr/sbin/httpd -t').and_return(true)
     end
 
@@ -35,14 +37,18 @@ describe 'abiquo::setup_websockify' do
         )
     end
 
-
     it 'configures the websockify cron task' do
-      chef_run.converge('abiquo::install_websockify', described_recipe, 'abiquo::service')
-      expect(chef_run).to create_file("/etc/cron.d/novnc_tokens").with(
-          :content  => "* * * * * root /opt/websockify/novnc_tokens.rb -a #{chef_run.node['abiquo']['websockify']['api_url']} -u #{chef_run.node['abiquo']['websockify']['user']} -p #{chef_run.node['abiquo']['websockify']['pass']} -f /opt/websockify/config.vnc",
-          :owner    => 'root',
-          :group    => 'root',
-          :mode     => '0644'
-      )
+        chef_run.converge('abiquo::install_websockify', described_recipe, 'abiquo::service')
+        expect(chef_run).to create_file("/etc/cron.d/novnc_tokens").with(
+            :content  => "* * * * * root /opt/websockify/novnc_tokens.rb -a #{chef_run.node['abiquo']['websockify']['api_url']} -u #{chef_run.node['abiquo']['websockify']['user']} -p #{chef_run.node['abiquo']['websockify']['pass']} -f /opt/websockify/config.vnc",
+            :owner    => 'root',
+            :group    => 'root',
+            :mode     => '0644'
+        )
+    end
+
+    it 'creates the haproxy instance' do
+        chef_run.converge('abiquo::install_websockify', described_recipe, 'abiquo::service')
+        expect(chef_run).to create_haproxy_instance('haproxy')
     end
 end

@@ -13,6 +13,7 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/stubs'
 
 describe 'abiquo::certificate' do
     let(:chef_run) { ChefSpec::SoloRunner.new do |node|
@@ -22,6 +23,7 @@ describe 'abiquo::certificate' do
     
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
     end
 
     it 'creates the /etc/pki/abiquo directory' do
@@ -34,6 +36,15 @@ describe 'abiquo::certificate' do
         expect(chef_run).to create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
         resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to notify('service[apache2]').to(:restart).delayed
+        expect(resource).to notify("template[#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt]").to(:create).immediately
+        expect(resource).to notify("java_management_truststore_certificate[#{chef_run.node['abiquo']['certificate']['common_name']}]").to(:import).immediately
+    end
+
+    it 'creates a cert for haproxy' do
+        chef_run.converge('apache2::default',described_recipe,'abiquo::service')
+        expect(chef_run).to_not create_template("#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt")
+        resource = chef_run.find_resource(:template, "#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt")
+        expect(resource).to do_nothing
     end
 
     it 'does not create a self signed cert if "source" is not "self-signed"' do

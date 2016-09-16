@@ -29,10 +29,14 @@ template "/etc/init.d/websockify" do
     owner "root"
     group "root"
     variables({
-        :websockify_port => node['abiquo']['websockify']['port'],
-        :websockify_key => node['abiquo']['websockify']['key'],
-        :websockify_crt => node['abiquo']['websockify']['crt']
+        :websockify_port    => node['abiquo']['websockify']['port'],
+        :websockify_address => node['abiquo']['websockify']['address']
     })
     action :create
     notifies :restart, "service[websockify]"
+end
+
+haproxy_instance 'haproxy' do
+    proxies [ resources(haproxy_frontend: 'public'), resources(haproxy_backend: 'ws') ]
+    tuning ['maxconn 1024']
 end

@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 require_relative 'support/commands'
-require_relative 'support/queries'
+require_relative 'support/stubs'
 
 describe 'abiquo::install_server' do
     let(:chef_run) do
@@ -25,10 +25,12 @@ describe 'abiquo::install_server' do
     let(:cn) { 'test.local' }
 
     before do
-        stub_queries
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_check_db_pass_command("root", "")
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
         stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
     end
 
     it 'installs the Apache recipes' do
@@ -81,5 +83,12 @@ describe 'abiquo::install_server' do
     it 'includes the install-websockify recipe' do
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         expect(chef_run).to include_recipe('abiquo::install_websockify')
+    end
+
+    it 'does not install frontend components if configured' do
+        chef_run.node.set['abiquo']['server']['install_frontend'] = false
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+        expect(chef_run).to_not include_recipe('abiquo::install_websockify')
+        expect(chef_run).to_not include_recipe('abiquo::install_ui')
     end
 end

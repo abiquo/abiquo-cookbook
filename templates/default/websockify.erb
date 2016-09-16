@@ -19,11 +19,10 @@
 BINDIR=/opt/websockify
 VARDIR=/var/websockify
 WEBSOCKIFY=$BINDIR/run
+WEBSOCKIFY_ADDR=<%= @websockify_address %>
 WEBSOCKIFY_PORT=<%= @websockify_port %>
 PIDFILE=/var/run/websockify.pid
 TOKEN_FILE=$BINDIR/config.vnc
-CERT_FILE=<%= @websockify_crt %>
-KEY_FILE=<%= @websockify_key %>
 USER=root
 
 # See how we were called.
@@ -31,7 +30,7 @@ case "$1" in
   start)
   [ -x $WEBSOCKIFY ] || exit 1
   echo -n $"Starting websockify server: "
-  daemon --user "$USER" --pidfile $PIDFILE python "$WEBSOCKIFY" -D "$WEBSOCKIFY_PORT" --token-plugin TokenFile --token-source="$TOKEN_FILE" --cert=$CERT_FILE --key=$KEY_FILE
+  daemon --user "$USER" --pidfile $PIDFILE python "$WEBSOCKIFY" -D "$WEBSOCKIFY_ADDR":"$WEBSOCKIFY_PORT" --token-plugin TokenFile --token-source="$TOKEN_FILE"
   RETVAL=$?
   echo
   [ $RETVAL -eq 0 ] && sleep 1 && ps aux | grep [/]opt/websockify/run | awk '{print $2}' > $PIDFILE

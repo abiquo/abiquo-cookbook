@@ -74,6 +74,10 @@ default['apache']['proxy']['order'] = "allow,deny"
 default['apache']['proxy']['deny_from']  = "none"
 default['apache']['proxy']['allow_from'] = "all"
 
+# Determine if the server should include the frontend components
+# UI + websockify
+default['abiquo']['server']['install_frontend'] = true
+
 # UI Apache configuration
 default['abiquo']['ui_apache_opts'] = {}
 
@@ -157,10 +161,14 @@ when "remoteservices"
 end
 
 # Configure Abiquo websockify
-default['abiquo']['websockify']['port'] = 41337
+default['abiquo']['websockify']['port'] = 41338
+default['abiquo']['websockify']['address'] = '127.0.0.1'
 default['abiquo']['websockify']['api_url'] = 'https://localhost/api'
 default['abiquo']['websockify']['user'] = 'admin'
 default['abiquo']['websockify']['pass'] = 'xabiquo'
-default['abiquo']['websockify']['crt']  = node['abiquo']['certificate']['file']
-default['abiquo']['websockify']['key']  = node['abiquo']['certificate']['key_file']
-
+default['abiquo']['websockify']['crt'] = node['abiquo']['certificate']['file']
+default['abiquo']['websockify']['key'] = node['abiquo']['certificate']['key_file']
+default['abiquo']['haproxy']['address'] = '*'
+default['abiquo']['haproxy']['port'] = 41337
+default['abiquo']['haproxy']['certificate'] = "#{node['abiquo']['certificate']['file']}.haproxy.crt"
+default['haproxy']['enable_default_http'] = false

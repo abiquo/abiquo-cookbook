@@ -14,7 +14,7 @@
 
 require 'spec_helper'
 require_relative 'support/commands'
-require_relative 'support/queries'
+require_relative 'support/stubs'
 
 describe 'abiquo::install_monolithic' do
     let(:chef_run) do
@@ -25,7 +25,8 @@ describe 'abiquo::install_monolithic' do
     let(:cn) { 'test.local' }
 
     before do
-        stub_queries
+        stub_check_db_pass_command("root", "")
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
         stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)

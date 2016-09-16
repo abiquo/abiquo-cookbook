@@ -24,16 +24,28 @@ ssl_certificate node['abiquo']['certificate']['common_name'] do
     namespace node['abiquo']['certificate']
     cert_path node['abiquo']['certificate']['file']
     key_path  node['abiquo']['certificate']['key_file']
-    not_if { ::File.file? "/etc/pki/abiquo/#{node['abiquo']['certificate']['common_name']}.crt" }
+    not_if { ::File.file? "node['abiquo']['certificate']['file']" }
     not_if { node['abiquo']['profile'] == 'websockify' }
     only_if { node['abiquo']['certificate']['source'] == 'self-signed' }
     notifies :restart, 'service[apache2]' unless node['abiquo']['profile'] == 'websockify'
+    notifies :import, "java_management_truststore_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
+    notifies :create, "template[#{node['abiquo']['certificate']['file']}.haproxy.crt]", :immediately
+end
+
+template "#{node['abiquo']['certificate']['file']}.haproxy.crt" do
+    source 'haproxy-cert.erb'
+    owner 'root'
+    group 'root'
+    variables ({ 
+        :cert => ::File.open(node['abiquo']['certificate']['file']).read,
+        :key  => ::File.open(node['abiquo']['certificate']['key_file']).read,
+    })
+    action :nothing
 end
 
 java_management_truststore_certificate node['abiquo']['certificate']['common_name'] do
     file node['abiquo']['certificate']['file']
     action :nothing
-    subscribes :import, "ssl_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
     notifies :restart, "service[abiquo-tomcat]" if node['abiquo']['profile'] == 'server' or node['abiquo']['profile'] == 'monolithic'
     only_if { node['abiquo']['profile'] == 'monolithic' or node['abiquo']['profile'] == 'server' }
 end

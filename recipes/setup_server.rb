@@ -15,8 +15,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::setup_ui"
-include_recipe "abiquo::setup_websockify"
+if node['abiquo']['server']['install_frontend']
+    include_recipe "abiquo::setup_ui"
+    include_recipe "abiquo::setup_websockify"
+end
 
 template '/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml' do
     source 'api-m.xml.erb'

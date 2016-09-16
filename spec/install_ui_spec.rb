@@ -13,6 +13,7 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/stubs'
 
 describe 'abiquo::install_ui' do
     let(:chef_run) do
@@ -23,6 +24,7 @@ describe 'abiquo::install_ui' do
     let(:cn) { 'test.local' }
 
     before do
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
     end

@@ -15,7 +15,7 @@
 require 'spec_helper'
 require_relative 'support/packages'
 require_relative 'support/commands'
-require_relative 'support/queries'
+require_relative 'support/stubs'
 
 describe 'abiquo::upgrade' do
     let(:chef_run) do
@@ -28,8 +28,10 @@ describe 'abiquo::upgrade' do
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("service abiquo-tomcat stop").and_return(true)
         allow(::File).to receive(:executable?).with('/usr/bin/repoquery').and_return(true)
+        allow(::File).to receive(:executable?).with('/sbin/initctl').and_return(false)
         stub_package_commands(['abiquo-api', 'abiquo-server'])
-        stub_queries
+        stub_check_db_pass_command("root", "")
+        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
     end
 
     it 'does nothing if repoquery is not installed' do
@@ -60,7 +62,7 @@ describe 'abiquo::upgrade' do
     end
 
     it 'performs upgrade if there are new rpms' do
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::service', 'abiquo::install_server')
+        chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service', 'abiquo::install_server')
         expect(chef_run.find_resource(:service, 'abiquo-tomcat')).to_not be_nil
         expect(chef_run.find_resource(:service, 'abiquo-aim')).to be_nil
         expect(chef_run.find_resource(:package, 'abiquo-api')).to_not be_nil
@@ -69,7 +71,7 @@ describe 'abiquo::upgrade' do
     %w{monolithic server}.each do |profile|
         it "stops the #{profile} services" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge('apache2::default', described_recipe, 'abiquo::service', 'abiquo::install_server')
+            chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service', 'abiquo::install_server')
             expect(chef_run).to stop_service('abiquo-tomcat')
             expect(chef_run).to_not stop_service('abiquo-aim')
             expect(chef_run).to_not stop_service('abiquo-delorean')
@@ -110,7 +112,7 @@ describe 'abiquo::upgrade' do
 
     it 'stops the ui services' do
         chef_run.node.set['abiquo']['profile'] = 'ui'
-        chef_run.converge(described_recipe)
+        chef_run.converge('abiquo::install_websockify', 'abiquo::setup_websockify', described_recipe)
         expect(chef_run).to stop_service('apache2')
         expect(chef_run).to_not stop_service('websockify')
         expect(chef_run).to_not stop_service('abiquo-aim')
@@ -121,7 +123,7 @@ describe 'abiquo::upgrade' do
 
     it 'stops the websockify services' do
         chef_run.node.set['abiquo']['profile'] = 'websockify'
-        chef_run.converge(described_recipe)
+        chef_run.converge('abiquo::install_websockify', 'abiquo::setup_websockify', described_recipe)
         expect(chef_run).to_not stop_service('apache2')
         expect(chef_run).to stop_service('websockify')
         expect(chef_run).to_not stop_service('abiquo-aim')
@@ -180,7 +182,7 @@ describe 'abiquo::upgrade' do
     it 'does not run liquibase if not configured' do
         chef_run.node.set['abiquo']['db']['upgrade'] = false
         chef_run.node.set['abiquo']['profile'] = 'monolithic'
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::install_server', 'abiquo::service')
+        chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::install_server', 'abiquo::service')
         expect(chef_run).to_not run_execute('liquibase-update')
     end
 
@@ -222,7 +224,7 @@ describe 'abiquo::upgrade' do
             chef_run.node.set['abiquo']['db']['upgrade'] = true
             chef_run.node.set['abiquo']['install_ext_services'] = false
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge('apache2::default', described_recipe, 'abiquo::service', 'abiquo::install_server')
+            chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service', 'abiquo::install_server')
             resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
             expect(resource).to do_nothing
         end
@@ -242,7 +244,7 @@ describe 'abiquo::upgrade' do
     %w{monolithic server}.each do |profile|
         it "starts the #{profile} services" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
+            chef_run.converge('apache2::default', 'abiquo::install_server', 'abiquo::setup_websockify', described_recipe)
             expect(chef_run).to start_service('abiquo-tomcat')
             expect(chef_run).to_not start_service('abiquo-aim')
             expect(chef_run).to_not start_service('abiquo-delorean')
@@ -295,7 +297,7 @@ describe 'abiquo::upgrade' do
 
     it 'starts the websockify services' do
         chef_run.node.set['abiquo']['profile'] = 'websockify'
-        chef_run.converge(described_recipe)
+        chef_run.converge('abiquo::install_websockify', 'abiquo::setup_websockify', described_recipe)
         expect(chef_run).to_not start_service('abiquo-tomcat')
         expect(chef_run).to_not start_service('abiquo-aim')
         expect(chef_run).to_not start_service('abiquo-delorean')
@@ -307,7 +309,7 @@ describe 'abiquo::upgrade' do
     %w(monolithic server).each do |profile|
         it "includes the #{profile} setup recipe" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge('apache2::default', described_recipe, 'abiquo::service', 'abiquo::install_server')
+            chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service', 'abiquo::install_server')
             expect(chef_run).to include_recipe("abiquo::setup_#{profile}")
         end
     end
@@ -315,7 +317,7 @@ describe 'abiquo::upgrade' do
     %w(remoteservices kvm monitoring v2v).each do |profile|
         it "includes the #{profile} setup recipe" do
             chef_run.node.set['abiquo']['profile'] = profile
-            chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+            chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
             expect(chef_run).to include_recipe("abiquo::setup_#{profile}")
         end
     end
