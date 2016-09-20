@@ -17,6 +17,7 @@
 
 include_recipe "apache2"
 include_recipe "apache2::mod_proxy_ajp"
+include_recipe "apache2::mod_proxy_http"
 include_recipe "apache2::mod_ssl"
 
 %w{ui tutorials}.each do |pkg|
@@ -26,6 +27,22 @@ include_recipe "apache2::mod_ssl"
 end
 
 include_recipe "abiquo::certificate"
+
+case node['abiquo']['profile']
+when 'monolithic'
+    node.set['abiquo']['ui_proxies'] = node['abiquo']['ui_proxies'].merge({
+        '/api' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/api",
+        '/legal' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/legal",
+        '/am' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/am",
+        '/m' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m"
+    })
+when 'server'
+    node.set['abiquo']['ui_proxies'] = node['abiquo']['ui_proxies'].merge({
+        '/api' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/api",
+        '/legal' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/legal",
+        '/m' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m"
+    })
+end
 
 web_app "abiquo" do
     template "abiquo.conf.erb"

@@ -48,19 +48,18 @@ default['abiquo']['tomcat']['http-port'] = 8009
 default['abiquo']['tomcat']['ajp-port'] = 8010
 default['abiquo']['tomcat']['wait-for-webapps'] = false
 
+# Override the Apache proxy configuration
+override['apache']['proxy']['order'] = "allow,deny"
+override['apache']['proxy']['deny_from']  = "none"
+override['apache']['proxy']['allow_from'] = "all"
+
 # UI Apache configuration
 default['abiquo']['ui_apache_opts'] = {}
 
 # UI app configuration attributes. These attributes will be rendered
 # in /var/www/html/ui/config/client-config-custom.json
 default['abiquo']['ui_config'] = { "config.endpoint" => "https://#{node['fqdn']}/api" }
-
-case node['abiquo']['profile']
-when 'monolithic'
-    default['abiquo']['ui_proxies'] = { '/am' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/am" }
-else
-    default['abiquo']['ui_proxies'] = {}
-end
+default['abiquo']['ui_proxies'] = {}
 
 # Wheter or not to generate a self signed certificate
 # for this host. If not, provide path to certificate,
@@ -97,11 +96,6 @@ default['abiquo']['monitoring']['db']['install'] = true
 default['abiquo']['monitoring']['emmett']['port'] = 36638
 default['abiquo']['monitoring']['kairosdb_package'] = "kairosdb-#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}.rpm"
 default['abiquo']['monitoring']['kairosdb_url'] = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{node['abiquo']['monitoring']['kairosdb_package']}"
-
-# Override the Apache proxy configuration
-override['apache']['proxy']['order'] = "allow,deny"
-override['apache']['proxy']['deny_from']  = "none"
-override['apache']['proxy']['allow_from'] = "all"
 
 # Override the default java configuration
 # TODO: Configure these attributes in a way that they don't have precedence over user config

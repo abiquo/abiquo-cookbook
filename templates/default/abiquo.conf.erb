@@ -28,21 +28,6 @@
 
     RewriteRule ^/$ /ui/ [R]
 
-    <Location /api>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/api
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/api
-    </Location>
-
-    <Location /m>
-        ProxyPass http://localhost:<%= node['abiquo']['tomcat']['http-port'] %>/m
-        ProxyPassReverse http://localhost:<%= node['abiquo']['tomcat']['http-port'] %>/m
-    </Location>
-
-    <Location /legal>
-        ProxyPass ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/legal
-        ProxyPassReverse ajp://localhost:<%= node['abiquo']['tomcat']['ajp-port'] %>/legal
-    </Location>
-
 <% node['abiquo']['ui_proxies'].each do |path, remote| %>
     <Location <%= path %>>
         ProxyPass <%= remote %>
