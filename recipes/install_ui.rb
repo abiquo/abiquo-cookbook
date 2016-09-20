@@ -30,18 +30,18 @@ include_recipe "abiquo::certificate"
 
 case node['abiquo']['profile']
 when 'monolithic'
-    node.set['abiquo']['ui_proxies'] = node['abiquo']['ui_proxies'].merge({
+    node.set['abiquo']['ui_proxies'] = {
         '/api' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/api",
         '/legal' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/legal",
         '/am' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/am",
         '/m' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m"
-    })
+    }.merge(node['abiquo']['ui_proxies'])
 when 'server'
-    node.set['abiquo']['ui_proxies'] = node['abiquo']['ui_proxies'].merge({
+    node.set['abiquo']['ui_proxies'] = {
         '/api' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/api",
         '/legal' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/legal",
         '/m' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m"
-    })
+    }.merge(node['abiquo']['ui_proxies'])
 end
 
 web_app "abiquo" do

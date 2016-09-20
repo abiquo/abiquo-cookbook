@@ -49,9 +49,9 @@ default['abiquo']['tomcat']['ajp-port'] = 8010
 default['abiquo']['tomcat']['wait-for-webapps'] = false
 
 # Override the Apache proxy configuration
-override['apache']['proxy']['order'] = "allow,deny"
-override['apache']['proxy']['deny_from']  = "none"
-override['apache']['proxy']['allow_from'] = "all"
+default['apache']['proxy']['order'] = "allow,deny"
+default['apache']['proxy']['deny_from']  = "none"
+default['apache']['proxy']['allow_from'] = "all"
 
 # UI Apache configuration
 default['abiquo']['ui_apache_opts'] = {}
@@ -99,12 +99,12 @@ default['abiquo']['monitoring']['kairosdb_url'] = "https://github.com/kairosdb/k
 
 # Override the default java configuration
 # TODO: Configure these attributes in a way that they don't have precedence over user config
-override['java']['oracle']['accept_oracle_download_terms'] = true
-override['java']['java_home'] = "/usr/java/default"
-override['java']['jdk_version'] = 8
+default['java']['oracle']['accept_oracle_download_terms'] = true
+default['java']['install_flavor'] = 'oracle_rpm'
+default['java']['jdk_version'] = 8
 
 # Override Cassandra default configuration to make sure it is always running properly
-override['cassandra']['notify_restart'] = true
+default['cassandra']['notify_restart'] = true
 
 # Default properties
 default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
