@@ -101,6 +101,8 @@ default['abiquo']['monitoring']['kairosdb_url'] = "https://github.com/kairosdb/k
 # TODO: Configure these attributes in a way that they don't have precedence over user config
 default['java']['oracle']['accept_oracle_download_terms'] = true
 default['java']['install_flavor'] = 'oracle_rpm'
+default['java']['oracle_rpm']['type'] = 'jdk'
+default['java']['java_home'] = "/usr/java/default"
 default['java']['jdk_version'] = 8
 
 # Override Cassandra default configuration to make sure it is always running properly
