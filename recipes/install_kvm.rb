@@ -15,21 +15,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package "qemu-kvm" do
+package 'qemu-kvm' do
     action :install
 end
 
-%w{cloud-node sosreport-plugins}.each do |pkg|
+%w(cloud-node sosreport-plugins).each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
 end
 
-link "/usr/bin/qemu-system-x86_64" do
-    to "/usr/bin/qemu-kvm"
-    not_if { ::File.exists?("/usr/bin/qemu-system-x86_64") }
+link '/usr/bin/qemu-system-x86_64' do
+    to '/usr/bin/qemu-kvm'
+    not_if { ::File.exist?('/usr/bin/qemu-system-x86_64') }
 end
 
-service "rpcbind" do
+service 'rpcbind' do
     action [:enable, :start]
 end

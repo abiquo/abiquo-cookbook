@@ -29,7 +29,7 @@ end
 
 rabbitmq_user node['abiquo']['rabbitmq']['username'] do
     vhost node['abiquo']['rabbitmq']['vhost']
-    permissions ".* .* .*"
+    permissions '.* .* .*'
     action :set_permissions
     notifies :restart, 'service[abiquo-tomcat]' unless node['abiquo']['profile'] == 'ext_services'
 end

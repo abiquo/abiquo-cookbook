@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-service "kairosdb" do
+service 'kairosdb' do
     action :nothing
 end
 
@@ -24,29 +24,29 @@ template '/opt/kairosdb/conf/kairosdb.properties' do
     owner 'root'
     group 'root'
     action :create
-    notifies :restart, "service[kairosdb]"
+    notifies :restart, 'service[kairosdb]'
 end
 
-%w{delorean emmett}.each do |wts|
+%w(delorean emmett).each do |wts|
     service "abiquo-#{wts}" do
         action :enable
         # They still don't handle well reconnections, so restart them when needed
-        subscribes :restart, "service[kairosdb]"
+        subscribes :restart, 'service[kairosdb]'
     end
-    
+
     file "/etc/abiquo/watchtower/#{wts}-base.conf" do
-        owner "root"
-        group "root"
+        owner 'root'
+        group 'root'
         content lazy { ::IO.read("/etc/abiquo/watchtower/#{wts}.conf") }
         action :create
-        not_if { ::File.exists? "/etc/abiquo/watchtower/#{wts}-base.conf" }
+        not_if { ::File.exist? "/etc/abiquo/watchtower/#{wts}-base.conf" }
     end
 
     template "/etc/abiquo/watchtower/#{wts}.conf" do
-        source "watchtower-service.conf.erb"
-        owner "root"
-        group "root"
-        variables({ :watchtower_service => wts })
+        source 'watchtower-service.conf.erb'
+        owner 'root'
+        group 'root'
+        variables(:watchtower_service => wts)
         action :create
         notifies :restart, "service[abiquo-#{wts}]"
     end
@@ -54,9 +54,9 @@ end
 
 # KairosDB might fail to start as C* takes some time until it is started
 # Restart Kairos once everything is up and running
-abiquo_wait_for_port "cassandra" do
+abiquo_wait_for_port 'cassandra' do
     port node['cassandra']['config']['rpc_port'].to_i
     action :nothing
-    subscribes :wait, "service[cassandra]"
-    notifies :restart, "service[kairosdb]"
+    subscribes :wait, 'service[cassandra]'
+    notifies :restart, 'service[kairosdb]'
 end

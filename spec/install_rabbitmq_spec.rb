@@ -36,7 +36,7 @@ describe 'abiquo::install_rabbitmq' do
     it 'creates the Abiquo RabbitMQ user' do
         expect(chef_run).to add_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
             :vhost => chef_run.node['abiquo']['rabbitmq']['vhost'],
-            :permissions => ".* .* .*"
+            :permissions => '.* .* .*'
         )
     end
 end

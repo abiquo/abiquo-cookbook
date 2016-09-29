@@ -17,42 +17,42 @@
 
 Chef::Recipe.send(:include, Abiquo::Packages)
 
-execute "clean-yum-cache" do
-    command "yum clean all"
+execute 'clean-yum-cache' do
+    command 'yum clean all'
     action :nothing
 end
 
-directory "/var/cache/yum" do
+directory '/var/cache/yum' do
     ignore_failure true
     recursive true
     action :nothing
 end
 
-include_recipe "yum-epel" if node['abiquo']['yum']['install-repo']
+include_recipe 'yum-epel' if node['abiquo']['yum']['install-repo']
 
-gpg_keys = gpg_key_files.join(" ")
+gpg_keys = gpg_key_files.join(' ')
 
-yum_repository "abiquo-base" do
-    description "Abiquo base repository"
+yum_repository 'abiquo-base' do
+    description 'Abiquo base repository'
     baseurl node['abiquo']['yum']['base-repo']
     gpgcheck node['abiquo']['yum']['gpg-check']
     gpgkey gpg_keys
     proxy node['abiquo']['yum']['proxy'] unless node['abiquo']['yum']['proxy'].nil?
     action :create
-    subscribes :create, "package[abiquo-release-ee]", :immediately
+    subscribes :create, 'package[abiquo-release-ee]', :immediately
     notifies :delete, 'directory[/var/cache/yum]', :immediately
     notifies :run, 'execute[clean-yum-cache]', :immediately
     only_if { node['abiquo']['yum']['install-repo'] }
 end
 
-yum_repository "abiquo-updates" do
-    description "Abiquo updates repository"
+yum_repository 'abiquo-updates' do
+    description 'Abiquo updates repository'
     baseurl node['abiquo']['yum']['updates-repo']
     gpgcheck node['abiquo']['yum']['gpg-check']
     gpgkey gpg_keys
     proxy node['abiquo']['yum']['proxy'] unless node['abiquo']['yum']['proxy'].nil?
     action :create
-    subscribes :create, "package[abiquo-release-ee]", :immediately
+    subscribes :create, 'package[abiquo-release-ee]', :immediately
     notifies :delete, 'directory[/var/cache/yum]', :immediately
     notifies :run, 'execute[clean-yum-cache]', :immediately
     only_if { node['abiquo']['yum']['install-repo'] }
@@ -60,8 +60,8 @@ end
 
 # This package contains the gpgkey file, so the signature cannot
 # be validated when installing it.
-package "abiquo-release-ee" do
-    options "--nogpgcheck"
+package 'abiquo-release-ee' do
+    options '--nogpgcheck'
     action :install
     only_if { node['abiquo']['yum']['install-repo'] }
 end

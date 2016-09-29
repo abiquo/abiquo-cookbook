@@ -38,11 +38,11 @@ mysql_database 'kinton' do
     notifies :run, 'execute[install-database]', :immediately
 end
 
-execute "install-database" do
+execute 'install-database' do
     command "#{mysqlcmd} kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
     action :nothing
-    notifies :run, "ruby_block[extract-m-user-password]", :immediately
-    notifies :query, "mysql_database[install-license]", :immediately
+    notifies :run, 'ruby_block[extract-m-user-password]', :immediately
+    notifies :query, 'mysql_database[install-license]', :immediately
 end
 
 # Install license if present
@@ -56,14 +56,14 @@ end
 
 # Extract M user password from databases
 # Randomly generated after liquibase run
-ruby_block "extract-m-user-password" do
+ruby_block 'extract-m-user-password' do
     block do
         client = Mysql2::Client.new(conn_info.merge(:database => 'kinton'))
-        query = "select COMMENTS from DATABASECHANGELOG where ID = 'default_user_for_m'"
+        query = 'select COMMENTS from DATABASECHANGELOG where ID = "default_user_for_m"'
         result = client.query(query).first['COMMENTS']
         node.set['abiquo']['properties']['abiquo.m.credential'] = result
     end
     action :nothing
-    not_if { node['abiquo']['properties'].has_key? 'abiquo.m.credential' }
-    not_if { node['abiquo']['properties'].has_key? 'abiquo.m.accessToken' }
+    not_if { node['abiquo']['properties'].key? 'abiquo.m.credential' }
+    not_if { node['abiquo']['properties'].key? 'abiquo.m.accessToken' }
 end

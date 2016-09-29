@@ -18,7 +18,7 @@ require_relative 'support/queries'
 
 describe 'abiquo::install_monitoring' do
     let(:chef_run) do
-        ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+        ChefSpec::SoloRunner.new(:file_cache_path => '/tmp') do |node|
             node.set['abiquo']['profile'] = 'monitoring'
         end.converge(described_recipe)
     end
@@ -31,16 +31,12 @@ describe 'abiquo::install_monitoring' do
 
     it 'downloads the kairosdb package' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to create_remote_file("#{Chef::Config[:file_cache_path]}/#{pkg}").with({
-            :source => url
-        })
+        expect(chef_run).to create_remote_file("#{Chef::Config[:file_cache_path]}/#{pkg}").with(:source => url)
     end
 
     it 'installs the kairosdb package' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to install_package('kairosdb').with({
-            :source => "#{Chef::Config[:file_cache_path]}/#{pkg}"
-        })
+        expect(chef_run).to install_package('kairosdb').with(:source => "#{Chef::Config[:file_cache_path]}/#{pkg}")
     end
 
     it 'installs the jdk package' do
@@ -50,10 +46,10 @@ describe 'abiquo::install_monitoring' do
 
     it 'configures the java alternatives' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to set_java_alternatives('set default jdk8').with({
+        expect(chef_run).to set_java_alternatives('set default jdk8').with(
             :java_location => '/usr/java/default',
-            :bin_cmds => ['java', 'javac']
-        })
+            :bin_cmds => %w(java javac)
+        )
     end
 
     it 'includes the cassandra recipe' do
@@ -72,7 +68,7 @@ describe 'abiquo::install_monitoring' do
         expect(chef_run).to_not include_recipe('abiquo::install_ext_services')
     end
 
-    %w{delorean emmett}.each do |pkg|
+    %w(delorean emmett).each do |pkg|
         it "installs the abiquo-#{pkg} package" do
             chef_run.converge(described_recipe)
             expect(chef_run).to install_package("abiquo-#{pkg}")
@@ -84,7 +80,7 @@ describe 'abiquo::install_monitoring' do
         chef_run.converge(described_recipe)
         expect(chef_run).to include_recipe('mariadb::client')
         expect(chef_run).to create_mysql_database('watchtower')
-        
+
         expect(chef_run).to_not run_execute('install-watchtower-database')
         resource = chef_run.find_resource(:mysql_database, 'watchtower')
         expect(resource).to notify('execute[install-watchtower-database]').to(:run).immediately

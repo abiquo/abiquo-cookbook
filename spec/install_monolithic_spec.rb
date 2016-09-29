@@ -20,19 +20,19 @@ describe 'abiquo::install_monolithic' do
     let(:chef_run) do
         ChefSpec::SoloRunner.new do |node|
             node.set['abiquo']['certificate']['common_name'] = 'test.local'
-        end.converge('apache2::default',described_recipe,'abiquo::service')
+        end.converge('apache2::default', described_recipe, 'abiquo::service')
     end
     let(:cn) { 'test.local' }
 
     before do
-        stub_check_db_pass_command("root", "")
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_check_db_pass_command('root', '')
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
-        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
+        stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
     end
 
-    %w{server remoteservices v2v}.each do |recipe|
+    %w(server remoteservices v2v).each do |recipe|
         it "includes the #{recipe} install recipe" do
             expect(chef_run).to include_recipe("abiquo::install_#{recipe}")
         end

@@ -19,22 +19,22 @@ require_relative 'support/stubs'
 
 describe 'abiquo::default' do
     let(:chef_run) do
-        ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+        ChefSpec::SoloRunner.new(:file_cache_path => '/tmp') do |node|
             node.set['cassandra']['config']['cluster_name'] = 'abiquo'
             node.set['abiquo']['certificate']['common_name'] = 'test.local'
         end
     end
     let(:cn) { 'test.local' }
-    
+
     before do
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
+        stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
     end
 
     it 'changes selinux to permissive' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to permissive_selinux_state("SELinux Permissive")
+        expect(chef_run).to permissive_selinux_state('SELinux Permissive')
     end
 
     it 'installs the cronie package and enables crond service' do
@@ -44,7 +44,7 @@ describe 'abiquo::default' do
         expect(chef_run).to start_service('crond')
     end
 
-    %w{monolithic server v2v remoteservices kvm monitoring}.each do |profile|
+    %w(monolithic server v2v remoteservices kvm monitoring).each do |profile|
         it "includes the recipes for the #{profile} profile" do
             chef_run.node.set['abiquo']['profile'] = profile
             chef_run.converge(described_recipe)

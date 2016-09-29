@@ -19,27 +19,27 @@
 unless node['abiquo']['nfs']['location'].nil? # ~FC023
     mount node['abiquo']['nfs']['mountpoint'] do
         device node['abiquo']['nfs']['location']
-        fstype "nfs"
+        fstype 'nfs'
         action [:enable, :mount]
     end
 end
 
-template "/etc/sysconfig/libvirt-guests" do
-    source "libvirt-guests.erb"
-    owner "root"
-    group "root"
+template '/etc/sysconfig/libvirt-guests' do
+    source 'libvirt-guests.erb'
+    owner 'root'
+    group 'root'
     action :create
-    notifies :restart, "service[abiquo-aim]"
+    notifies :restart, 'service[abiquo-aim]'
 end
 
-template "/etc/abiquo-aim.ini" do
-    source "abiquo-aim.ini.erb"
-    owner "root"
-    group "root"
+template '/etc/abiquo-aim.ini' do
+    source 'abiquo-aim.ini.erb'
+    owner 'root'
+    group 'root'
     action :create
-    notifies :restart, "service[abiquo-aim]"
+    notifies :restart, 'service[abiquo-aim]'
 end
 
-service "abiquo-aim" do
+service 'abiquo-aim' do
     action [:enable, :start]
 end

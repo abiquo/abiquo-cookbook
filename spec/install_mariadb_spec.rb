@@ -17,7 +17,7 @@ require_relative 'support/queries'
 
 describe 'abiquo::install_mariadb' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
-    
+
     before do
         stub_queries
     end

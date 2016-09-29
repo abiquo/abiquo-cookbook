@@ -15,15 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-%w{redis jdk}.each do |pkg|
+%w(redis jdk).each do |pkg|
     package pkg do
         action :install
     end
 end
 
-include_recipe "java::oracle_jce"
+include_recipe 'java::oracle_jce'
 
-%w{v2v sosreport-plugins}.each do |pkg|
+%w(v2v sosreport-plugins).each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end

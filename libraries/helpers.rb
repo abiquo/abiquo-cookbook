@@ -22,48 +22,48 @@ module Abiquo
             keys = %w(Abiquo MariaDB RabbitMQ).map do |keyname|
                 "file:///etc/pki/rpm-gpg/RPM-GPG-KEY-#{keyname}"
             end
-            keys << "file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo"
+            keys << 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
         end
 
         def abiquo_packages
-            pkgs_cmd = shell_out!("repoquery --installed 'abiquo-*' --qf '%{name}'")
+            pkgs_cmd = shell_out!('repoquery --installed \'abiquo-*\' --qf \'%{name}\'')
             pkgs_cmd.stdout.split
         end
 
         def abiquo_update_available
-            installed_pkgs = abiquo_packages.join(" ")
+            installed_pkgs = abiquo_packages.join(' ')
             installed_cmd = shell_out!("repoquery --installed #{installed_pkgs}")
             installed = installed_cmd.stdout
             available_cmd = shell_out!("repoquery #{installed_pkgs}")
             available = available_cmd.stdout
-            not available.eql? installed
+            !available.eql? installed
         end
     end
 
     module Commands
         def mysql_cmd(props)
             if props['host'] == 'localhost'
-                mysqlcmd = "mysql"
+                mysqlcmd = 'mysql'
             else
                 mysqlcmd = "mysql -h #{props['host']}"
                 mysqlcmd += " -P #{props['port']}"
                 mysqlcmd += " -u #{props['user']}"
-                unless props['password'].nil? or props['password'].empty?
+                unless props['password'].nil? || props['password'].empty?
                     mysqlcmd += " -p#{props['password']}"
                 end
             end
             mysqlcmd
         end
 
-        def liquibase_cmd(command, props, monitoring=false)
-            if monitoring
-                liquibasecmd = "abiquo-watchtower-liquibase -h #{props['host']}"
-            else
-                liquibasecmd = "abiquo-liquibase -h #{props['host']}"
-            end
+        def liquibase_cmd(command, props, monitoring = false)
+            liquibasecmd = if monitoring
+                               "abiquo-watchtower-liquibase -h #{props['host']}"
+                           else
+                               "abiquo-liquibase -h #{props['host']}"
+                           end
             liquibasecmd += " -P #{props['port']}"
             liquibasecmd += " -u #{props['user']}"
-            unless props['password'].nil? or props['password'].empty?
+            unless props['password'].nil? || props['password'].empty?
                 liquibasecmd += " -p #{props['password']}"
             end
             liquibasecmd += " #{command}"

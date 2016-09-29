@@ -17,11 +17,11 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 describe 'V2V configuration' do
     it 'has the epel repos installed' do
         expect(file('/etc/yum.repos.d/epel.repo')).to be_file
-        expect(file('/etc/yum.repos.d/epel.repo')).to contain("enabled=1")
+        expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
     end
 
     it 'has the yum repositories configured' do
-        %w{base updates}.each do |repo|
+        %w(base updates).each do |repo|
             expect(yumrepo("abiquo-#{repo}")).to exist
             expect(yumrepo("abiquo-#{repo}")).to be_enabled
         end

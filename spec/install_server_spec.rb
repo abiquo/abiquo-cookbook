@@ -25,12 +25,12 @@ describe 'abiquo::install_server' do
     let(:cn) { 'test.local' }
 
     before do
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
-        stub_check_db_pass_command("root", "")
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+        stub_check_db_pass_command('root', '')
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
         stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
     end
 
     it 'installs the Apache recipes' do
@@ -40,14 +40,14 @@ describe 'abiquo::install_server' do
         expect(chef_run).to include_recipe('apache2::mod_ssl')
     end
 
-    %w{liquibase jdk}.each do |pkg|
+    %w(liquibase jdk).each do |pkg|
         it "installs the #{pkg} package" do
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
             expect(chef_run).to install_package(pkg)
         end
     end
 
-    %w{server sosreport-plugins}.each do |pkg|
+    %w(server sosreport-plugins).each do |pkg|
         it "installs the abiquo-#{pkg} abiquo package" do
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
             expect(chef_run).to install_package("abiquo-#{pkg}")

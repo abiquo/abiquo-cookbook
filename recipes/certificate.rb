@@ -35,16 +35,14 @@ template "#{node['abiquo']['certificate']['file']}.haproxy.crt" do
     source 'haproxy-cert.erb'
     owner 'root'
     group 'root'
-    variables ({ 
-        :cert => node['abiquo']['certificate']['file'],
-        :key  => node['abiquo']['certificate']['key_file'],
-    })
+    variables(:cert => node['abiquo']['certificate']['file'],
+              :key => node['abiquo']['certificate']['key_file'])
     action :nothing
 end
 
 java_management_truststore_certificate node['abiquo']['certificate']['common_name'] do
     file node['abiquo']['certificate']['file']
     action :nothing
-    notifies :restart, "service[abiquo-tomcat]" if node['abiquo']['profile'] == 'server' or node['abiquo']['profile'] == 'monolithic'
-    only_if { node['abiquo']['profile'] == 'monolithic' or node['abiquo']['profile'] == 'server' }
+    notifies :restart, 'service[abiquo-tomcat]' if node['abiquo']['profile'] == 'server' || node['abiquo']['profile'] == 'monolithic'
+    only_if { node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server' }
 end

@@ -16,19 +16,19 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Monolithic packages' do
     it 'has the system packages installed' do
-        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk ec2-api-tools cronie}.each do |pkg|
+        %w(MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk ec2-api-tools cronie).each do |pkg|
             expect(package(pkg)).to be_installed
         end
     end
 
     it 'has the abiquo packages installed' do
-        %w{server remote-services v2v sosreport-plugins tutorials websockify}.each do |pkg|
+        %w(server remote-services v2v sosreport-plugins tutorials websockify).each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
         end
     end
 
     it 'has the haproxy package installed' do
-        expect(package("haproxy")).to be_installed
+        expect(package('haproxy')).to be_installed
     end
 
     it 'has the strong jce encryption policies installed' do

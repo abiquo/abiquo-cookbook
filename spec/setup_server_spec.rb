@@ -27,12 +27,12 @@ describe 'abiquo::setup_server' do
         stub_queries
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/mysql kinton -e 'SELECT 1'").and_return(false)
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
     end
 
-    it "includes the service recipe" do
+    it 'includes the service recipe' do
         chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
-        expect(chef_run).to include_recipe("abiquo::service")
+        expect(chef_run).to include_recipe('abiquo::service')
     end
 
     it 'includes the setup-ui recipe' do

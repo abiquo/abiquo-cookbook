@@ -84,7 +84,7 @@ describe 'abiquo::repository' do
         expect(resource).to notify('directory[/var/cache/yum]').to(:delete).immediately
         expect(resource).to notify('execute[clean-yum-cache]').to(:run).immediately
     end
-    
+
     it 'does not create the updates repository if not install-repo' do
         chef_run.node.set['abiquo']['yum']['install-repo'] = false
         chef_run.converge(described_recipe)

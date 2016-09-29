@@ -24,19 +24,19 @@ describe 'abiquo::install_websockify' do
     let(:cn) { 'test.local' }
 
     before do
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
         stub_command('/usr/sbin/httpd -t').and_return(true)
         stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
     end
 
-    %w{libxml2 libxslt}.each do |pkg|
+    %w(libxml2 libxslt).each do |pkg|
         it "installs the #{pkg} package" do
             chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
             expect(chef_run).to install_package(pkg)
         end
     end
 
-    it "installs the abiquo-websockify abiquo package" do
+    it 'installs the abiquo-websockify abiquo package' do
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         expect(chef_run).to install_package('abiquo-websockify')
     end
@@ -63,7 +63,7 @@ describe 'abiquo::install_websockify' do
         expect(chef_run).to create_haproxy_frontend('public').with(
             :bind => "#{chef_run.node['abiquo']['haproxy']['address']}:#{chef_run.node['abiquo']['haproxy']['port']} ssl crt #{chef_run.node['abiquo']['haproxy']['certificate']}",
             :default_backend => 'ws',
-            :config => [ 'timeout client 3600s' ]
+            :config => ['timeout client 3600s']
         )
     end
 
@@ -71,12 +71,11 @@ describe 'abiquo::install_websockify' do
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         expect(chef_run).to create_haproxy_backend('ws').with(
             :balance => 'source',
-            :servers => [ 
+            :servers => [
                 { 'name' => 'websockify1',
-                  'address' =>  chef_run.node['abiquo']['websockify']['address'],
+                  'address' => chef_run.node['abiquo']['websockify']['address'],
                   'port' => chef_run.node['abiquo']['websockify']['port'],
-                  'config' => 'weight 1 maxconn 1024 check'
-                }
+                  'config' => 'weight 1 maxconn 1024 check' }
             ],
             :config => [
                 'timeout queue 3600s',

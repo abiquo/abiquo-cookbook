@@ -24,14 +24,13 @@ describe 'abiquo::setup_monolithic' do
     end
 
     before do
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
         stub_command('/usr/sbin/httpd -t').and_return(true)
     end
 
-    %w{server remoteservices v2v}.each do |recipe|
+    %w(server remoteservices v2v).each do |recipe|
         it "includes the #{recipe} setup recipe" do
             expect(chef_run).to include_recipe("abiquo::setup_#{recipe}")
         end
     end
-
 end

@@ -19,7 +19,7 @@ describe 'abiquo::service' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
     before do
-        stub_check_db_pass_command("root", "")
+        stub_check_db_pass_command('root', '')
     end
 
     it 'defines the abiquo-tomcat service' do
@@ -32,7 +32,7 @@ describe 'abiquo::service' do
     end
 
     it 'subscribes to restart if rabbit configuration changed' do
-        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
+        stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
         chef_run.converge('abiquo::install_ext_services', described_recipe)
 
         resource = chef_run.find_resource(:service, 'abiquo-tomcat')
@@ -55,7 +55,7 @@ describe 'abiquo::service' do
         expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
             :source => 'abiquo.properties.erb',
             :owner => 'root',
-            :group => 'root',
+            :group => 'root'
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
@@ -65,16 +65,16 @@ describe 'abiquo::service' do
     it 'renders abiquo properties file with custom properties' do
         chef_run.node.set['abiquo']['properties']['abiquo.docker.registry'] = 'http://localhost:5000'
         chef_run.node.set['abiquo']['properties']['foo'] = 'bar'
-        
+
         chef_run.converge(described_recipe)
         expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
             :source => 'abiquo.properties.erb',
             :owner => 'root',
-            :group => 'root',
+            :group => 'root'
         )
         resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
         expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
-        expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.docker.registry\ =\ http:\/\/localhost:5000/)
+        expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(%r{^abiquo.docker.registry\ =\ http:\/\/localhost:5000})
     end
 
     it 'waits for API on monolithic' do

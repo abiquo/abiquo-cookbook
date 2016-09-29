@@ -19,22 +19,22 @@ describe 'abiquo::install_remoteservices' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe, 'abiquo::service') }
 
     before do
-        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
-        stub_check_db_pass_command("root", "")
+        stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
+        stub_check_db_pass_command('root', '')
     end
 
-    it "installs the jdk system package" do
-        expect(chef_run).to install_package("jdk")
+    it 'installs the jdk system package' do
+        expect(chef_run).to install_package('jdk')
     end
-    
-    %w{abiquo-remote-services abiquo-sosreport-plugins}.each do |pkg|
+
+    %w(abiquo-remote-services abiquo-sosreport-plugins).each do |pkg|
         it "installs the #{pkg} abiquo package" do
             expect(chef_run).to install_package(pkg)
         end
     end
 
-    it "configures the rpcbind service" do
-        expect(chef_run).to enable_service("rpcbind")
-        expect(chef_run).to start_service("rpcbind")
+    it 'configures the rpcbind service' do
+        expect(chef_run).to enable_service('rpcbind')
+        expect(chef_run).to start_service('rpcbind')
     end
 end

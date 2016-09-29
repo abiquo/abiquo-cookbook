@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-def stub_certificate_files(cert, key)
+def stub_certificate_files(cert, _key)
     cert = double('cert')
     allow(::File).to receive(:open).with(anything).and_return(cert)
     allow(cert).to receive(:read).and_return('randomstring')

@@ -32,7 +32,7 @@ mysql_database_user node['abiquo']['db']['user'] do
     connection conn_info
     password   node['abiquo']['db']['password']
     host       node['abiquo']['db']['from']
-    privileges [ :all ]
+    privileges [:all]
     action     :grant
 end
 
@@ -40,6 +40,6 @@ mysql_database_user node['abiquo']['monitoring']['db']['user'] do
     connection conn_info
     password   node['abiquo']['monitoring']['db']['password']
     host       node['abiquo']['monitoring']['db']['from']
-    privileges [ :all ]
+    privileges [:all]
     action     :grant
 end

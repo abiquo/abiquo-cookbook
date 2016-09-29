@@ -24,7 +24,7 @@ describe 'abiquo::setup_ui' do
 
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
     end
 
     it 'renders ui configuration file' do

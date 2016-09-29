@@ -15,8 +15,8 @@ desc 'Run Test Kitchen basic integration tests'
 task 'kitchen-basic' do
     require 'kitchen'
     Kitchen.logger = Kitchen.default_file_logger
-    @loader = Kitchen::Loader::YAML.new(local_config: ENV['KITCHEN_LOCAL_YAML'])
-    config = Kitchen::Config.new(loader: @loader)
+    @loader = Kitchen::Loader::YAML.new(:local_config => ENV['KITCHEN_LOCAL_YAML'])
+    config = Kitchen::Config.new(loader => @loader)
     config.instances.select { |i| i.name =~ /monolithic/ || i.name =~ /monitoring/ }.each do |instance|
         instance.test(:always)
     end
@@ -26,10 +26,18 @@ desc 'Run Test Kitchen integration tests'
 task :kitchen do
     require 'kitchen'
     Kitchen.logger = Kitchen.default_file_logger
-    @loader = Kitchen::Loader::YAML.new(local_config: ENV['KITCHEN_LOCAL_YAML'])
-    Kitchen::Config.new(loader: @loader).instances.each do |instance|
+    @loader = Kitchen::Loader::YAML.new(:local_config => ENV['KITCHEN_LOCAL_YAML'])
+    Kitchen::Config.new(:loader => @loader).instances.each do |instance|
         instance.test(:always)
     end
 end
 
-task :default => ['spec', 'style']
+desc 'Run Ruby style checks'
+task :rubocop do
+    require 'rubocop/rake_task'
+    RuboCop::RakeTask.new do |config|
+        config.options = %w(-DSE)
+    end
+end
+
+task :default => %w(spec style rubocop)

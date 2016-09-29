@@ -19,9 +19,9 @@
 unless node['abiquo']['nfs']['location'].nil? # ~FC023
     mount node['abiquo']['nfs']['mountpoint'] do
         device node['abiquo']['nfs']['location']
-        fstype "nfs"
+        fstype 'nfs'
         action [:enable, :mount]
     end
 end
 
-include_recipe "abiquo::service"
+include_recipe 'abiquo::service'

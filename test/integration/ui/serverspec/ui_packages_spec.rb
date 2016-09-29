@@ -20,13 +20,13 @@ describe 'UI packages' do
     end
 
     it 'has the abiquo packages installed' do
-        %w{ui tutorials}.each do |pkg|
+        %w(ui tutorials).each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
         end
     end
 
     it 'does not have other abiquo installed' do
-        %w{websockify server remote-services monolithic nodecollector}.each do |pkg|
+        %w(websockify server remote-services monolithic nodecollector).each do |pkg|
             expect(package("abiquo-#{pkg}")).to_not be_installed
         end
     end

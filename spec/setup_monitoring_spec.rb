@@ -18,7 +18,7 @@ describe 'abiquo::setup_monitoring' do
     let(:chef_run) do
         ChefSpec::SoloRunner.new do |node|
             node.set['cassandra']['config']['cluster_name'] = 'abiquo'
-        end.converge("cassandra-dse", described_recipe)
+        end.converge('cassandra-dse', described_recipe)
     end
 
     it 'declares the kairosdb service' do
@@ -41,7 +41,7 @@ describe 'abiquo::setup_monitoring' do
         expect(resource).to notify('service[kairosdb]').to(:restart).delayed
     end
 
-    %w{delorean emmett}.each do |wts|
+    %w(delorean emmett).each do |wts|
         it "enables the abiquo-#{wts} service" do
             expect(chef_run).to enable_service("abiquo-#{wts}")
             resource = chef_run.service("abiquo-#{wts}")
@@ -56,8 +56,8 @@ describe 'abiquo::setup_monitoring' do
         end
 
         it "avoids creating the #{wts} base file if already exists" do
-            allow(File).to receive(:exists?).and_call_original
-            allow(File).to receive(:exists?).with("/etc/abiquo/watchtower/#{wts}-base.conf").and_return(true)            
+            allow(File).to receive(:exist?).and_call_original
+            allow(File).to receive(:exist?).with("/etc/abiquo/watchtower/#{wts}-base.conf").and_return(true)
             expect(chef_run).not_to create_file("/etc/abiquo/watchtower/#{wts}-base.conf")
         end
 

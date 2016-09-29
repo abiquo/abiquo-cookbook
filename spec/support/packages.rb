@@ -15,13 +15,13 @@
 def stub_package_commands(packages)
     abiquo = double('abiquo')
     installed = double('installed')
-        
-    lang = { "LC_ALL" => Chef::Config[:internal_locale], "LANGUAGE" => Chef::Config[:internal_locale], "LANG" => Chef::Config[:internal_locale] }
+
+    lang = { 'LC_ALL' => Chef::Config[:internal_locale], 'LANGUAGE' => Chef::Config[:internal_locale], 'LANG' => Chef::Config[:internal_locale] }
     stub_const('ENV', lang)
 
     names_result = packages.join("\n")
     names_result << "\n"
-    allow(Mixlib::ShellOut).to receive(:new).with("repoquery --installed 'abiquo-*' --qf '%{name}'", {:environment => lang}).and_return(abiquo)
+    allow(Mixlib::ShellOut).to receive(:new).with('repoquery --installed \'abiquo-*\' --qf \'%{name}\'', :environment => lang).and_return(abiquo)
     allow(abiquo).to receive(:run_command).and_return(nil)
     allow(abiquo).to receive(:live_stream).and_return(nil)
     allow(abiquo).to receive(:live_stream=).and_return(nil)
@@ -29,9 +29,9 @@ def stub_package_commands(packages)
     allow(abiquo).to receive(:stdout).and_return(names_result)
 
     names = packages.join(' ')
-    current = packages.map { |p| p + "-0:3.6.1-85.el6.noarch" }.join("\n")
+    current = packages.map { |p| p + '-0:3.6.1-85.el6.noarch' }.join("\n")
     current << "\n"
-    allow(Mixlib::ShellOut).to receive(:new).with("repoquery --installed #{names}", {:environment => lang}).and_return(installed)
+    allow(Mixlib::ShellOut).to receive(:new).with("repoquery --installed #{names}", :environment => lang).and_return(installed)
     allow(installed).to receive(:run_command).and_return(nil)
     allow(installed).to receive(:live_stream).and_return(nil)
     allow(installed).to receive(:live_stream=).and_return(nil)
@@ -42,14 +42,14 @@ def stub_package_commands(packages)
 end
 
 def stub_available_packages(packages, version)
-    lang = { "LC_ALL" => Chef::Config[:internal_locale], "LANGUAGE" => Chef::Config[:internal_locale], "LANG" => Chef::Config[:internal_locale] }
-    
+    lang = { 'LC_ALL' => Chef::Config[:internal_locale], 'LANGUAGE' => Chef::Config[:internal_locale], 'LANG' => Chef::Config[:internal_locale] }
+
     available = double('available')
     names = packages.join(' ')
     upstream = packages.map { |p| p + version }.join("\n")
     upstream << "\n"
-    
-    allow(Mixlib::ShellOut).to receive(:new).with("repoquery #{names}", {:environment => lang}).and_return(available)
+
+    allow(Mixlib::ShellOut).to receive(:new).with("repoquery #{names}", :environment => lang).and_return(available)
     allow(available).to receive(:run_command).and_return(nil)
     allow(available).to receive(:live_stream).and_return(nil)
     allow(available).to receive(:live_stream=).and_return(nil)

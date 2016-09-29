@@ -16,7 +16,7 @@
 # limitations under the License.
 
 # The profile to install: monolithic, remoteservices or kvm
-default['abiquo']['profile'] = "monolithic"
+default['abiquo']['profile'] = 'monolithic'
 
 # Wether or not to install external dependant services
 # like MariaDB, Redis, RabbitMQ
@@ -27,13 +27,13 @@ default['abiquo']['install_ext_services'] = true
 default['abiquo']['license'] = nil
 
 # NFS repository configuration
-default['abiquo']['nfs']['mountpoint'] = "/opt/vm_repository"
-default['abiquo']['nfs']['location'] = nil  # Change to something like: "127.0.0.1:/opt/vm_repository"
+default['abiquo']['nfs']['mountpoint'] = '/opt/vm_repository'
+default['abiquo']['nfs']['location'] = nil # Change to something like: "127.0.0.1:/opt/vm_repository"
 
 # Yum repository configuration
 default['abiquo']['yum']['install-repo'] = true
-default['abiquo']['yum']['base-repo'] = "http://mirror.abiquo.com/abiquo/3.8/os/x86_64"
-default['abiquo']['yum']['updates-repo'] = "http://mirror.abiquo.com/abiquo/3.8/updates/x86_64"
+default['abiquo']['yum']['base-repo'] = 'http://mirror.abiquo.com/abiquo/3.8/os/x86_64'
+default['abiquo']['yum']['updates-repo'] = 'http://mirror.abiquo.com/abiquo/3.8/updates/x86_64'
 default['abiquo']['yum']['gpg-check'] = true
 default['abiquo']['yum']['proxy'] = nil
 
@@ -64,18 +64,18 @@ default['abiquo']['rabbitmq']['vhost'] = '/'
 default['rabbitmq']['use_distro_version'] = true
 default['rabbitmq']['port'] = 5672
 
-# Tomcat configuration 
+# Tomcat configuration
 default['abiquo']['tomcat']['http-port'] = 8009
 default['abiquo']['tomcat']['ajp-port'] = 8010
 default['abiquo']['tomcat']['wait-for-webapps'] = false
 
 # Override the Apache proxy configuration
-default['apache']['proxy']['order'] = "allow,deny"
-default['apache']['proxy']['deny_from']  = "none"
-default['apache']['proxy']['allow_from'] = "all"
+default['apache']['proxy']['order'] = 'allow,deny'
+default['apache']['proxy']['deny_from']  = 'none'
+default['apache']['proxy']['allow_from'] = 'all'
 
 # Determine if the server should include the frontend components
-# UI + websockify
+# UI + websockify
 default['abiquo']['server']['install_frontend'] = true
 
 # UI Apache configuration
@@ -83,7 +83,7 @@ default['abiquo']['ui_apache_opts'] = {}
 
 # UI app configuration attributes. These attributes will be rendered
 # in /var/www/html/ui/config/client-config-custom.json
-default['abiquo']['ui_config'] = { "config.endpoint" => "https://#{node['fqdn']}/api" }
+default['abiquo']['ui_config'] = { 'config.endpoint' => "https://#{node['fqdn']}/api" }
 default['abiquo']['ui_proxies'] = {}
 
 # Wheter or not to generate a self signed certificate
@@ -124,11 +124,10 @@ default['abiquo']['monitoring']['kairosdb_package'] = "kairosdb-#{node['abiquo']
 default['abiquo']['monitoring']['kairosdb_url'] = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{node['abiquo']['monitoring']['kairosdb_package']}"
 
 # Override the default java configuration
-# TODO: Configure these attributes in a way that they don't have precedence over user config
 default['java']['oracle']['accept_oracle_download_terms'] = true
 default['java']['install_flavor'] = 'oracle_rpm'
 default['java']['oracle_rpm']['type'] = 'jdk'
-default['java']['java_home'] = "/usr/java/default"
+default['java']['java_home'] = '/usr/java/default'
 default['java']['jdk_version'] = 8
 
 # Override Cassandra default configuration to make sure it is always running properly
@@ -144,7 +143,7 @@ default['abiquo']['properties']['abiquo.vncport.min'] = 5900
 default['abiquo']['properties']['abiquo.vncport.max'] = 5999
 
 case node['abiquo']['profile']
-when "monolithic", "server"
+when 'monolithic', 'server'
     default['abiquo']['properties']['abiquo.m.identity'] = 'default_outbound_api_user'
     default['abiquo']['properties']['abiquo.server.sessionTimeout'] = 30
     default['abiquo']['properties']['abiquo.server.mail.server'] = '127.0.0.1'
@@ -154,7 +153,7 @@ when "monolithic", "server"
     default['abiquo']['properties']['abiquo.redis.port'] = 6379
     default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
     default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['fqdn']}/api"
-when "remoteservices"
+when 'remoteservices'
     default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint']
     default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
     default['abiquo']['properties']['abiquo.monitoring.enabled'] = false

@@ -19,28 +19,28 @@ describe 'abiquo::install_ext_services' do
     let(:chef_run) { ChefSpec::SoloRunner.new }
 
     before do
-        stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
+        stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
     end
 
-    %w{monolithic server ext_services}.each do |profile|
+    %w(monolithic server ext_services).each do |profile|
         it "includes the necessary recipes for #{profile}" do
             chef_run.node.set['abiquo']['profile'] = profile
             chef_run.converge(described_recipe, 'abiquo::service')
-            %w{mariadb redis rabbitmq}.each do |recipe|
+            %w(mariadb redis rabbitmq).each do |recipe|
                 expect(chef_run).to include_recipe("abiquo::install_#{recipe}")
             end
         end
     end
 
-    it "includes the necessary recipes for remoteservices" do
+    it 'includes the necessary recipes for remoteservices' do
         chef_run.node.set['abiquo']['profile'] = 'remoteservices'
         chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe("abiquo::install_redis")
+        expect(chef_run).to include_recipe('abiquo::install_redis')
     end
 
-    it "includes the necessary recipes for monitoring" do
+    it 'includes the necessary recipes for monitoring' do
         chef_run.node.set['abiquo']['profile'] = 'monitoring'
         chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe("abiquo::install_mariadb")
+        expect(chef_run).to include_recipe('abiquo::install_mariadb')
     end
 end

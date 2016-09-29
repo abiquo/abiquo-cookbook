@@ -45,7 +45,7 @@ describe 'Monitoring services' do
         expect(service('kairosdb')).to be_running
         expect(port(8080)).to be_listening
     end
-    
+
     it 'has the delorean service running' do
         expect(service('abiquo-delorean')).to be_enabled
         # This requires an external RabbitMQ, so the start operation will fail in the tests. Just

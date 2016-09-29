@@ -16,25 +16,25 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Server packages' do
     it 'has the system packages installed' do
-        %w{MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk cronie}.each do |pkg|
+        %w(MariaDB-server MariaDB-client redis liquibase rabbitmq-server jdk cronie).each do |pkg|
             expect(package(pkg)).to be_installed
         end
     end
 
     it 'has the abiquo packages installed' do
-        %w{server sosreport-plugins tutorials websockify}.each do |pkg|
+        %w(server sosreport-plugins tutorials websockify).each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
         end
     end
 
     it 'does not have other abiquo installed' do
-        %w{remote-services monolithic nodecollector}.each do |pkg|
+        %w(remote-services monolithic nodecollector).each do |pkg|
             expect(package("abiquo-#{pkg}")).to_not be_installed
         end
     end
 
     it 'has the haproxy package installed' do
-        expect(package("haproxy")).to be_installed
+        expect(package('haproxy')).to be_installed
     end
 
     it 'has the strong jce encryption policies installed' do

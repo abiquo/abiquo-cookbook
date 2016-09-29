@@ -17,23 +17,23 @@ require 'spec_helper'
 describe 'abiquo::install_kvm' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
-    %w{qemu-kvm abiquo-cloud-node abiquo-sosreport-plugins}.each do |pkg|
+    %w(qemu-kvm abiquo-cloud-node abiquo-sosreport-plugins).each do |pkg|
         it "installs the #{pkg} package" do
             expect(chef_run).to install_package(pkg)
         end
     end
 
     it 'creates link if missing' do
-        allow(File).to receive(:exists?).and_call_original
-        allow(File).to receive(:exists?).with('/usr/bin/qemu-system-x86_64').and_return(false)
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?).with('/usr/bin/qemu-system-x86_64').and_return(false)
         expect(chef_run).to create_link('/usr/bin/qemu-system-x86_64').with(
             :to => '/usr/bin/qemu-kvm'
         )
     end
 
     it 'does not create link if exists' do
-        allow(File).to receive(:exists?).and_call_original
-        allow(File).to receive(:exists?).with('/usr/bin/qemu-system-x86_64').and_return(true)
+        allow(File).to receive(:exist?).and_call_original
+        allow(File).to receive(:exist?).with('/usr/bin/qemu-system-x86_64').and_return(true)
         expect(chef_run).to_not create_link('/usr/bin/qemu-system-x86_64')
     end
 

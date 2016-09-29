@@ -18,12 +18,12 @@
 Chef::Recipe.send(:include, Abiquo::Commands)
 
 case node['abiquo']['profile']
-when "monolithic", "server", "ext_services"
-    recipes = %w{mariadb redis rabbitmq}
-when "remoteservices"
-    recipes = %w{redis}
-when "monitoring"
-    recipes = %w{mariadb}
+when 'monolithic', 'server', 'ext_services'
+    recipes = %w(mariadb redis rabbitmq)
+when 'remoteservices'
+    recipes = %w(redis)
+when 'monitoring'
+    recipes = %w(mariadb)
 else
     recipes = []
 end

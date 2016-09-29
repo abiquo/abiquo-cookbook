@@ -16,23 +16,25 @@ require 'spec_helper'
 require_relative 'support/stubs'
 
 describe 'abiquo::certificate' do
-    let(:chef_run) { ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'test.local'
-    end }
+    let(:chef_run) do
+        ChefSpec::SoloRunner.new do |node|
+            node.set['abiquo']['certificate']['common_name'] = 'test.local'
+        end
+    end
     let(:cn) { 'test.local' }
-    
+
     before do
         stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_certificate_files("/etc/pki/abiquo/test.local.crt","/etc/pki/abiquo/test.local.key")
+        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
     end
 
     it 'creates the /etc/pki/abiquo directory' do
-        chef_run.converge('apache2::default',described_recipe,'abiquo::service')
-        expect(chef_run).to create_directory("/etc/pki/abiquo")
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+        expect(chef_run).to create_directory('/etc/pki/abiquo')
     end
 
     it 'creates a self signed certificate' do
-        chef_run.converge('apache2::default',described_recipe,'abiquo::service')
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         expect(chef_run).to create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
         resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to notify('service[apache2]').to(:restart).delayed
@@ -41,7 +43,7 @@ describe 'abiquo::certificate' do
     end
 
     it 'creates a cert for haproxy' do
-        chef_run.converge('apache2::default',described_recipe,'abiquo::service')
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         expect(chef_run).to_not create_template("#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt")
         resource = chef_run.find_resource(:template, "#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt")
         expect(resource).to do_nothing
@@ -49,19 +51,19 @@ describe 'abiquo::certificate' do
 
     it 'does not create a self signed cert if "source" is not "self-signed"' do
         chef_run.node.set['abiquo']['certificate']['source'] = 'file'
-        chef_run.converge('apache2::default',described_recipe,'abiquo::service')
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         expect(chef_run).to_not create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
     end
 
     it 'creates does not overwrite self signed certificate' do
         allow(::File).to receive(:file?).and_return(true)
-        chef_run.converge('apache2::default',described_recipe,'abiquo::service')
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to do_nothing
     end
 
     it 'installs the certificate in the java trust store' do
-        chef_run.converge('apache2::default',described_recipe,'abiquo::service')
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to do_nothing
         expect(resource).to subscribe_to("ssl_certificate[#{chef_run.node['abiquo']['certificate']['common_name']}]").on(:import).immediately
@@ -70,7 +72,7 @@ describe 'abiquo::certificate' do
 
     it 'does not install the certificate in the java trust store if only UI is installed' do
         chef_run.node.set['abiquo']['profile'] = 'ui'
-        chef_run.converge('apache2::default',described_recipe,'abiquo::service')
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to do_nothing
     end

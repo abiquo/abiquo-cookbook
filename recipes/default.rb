@@ -15,16 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-selinux_state "SELinux Permissive" do
+selinux_state 'SELinux Permissive' do
     action :permissive
 end
 
-include_recipe "abiquo::repository"
+include_recipe 'abiquo::repository'
 include_recipe "abiquo::install_#{node['abiquo']['profile']}"
 include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
 
-include_recipe "iptables"
-iptables_rule "firewall-common"
+include_recipe 'iptables'
+iptables_rule 'firewall-common'
 iptables_rule "firewall-#{node['abiquo']['profile']}"
 
 package 'cronie' do

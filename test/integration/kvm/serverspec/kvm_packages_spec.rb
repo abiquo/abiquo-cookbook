@@ -24,7 +24,7 @@ describe 'KVM packages' do
     end
 
     it 'has the abiquo packages installed' do
-        %w{cloud-node sosreport-plugins}.each do |pkg|
+        %w(cloud-node sosreport-plugins).each do |pkg|
             expect(package("abiquo-#{pkg}")).to be_installed
         end
     end

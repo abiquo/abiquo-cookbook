@@ -15,5 +15,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::setup_ui"
-include_recipe "abiquo::setup_websockify"
+include_recipe 'abiquo::setup_ui'
+include_recipe 'abiquo::setup_websockify'

@@ -15,44 +15,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-template "/opt/abiquo/tomcat/conf/server.xml" do
-    source "server.xml.erb"
-    owner "root"
-    group "root"
+template '/opt/abiquo/tomcat/conf/server.xml' do
+    source 'server.xml.erb'
+    owner 'root'
+    group 'root'
     action :create
-    notifies :restart, "service[abiquo-tomcat]"
+    notifies :restart, 'service[abiquo-tomcat]'
 end
 
-template "/opt/abiquo/config/abiquo.properties" do
-    source "abiquo.properties.erb"
-    owner "root"
-    group "root"
-    variables (lazy {{ :properties => node['abiquo']['properties'] }})
+template '/opt/abiquo/config/abiquo.properties' do
+    source 'abiquo.properties.erb'
+    owner 'root'
+    group 'root'
+    variables(lazy { { :properties => node['abiquo']['properties'] } })
     action :create
-    notifies :restart, "service[abiquo-tomcat]"
+    notifies :restart, 'service[abiquo-tomcat]'
 end
 
-service "abiquo-tomcat" do
+service 'abiquo-tomcat' do
     action [:enable, :start]
 end
 
 case node['abiquo']['profile']
-when "server", "monolithic"
-    webapp = "api"
-when "remoteservices"
-    webapp = "virtualfactory"
-when "v2v"
-    webapp = "bpm-async"
+when 'server', 'monolithic'
+    webapp = 'api'
+when 'remoteservices'
+    webapp = 'virtualfactory'
+when 'v2v'
+    webapp = 'bpm-async'
 end
 
 if webapp
     abiquo_wait_for_webapp webapp do
-        host "localhost"
+        host 'localhost'
         port node['abiquo']['tomcat']['http-port']
-        retries 3   # Retry if Tomcat is still not started
+        retries 3 # Retry if Tomcat is still not started
         retry_delay 5
         action :nothing
-        subscribes :wait, "service[abiquo-tomcat]"
+        subscribes :wait, 'service[abiquo-tomcat]'
         only_if { node['abiquo']['tomcat']['wait-for-webapps'] }
     end
 end

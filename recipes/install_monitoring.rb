@@ -23,27 +23,27 @@ remote_file "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['k
     source node['abiquo']['monitoring']['kairosdb_url']
 end
 
-package "kairosdb" do
+package 'kairosdb' do
     source "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}"
 end
 
-package "jdk" do
+package 'jdk' do
     action :install
 end
 
-java_alternatives "set default jdk8" do
+java_alternatives 'set default jdk8' do
     java_location node['java']['java_home']
-    bin_cmds ['java', 'javac']
+    bin_cmds %w(java javac)
     action :set
 end
 
 node.set['cassandra']['config']['cluster_name'] = node['abiquo']['monitoring']['cassandra']['cluster_name']
-node.set['cassandra']['install_java'] = false   # The Abiquo jdk package is installed instead
+node.set['cassandra']['install_java'] = false # The Abiquo jdk package is installed instead
 include_recipe 'cassandra-dse'
 
-include_recipe "abiquo::install_ext_services" if node['abiquo']['install_ext_services']
+include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
 
-%w{delorean emmett}.each do |pkg|
+%w(delorean emmett).each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
@@ -72,15 +72,15 @@ if node['abiquo']['monitoring']['db']['install']
         notifies :run, 'execute[install-watchtower-database]', :immediately
     end
 
-    execute "install-watchtower-database" do
+    execute 'install-watchtower-database' do
         command "#{mysqlcmd} watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql"
         action :nothing
-        notifies :run, "execute[watchtower-liquibase-update]", :immediately
+        notifies :run, 'execute[watchtower-liquibase-update]', :immediately
     end
 
-    lqb_cmd = liquibase_cmd("update", node['abiquo']['db'], true)
-    execute "watchtower-liquibase-update" do
-      command lqb_cmd
-      action :nothing
+    lqb_cmd = liquibase_cmd('update', node['abiquo']['db'], true)
+    execute 'watchtower-liquibase-update' do
+        command lqb_cmd
+        action :nothing
     end
 end

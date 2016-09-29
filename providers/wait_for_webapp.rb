@@ -26,9 +26,9 @@ action :wait do
         http = Net::HTTP.new(new_resource.host, new_resource.port)
         http.read_timeout = new_resource.read_timeout
         http.open_timeout = new_resource.open_timeout
-        http.start do |http|
+        http.start do |h|
             request = Net::HTTP::Get.new("/#{new_resource.webapp}")
-            response = http.request(request)
+            response = h.request(request)
             Chef::Log.debug "Request returned status: #{response.code}"
         end
         new_resource.updated_by_last_action(true)

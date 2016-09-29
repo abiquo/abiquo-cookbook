@@ -35,8 +35,8 @@ describe 'abiquo::setup_v2v' do
         )
     end
 
-    it "includes the service recipe" do
+    it 'includes the service recipe' do
         chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe("abiquo::service")
+        expect(chef_run).to include_recipe('abiquo::service')
     end
 end

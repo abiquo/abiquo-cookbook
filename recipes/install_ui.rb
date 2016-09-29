@@ -15,18 +15,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "apache2"
-include_recipe "apache2::mod_proxy_ajp"
-include_recipe "apache2::mod_proxy_http"
-include_recipe "apache2::mod_ssl"
+include_recipe 'apache2'
+include_recipe 'apache2::mod_proxy_ajp'
+include_recipe 'apache2::mod_proxy_http'
+include_recipe 'apache2::mod_ssl'
 
-%w{ui tutorials}.each do |pkg|
+%w(ui tutorials).each do |pkg|
     package "abiquo-#{pkg}" do
         action :install
     end
 end
 
-include_recipe "abiquo::certificate"
+include_recipe 'abiquo::certificate'
 
 case node['abiquo']['profile']
 when 'monolithic'
@@ -44,8 +44,8 @@ when 'server'
     }.merge(node['abiquo']['ui_proxies'])
 end
 
-web_app "abiquo" do
-    template "abiquo.conf.erb"
+web_app 'abiquo' do
+    template 'abiquo.conf.erb'
     server_name node['abiquo']['certificate']['common_name']
     cert_file node['abiquo']['certificate']['file']
     key_file node['abiquo']['certificate']['key_file']

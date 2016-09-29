@@ -15,6 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-include_recipe "abiquo::setup_server"
-include_recipe "abiquo::setup_remoteservices"
-include_recipe "abiquo::setup_v2v"
+include_recipe 'abiquo::setup_server'
+include_recipe 'abiquo::setup_remoteservices'
+include_recipe 'abiquo::setup_v2v'
