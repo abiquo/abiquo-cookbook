@@ -28,7 +28,7 @@ directory "/var/cache/yum" do
     action :nothing
 end
 
-include_recipe "yum-epel"
+include_recipe "yum-epel" if node['abiquo']['yum']['install-repo']
 
 gpg_keys = gpg_key_files.join(" ")
 
@@ -42,6 +42,7 @@ yum_repository "abiquo-base" do
     subscribes :create, "package[abiquo-release-ee]", :immediately
     notifies :delete, 'directory[/var/cache/yum]', :immediately
     notifies :run, 'execute[clean-yum-cache]', :immediately
+    only_if { node['abiquo']['yum']['install-repo'] }
 end
 
 yum_repository "abiquo-updates" do
@@ -54,6 +55,7 @@ yum_repository "abiquo-updates" do
     subscribes :create, "package[abiquo-release-ee]", :immediately
     notifies :delete, 'directory[/var/cache/yum]', :immediately
     notifies :run, 'execute[clean-yum-cache]', :immediately
+    only_if { node['abiquo']['yum']['install-repo'] }
 end
 
 # This package contains the gpgkey file, so the signature cannot
@@ -61,6 +63,7 @@ end
 package "abiquo-release-ee" do
     options "--nogpgcheck"
     action :install
+    only_if { node['abiquo']['yum']['install-repo'] }
 end
 
 package 'yum-utils' do
