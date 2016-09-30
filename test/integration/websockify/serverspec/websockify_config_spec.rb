@@ -28,13 +28,13 @@ describe 'Websockify configuration' do
     end
 
     it 'has websockify service script configured' do
-        expect(file('/etc/init.d/websockify')).to contain("WEBSOCKIFY_PORT=41337")
+        expect(file('/etc/init.d/websockify')).to contain("WEBSOCKIFY_PORT=41338")
         expect(file('/etc/init.d/websockify')).to contain("LOG_FILE=/var/log/websockify")
     end
 
     it 'has haproxy service configured' do
         expect(file('/etc/haproxy/haproxy.cfg')).to contain("server websockify1 127.0.0.1:41338 weight 1 maxconn 1024 check")
-        expect(file('/etc/haproxy/haproxy.cfg')).to contain("bind *:41337 ssl crt /etc/pki/abiquo/ws.abiquo.com.haproxy.crt")
+        expect(file('/etc/haproxy/haproxy.cfg')).to contain("41337 ssl crt /etc/pki/abiquo/ws.abiquo.com.crt.haproxy.crt")
     end
 
     it 'has novnc_tokens cron task configured' do

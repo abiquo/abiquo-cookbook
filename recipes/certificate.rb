@@ -25,7 +25,6 @@ ssl_certificate node['abiquo']['certificate']['common_name'] do
     cert_path node['abiquo']['certificate']['file']
     key_path  node['abiquo']['certificate']['key_file']
     not_if { ::File.file? "node['abiquo']['certificate']['file']" }
-    not_if { node['abiquo']['profile'] == 'websockify' }
     only_if { node['abiquo']['certificate']['source'] == 'self-signed' }
     notifies :restart, 'service[apache2]' unless node['abiquo']['profile'] == 'websockify'
     notifies :import, "java_management_truststore_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
@@ -37,8 +36,8 @@ template "#{node['abiquo']['certificate']['file']}.haproxy.crt" do
     owner 'root'
     group 'root'
     variables ({ 
-        :cert => ::File.open(node['abiquo']['certificate']['file']).read,
-        :key  => ::File.open(node['abiquo']['certificate']['key_file']).read,
+        :cert => node['abiquo']['certificate']['file'],
+        :key  => node['abiquo']['certificate']['key_file'],
     })
     action :nothing
 end
