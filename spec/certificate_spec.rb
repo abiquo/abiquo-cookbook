@@ -53,12 +53,6 @@ describe 'abiquo::certificate' do
         expect(chef_run).to_not create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
     end
 
-    it 'does not create a self signed cert if "profile" is "websockify"' do
-        chef_run.node.set['abiquo']['profile'] = 'websockify'
-        chef_run.converge('abiquo::install_websockify', described_recipe)
-        expect(chef_run).to_not create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
-    end
-    
     it 'creates does not overwrite self signed certificate' do
         allow(::File).to receive(:file?).and_return(true)
         chef_run.converge('apache2::default',described_recipe,'abiquo::service')
