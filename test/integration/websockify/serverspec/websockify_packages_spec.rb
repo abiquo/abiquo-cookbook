@@ -23,6 +23,10 @@ describe 'Websockify packages' do
         expect(package("abiquo-websockify")).to be_installed
     end
 
+    it 'has the haproxy package installed' do
+        expect(package("haproxy")).to be_installed
+    end
+
     it 'does not have other abiquo installed' do
         %w{ui server remote-services monolithic nodecollector}.each do |pkg|
             expect(package("abiquo-#{pkg}")).to_not be_installed

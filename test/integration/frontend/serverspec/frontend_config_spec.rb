@@ -58,6 +58,11 @@ describe 'Front-end configuration' do
         expect(file('/etc/init.d/websockify')).to contain("KEY_FILE=/etc/pki/abiquo/frontend.abiquo.com.key")
     end
 
+    it 'has haproxy service configured' do
+        expect(file('/etc/haproxy/haproxy.cfg')).to contain("server websockify1 127.0.0.1:41338 weight 1 maxconn 1024 check")
+        expect(file('/etc/haproxy/haproxy.cfg')).to contain("bind *:41337 ssl crt /etc/pki/abiquo/ws.abiquo.com.haproxy.crt")
+    end
+
     it 'has novnc_tokens cron task configured' do
         expect(file('/etc/cron.d/novnc_tokens')).to_not be_executable
         expect(file('/etc/cron.d/novnc_tokens')).to contain("* * * * * root /opt/websockify/novnc_tokens.rb -a https://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc")

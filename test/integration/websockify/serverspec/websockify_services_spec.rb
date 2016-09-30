@@ -23,6 +23,12 @@ describe 'Websockify services' do
     it 'has websockify running' do
         expect(service('websockify')).to be_enabled
         expect(service('websockify')).to be_running
+        expect(port(41338)).to be_listening.on('127.0.0.1')
+    end
+
+    it 'has haproxy running' do
+        expect(service('haproxy')).to be_enabled
+        expect(service('haproxy')).to be_running
         expect(port(41337)).to be_listening
     end
 
