@@ -3,7 +3,9 @@ abiquo CHANGELOG
 
 ## 0.9.0
 
-* Use official cookbooks to install MAriaDB, RabbitMQ and Redis. 
+* Enforce a proper Ruby style with Rubocop.
+* Use HAproxy as SSL termination for Websockify.
+* Use official cookbooks to install MariaDB, RabbitMQ and Redis.
 
 ## 0.8.0
 
