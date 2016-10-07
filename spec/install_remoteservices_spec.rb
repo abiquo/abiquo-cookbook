@@ -23,6 +23,12 @@ describe 'abiquo::install_remoteservices' do
         stub_check_db_pass_command('root', '')
     end
 
+    it 'includes needed recipes' do
+        %w(java::oracle_jce abiquo::install_ext_services abiquo::certificate).each do |recipe|
+            expect(chef_run).to include_recipe(recipe)
+        end
+    end
+
     it 'installs the jdk system package' do
         expect(chef_run).to install_package('jdk')
     end

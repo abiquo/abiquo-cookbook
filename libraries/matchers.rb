@@ -20,4 +20,8 @@ if defined?(ChefSpec)
     def wait_abiquo_wait_for_port(service_name)
         ChefSpec::Matchers::ResourceMatcher.new(:abiquo_wait_for_port, :wait, service_name)
     end
+
+    def download_abiquo_download_cert(host_name)
+        ChefSpec::Matchers::ResourceMatcher.new(:abiquo_download_cert, :download, host_name)
+    end
 end

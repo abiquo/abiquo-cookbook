@@ -1,5 +1,5 @@
 # Cookbook Name:: abiquo
-# Recipe:: install_remoteservices
+# Resource:: download_cert
 #
 # Copyright 2014, Abiquo
 #
@@ -11,24 +11,14 @@
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY :kind, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package 'jdk' do
-    action :install
-end
+actions :download
 
-include_recipe 'java::oracle_jce'
-include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
-include_recipe 'abiquo::certificate'
+default_action :download
 
-%w(remote-services sosreport-plugins).each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
-end
-
-service 'rpcbind' do
-    action [:enable, :start]
-end
+attribute :host,        :kind_of => String, :name_attribute => true
+attribute :server_name, :kind_of => String, :default => nil
+attribute :file_path,   :kind_of => String, :default => '/etc/pki/abiquo'
