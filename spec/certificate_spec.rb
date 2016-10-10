@@ -87,21 +87,27 @@ describe 'abiquo::certificate' do
     it 'retrieves cert from API if remoteservices' do
         chef_run.node.set['abiquo']['profile'] = 'remoteservices'
         chef_run.node.set['abiquo']['properties']['abiquo.server.api.location'] = 'https://some.fqdn.org/api'
+        chef_run.node.set['abiquo']['certificate']['additional_certs'] = { 'someservice' => 'https://some.fqdn.org' }
         chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+        chef_run.converge('apache2::default', 'abiquo::install_remoteservices', described_recipe, 'abiquo::service')
 
-        expect(chef_run).to download_abiquo_download_cert('retrieve-api-cert')
-        resource = chef_run.find_resource(:abiquo_download_cert, 'retrieve-api-cert')
+        expect(chef_run).to download_abiquo_download_cert('api')
+        resource = chef_run.find_resource(:abiquo_download_cert, 'api')
+        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+
+        expect(chef_run).to download_abiquo_download_cert('someservice')
+        resource = chef_run.find_resource(:abiquo_download_cert, 'someservice')
         expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 
     it 'retrieves additional certs if specified' do
-        chef_run.node.set['abiquo']['certificate']['additional_certs'] = ['https://some.fqdn.org']
+        chef_run.node.set['abiquo']['properties']['abiquo.server.api.location'] = 'https://some.apifqdn.org/api'
+        chef_run.node.set['abiquo']['certificate']['additional_certs'] = { 'someservice' => 'https://some.fqdn.org' }
         chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
 
-        expect(chef_run).to download_abiquo_download_cert('retrieve-https://some.fqdn.org-cert')
-        resource = chef_run.find_resource(:abiquo_download_cert, 'retrieve-https://some.fqdn.org-cert')
+        expect(chef_run).to download_abiquo_download_cert('someservice')
+        resource = chef_run.find_resource(:abiquo_download_cert, 'someservice')
         expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 end

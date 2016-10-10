@@ -21,6 +21,13 @@ end
 
 include_recipe 'java::oracle_jce'
 include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
+
+# Add API cert as additional SSL cert if defined
+if node['abiquo']['properties']['abiquo.server.api.location']
+    node.set['abiquo']['certificate']['additional_certs'] = {
+        'api' => node['abiquo']['properties']['abiquo.server.api.location']
+    }.merge(node['abiquo']['certificate']['additional_certs'])
+end
 include_recipe 'abiquo::certificate'
 
 %w(remote-services sosreport-plugins).each do |pkg|

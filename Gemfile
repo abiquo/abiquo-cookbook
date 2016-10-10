@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'chef', '~> 12.7.2'
 gem 'berkshelf', '~> 4.0.1'
 
-gem 'foodcritic', '~> 6.0.0', :group => :lint
+gem 'foodcritic', '~> 7.0.0', :group => :lint
 gem 'rubocop', '~> 0.42.0', :group => :lint
 gem 'chefspec', '~> 4.4.0', :group => :unit
 gem 'mysql2', '~> 0.4.4', :group => :unit

@@ -103,7 +103,7 @@ default['abiquo']['certificate']['ca_file'] = nil
 # Additional certs to add to Java truststore
 # Provide a url *https://somehost/* or just
 # a hostname *somehost*
-default['abiquo']['certificate']['additional_certs'] = []
+default['abiquo']['certificate']['additional_certs'] = {}
 
 # Configure abiquo KVM
 default['abiquo']['aim']['port'] = 8889
