@@ -48,12 +48,14 @@ describe 'abiquo::certificate' do
 
     it 'does not create a self signed cert if "source" is not "self-signed"' do
         chef_run.node.set['abiquo']['certificate']['source'] = 'file'
+        chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         expect(chef_run).to_not create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
     end
 
     it 'creates does not overwrite self signed certificate' do
         allow(::File).to receive(:file?).and_return(true)
+        chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to do_nothing
@@ -68,6 +70,7 @@ describe 'abiquo::certificate' do
 
     it 'does not install the certificate in the java trust store if only UI is installed' do
         chef_run.node.set['abiquo']['profile'] = 'ui'
+        chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
         resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to do_nothing
@@ -75,7 +78,8 @@ describe 'abiquo::certificate' do
 
     it 'does not install the certificate in the java trust store if only websockify is installed' do
         chef_run.node.set['abiquo']['profile'] = 'websockify'
-        chef_run.converge('abiquo::install_websockify', described_recipe)
+        chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
+        chef_run.converge('abiquo::install_websockify', described_recipe, 'abiquo::service')
         resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
         expect(resource).to do_nothing
     end
@@ -83,10 +87,21 @@ describe 'abiquo::certificate' do
     it 'retrieves cert from API if remoteservices' do
         chef_run.node.set['abiquo']['profile'] = 'remoteservices'
         chef_run.node.set['abiquo']['properties']['abiquo.server.api.location'] = 'https://some.fqdn.org/api'
+        chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
         chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
 
-        expect(chef_run).to download_abiquo_download_cert('https://some.fqdn.org/api')
-        resource = chef_run.find_resource(:abiquo_download_cert, 'https://some.fqdn.org/api')
+        expect(chef_run).to download_abiquo_download_cert('retrieve-api-cert')
+        resource = chef_run.find_resource(:abiquo_download_cert, 'retrieve-api-cert')
+        expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+    end
+
+    it 'retrieves additional certs if specified' do
+        chef_run.node.set['abiquo']['certificate']['additional_certs'] = ['https://some.fqdn.org']
+        chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
+        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+
+        expect(chef_run).to download_abiquo_download_cert('retrieve-https://some.fqdn.org-cert')
+        resource = chef_run.find_resource(:abiquo_download_cert, 'retrieve-https://some.fqdn.org-cert')
         expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
     end
 end

@@ -16,7 +16,11 @@ require 'spec_helper'
 require_relative 'support/commands'
 
 describe 'abiquo::install_remoteservices' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe, 'abiquo::service') }
+    let(:chef_run) do
+        ChefSpec::SoloRunner.new(:internal_locale => 'en_US.UTF-8') do |node|
+            node.set['abiquo']['certificate']['common_name'] = 'test.local'
+        end.converge(described_recipe, 'abiquo::service')
+    end
 
     before do
         stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)

@@ -32,9 +32,17 @@ ssl_certificate node['abiquo']['certificate']['common_name'] do
 end
 
 # Collect the API cert for RS
-if node['abiquo']['properties']['abiquo.server.api.location'] && node['abiquo']['profile'] == 'remoteservices'
-    abiquo_download_cert node['abiquo']['properties']['abiquo.server.api.location'] do
-        notifies :restart, 'service[abiquo-tomcat]'
+abiquo_download_cert 'retrieve-api-cert' do
+    host node['abiquo']['properties']['abiquo.server.api.location']
+    notifies :restart, 'service[abiquo-tomcat]' if node.recipe?('abiquo::service')
+    only_if { node['abiquo']['properties']['abiquo.server.api.location'] && node['abiquo']['profile'] == 'remoteservices' }
+end
+
+# Collect additional certs
+node['abiquo']['certificate']['additional_certs'].each do |cert|
+    abiquo_download_cert "retrieve-#{cert}-cert" do
+        host cert
+        notifies :restart, 'service[abiquo-tomcat]' if node.recipe?('abiquo::service')
     end
 end
 

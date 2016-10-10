@@ -35,12 +35,7 @@ action :download do
 
         # parse host
         uri = URI.parse(new_resource.host)
-        if uri.host.nil?
-            # Give just a hostname, not URL
-            ssl_host = uri.path
-        else
-            ssl_host = uri.host
-        end
+        ssl_host = uri.host.nil? ? uri.path : uri.host
         # SNI
         ssl_servername = new_resource.server_name.nil? ? ssl_host : new_resource.server_name
 
@@ -64,7 +59,7 @@ action :download do
 
             # establish connection, if possible
             ssl.connect
-        rescue Exception => e
+        rescue => e
             Chef::Log.debug "abiquo_download_cert :: Could not connect to #{ssl_host}!"
             Chef::Log.debug 'abiquo_download_cert :: ' + e.message
             new_resource.updated_by_last_action(false)
@@ -73,7 +68,7 @@ action :download do
 
         # get peer certificate
         cert = ssl.peer_cert
-        
+
         # Save the cert to disk
         ::FileUtils.mkdir_p(new_resource.file_path)
         ::File.open(cert_full_filename, 'w') do |f|
