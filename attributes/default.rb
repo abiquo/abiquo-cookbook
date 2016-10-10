@@ -101,8 +101,10 @@ default['abiquo']['certificate']['key_file'] = "/etc/pki/abiquo/#{node['abiquo']
 default['abiquo']['certificate']['ca_file'] = nil
 
 # Additional certs to add to Java truststore
-# Provide a url *https://somehost/* or just
-# a hostname *somehost*
+# Provide a hash of {alias => url} or {alias => host}
+# { 'api' => 'https://somehost/' }
+# or just
+# { 'someservice' => 'someservice.local' }
 default['abiquo']['certificate']['additional_certs'] = {}
 
 # Configure abiquo KVM
