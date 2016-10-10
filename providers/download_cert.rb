@@ -25,10 +25,10 @@ use_inline_resources
 action :download do
     converge_by("Downloading SSL certificate from #{new_resource.host}") do
         # Check the provided host is not nil.
-        # This can happen if the node has no property for
-        # abiquo.server.api.location
+        # This can happen if for some reason the name
+        # of the resource resolves to nil
         if new_resource.host.nil?
-            Chef::Log.debug 'abiquo_download_cert :: SSL API location not provided. Skipping.'
+            Chef::Log.debug 'abiquo_download_cert :: SSL location not provided. Skipping.'
             new_resource.updated_by_last_action(false)
             return
         end
