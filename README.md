@@ -5,8 +5,8 @@ Abiquo Cookbook
 [![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.9.0-blue.svg?style=flat)](https://supermarket.chef.io/cookbooks/abiquo)
 [![Chef Version](http://img.shields.io/badge/chef-v12.5.1-orange.svg?style=flat)](https://www.chef.io)
 
-This cookbook provides several recipes to install an upgrade an Abiquo platform.
-It allows to provision an Abiquo Server, the Remote Services server, standalone V2V
+This cookbook provides several recipes to install and upgrade an Abiquo platform.
+It allows you to provision an Abiquo Server, the Remote Services server, standalone V2V
 server, monitoring server, frontend components and a KVM hypervisor from scratch,
 as long as upgrading an existing Abiquo installation.
 
