@@ -37,8 +37,10 @@ describe 'Websockify configuration' do
     expect(file('/etc/haproxy/haproxy.cfg')).to contain('41337 ssl crt /etc/pki/abiquo/ws.abiquo.com.crt.haproxy.crt')
   end
 
-  it 'has novnc_tokens cron task configured' do
-    expect(file('/etc/cron.d/novnc_tokens')).to_not be_executable
-    expect(file('/etc/cron.d/novnc_tokens')).to contain('* * * * * root /opt/websockify/novnc_tokens.rb -a https://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc')
+  it 'has the config file for the websockify plugin' do
+    expect(file('/opt/websockify/abiquo.cfg')).to contain('[websockify]')
+    expect(file('/opt/websockify/abiquo.cfg')).to contain('ssl_verify = false')
+    expect(file('/opt/websockify/abiquo.cfg')).to contain('api_user = admin')
+    expect(file('/opt/websockify/abiquo.cfg')).to contain('api_pass = xabiquo')
   end
 end

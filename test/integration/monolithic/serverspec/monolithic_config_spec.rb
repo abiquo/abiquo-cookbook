@@ -32,14 +32,16 @@ describe 'Monolithic configuration' do
     expect(file('/etc/init.d/websockify')).to contain('LOG_FILE=/var/log/websockify')
   end
 
+  it 'has the config file for the websockify plugin' do
+    expect(file('/opt/websockify/abiquo.cfg')).to contain('[websockify]')
+    expect(file('/opt/websockify/abiquo.cfg')).to contain('ssl_verify = false')
+    expect(file('/opt/websockify/abiquo.cfg')).to contain('api_user = admin')
+    expect(file('/opt/websockify/abiquo.cfg')).to contain('api_pass = xabiquo')
+  end
+
   it 'has haproxy service configured' do
     expect(file('/etc/haproxy/haproxy.cfg')).to contain('server websockify1 127.0.0.1:41338 weight 1 maxconn 1024 check')
     expect(file('/etc/haproxy/haproxy.cfg')).to contain('41337 ssl crt /etc/pki/abiquo/monolithic.abiquo.com.crt.haproxy.crt')
-  end
-
-  it 'has novnc_tokens cron task configured' do
-    expect(file('/etc/corn.d/novnc_tokens')).to_not be_executable
-    expect(file('/etc/cron.d/novnc_tokens')).to contain('* * * * * root /opt/websockify/novnc_tokens.rb -a https://localhost/api -u admin -p xabiquo -f /opt/websockify/config.vnc')
   end
 
   it 'has apache mappings to tomcat configured' do

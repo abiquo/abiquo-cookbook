@@ -37,15 +37,12 @@ describe 'abiquo::setup_websockify' do
     )
   end
 
-  it 'configures the websockify cron task' do
-    chef_run.converge('abiquo::install_websockify', described_recipe, 'abiquo::service')
-    expect(chef_run).to create_file('/etc/cron.d/novnc_tokens').with(
-      content: "* * * * * root /opt/websockify/novnc_tokens.rb -a #{chef_run.node['abiquo']['websockify']['api_url']} " \
-                   "-u #{chef_run.node['abiquo']['websockify']['user']} -p #{chef_run.node['abiquo']['websockify']['pass']} " \
-                   '-f /opt/websockify/config.vnc',
+  it 'renders websockify plugin credential files' do
+    chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
+    expect(chef_run).to create_template('/opt/websockify/abiquo.cfg').with(
+      source: 'ws_abiquo.cfg.erb',
       owner: 'root',
-      group: 'root',
-      mode: '0644'
+      group: 'root'
     )
   end
 

@@ -170,8 +170,7 @@ end
 default['abiquo']['websockify']['port'] = 41338
 default['abiquo']['websockify']['address'] = '127.0.0.1'
 default['abiquo']['websockify']['api_url'] = 'https://localhost/api'
-default['abiquo']['websockify']['user'] = 'admin'
-default['abiquo']['websockify']['pass'] = 'xabiquo'
+default['abiquo']['websockify']['creds'] = { api_user: 'admin', api_pass: 'xabiquo' }
 default['abiquo']['websockify']['crt'] = node['abiquo']['certificate']['file']
 default['abiquo']['websockify']['key'] = node['abiquo']['certificate']['key_file']
 default['abiquo']['haproxy']['address'] = '*'

@@ -22,7 +22,7 @@ WEBSOCKIFY=$BINDIR/run
 WEBSOCKIFY_ADDR=<%= @websockify_address %>
 WEBSOCKIFY_PORT=<%= @websockify_port %>
 PIDFILE=/var/run/websockify.pid
-TOKEN_FILE=$BINDIR/config.vnc
+CONFIG_FILE=$BINDIR/abiquo.cfg
 LOG_FILE=/var/log/websockify
 USER=root
 
@@ -31,7 +31,7 @@ case "$1" in
   start)
   [ -x $WEBSOCKIFY ] || exit 1
   echo -n $"Starting websockify server: "
-  daemon --user "$USER" --pidfile $PIDFILE python "$WEBSOCKIFY" -D "$WEBSOCKIFY_ADDR":"$WEBSOCKIFY_PORT" --token-plugin TokenFile --token-source="$TOKEN_FILE" --log-file="$LOG_FILE"
+  daemon --user "$USER" --pidfile $PIDFILE python "$WEBSOCKIFY" -D "$WEBSOCKIFY_ADDR":"$WEBSOCKIFY_PORT" --token-plugin websockify.abiquo_plugin.AbiquoTokenPlugin --token-source $CONFIG_FILE --log-file="$LOG_FILE"
   RETVAL=$?
   echo
   [ $RETVAL -eq 0 ] && sleep 1 && ps aux | grep [/]opt/websockify/run | awk '{print $2}' > $PIDFILE
