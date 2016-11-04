@@ -13,7 +13,7 @@
 # limitations under the License.
 
 def stub_certificate_files(cert, _key)
-    cert = double('cert')
-    allow(::File).to receive(:open).with(anything).and_return(cert)
-    allow(cert).to receive(:read).and_return('randomstring')
+  cert = double('cert')
+  allow(::File).to receive(:open).with(anything).and_return(cert)
+  allow(cert).to receive(:read).and_return('randomstring')
 end

@@ -15,17 +15,17 @@
 require 'spec_helper'
 
 describe 'abiquo::install_redis' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+  let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
-    it 'includes the redisio recipe' do
-        expect(chef_run).to include_recipe('redisio')
-    end
+  it 'includes the redisio recipe' do
+    expect(chef_run).to include_recipe('redisio')
+  end
 
-    it 'creates the redis user' do
-        expect(chef_run).to create_user('redis').with(:shell => '/bin/sh')
-    end
+  it 'creates the redis user' do
+    expect(chef_run).to create_user('redis').with(shell: '/bin/sh')
+  end
 
-    it 'includes the redisio::enable recipe' do
-        expect(chef_run).to include_recipe('redisio::enable')
-    end
+  it 'includes the redisio::enable recipe' do
+    expect(chef_run).to include_recipe('redisio::enable')
+  end
 end

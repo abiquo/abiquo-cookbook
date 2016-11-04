@@ -16,24 +16,24 @@
 # limitations under the License.
 
 if node['abiquo']['server']['install_frontend']
-    include_recipe 'abiquo::setup_ui'
-    include_recipe 'abiquo::setup_websockify'
+  include_recipe 'abiquo::setup_ui'
+  include_recipe 'abiquo::setup_websockify'
 end
 
 template '/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml' do
-    source 'api-m.xml.erb'
-    owner 'root'
-    group 'root'
-    action :create
-    notifies :restart, 'service[abiquo-tomcat]'
+  source 'api-m.xml.erb'
+  owner 'root'
+  group 'root'
+  action :create
+  notifies :restart, 'service[abiquo-tomcat]'
 end
 
 template '/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml' do
-    source 'api-m.xml.erb'
-    owner 'root'
-    group 'root'
-    action :create
-    notifies :restart, 'service[abiquo-tomcat]'
+  source 'api-m.xml.erb'
+  owner 'root'
+  group 'root'
+  action :create
+  notifies :restart, 'service[abiquo-tomcat]'
 end
 
 include_recipe 'abiquo::service'

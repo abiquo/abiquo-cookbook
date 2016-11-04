@@ -13,9 +13,9 @@
 # limitations under the License.
 
 def import_java_management_truststore_certificate(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:java_management_truststore_certificate, :import, resource_name)
+  ChefSpec::Matchers::ResourceMatcher.new(:java_management_truststore_certificate, :import, resource_name)
 end
 
 def permissive_selinux_state(resource_name)
-    ChefSpec::Matchers::ResourceMatcher.new(:selinux_state, :permissive, resource_name)
+  ChefSpec::Matchers::ResourceMatcher.new(:selinux_state, :permissive, resource_name)
 end

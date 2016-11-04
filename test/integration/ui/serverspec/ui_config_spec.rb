@@ -15,40 +15,40 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'UI configuration' do
-    it 'has the epel repos installed' do
-        expect(file('/etc/yum.repos.d/epel.repo')).to be_file
-        expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
-    end
+  it 'has the epel repos installed' do
+    expect(file('/etc/yum.repos.d/epel.repo')).to be_file
+    expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
+  end
 
-    it 'has the yum repositories configured' do
-        %w(base updates).each do |repo|
-            expect(yumrepo("abiquo-#{repo}")).to exist
-            expect(yumrepo("abiquo-#{repo}")).to be_enabled
-        end
+  it 'has the yum repositories configured' do
+    %w(base updates).each do |repo|
+      expect(yumrepo("abiquo-#{repo}")).to exist
+      expect(yumrepo("abiquo-#{repo}")).to be_enabled
     end
+  end
 
-    it 'has apache mappings to tomcat configured' do
-        %w(api legal).each do |webapp|
-            expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("<Location /#{webapp}>")
-            expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass ajp://localhost:8010/#{webapp}")
-            expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPassReverse ajp://localhost:8010/#{webapp}")
-        end
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('ProxyPass http://localhost:8009/m')
+  it 'has apache mappings to tomcat configured' do
+    %w(api legal).each do |webapp|
+      expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("<Location /#{webapp}>")
+      expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPass ajp://localhost:8010/#{webapp}")
+      expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain("ProxyPassReverse ajp://localhost:8010/#{webapp}")
     end
+    expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('ProxyPass http://localhost:8009/m')
+  end
 
-    it 'has ssl properly configured' do
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLEngine on')
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLProtocol all -SSLv2')
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW')
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateFile /etc/pki/abiquo/server.abiquo.com.crt')
-        expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateKeyFile /etc/pki/abiquo/server.abiquo.com.key')
-    end
+  it 'has ssl properly configured' do
+    expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLEngine on')
+    expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLProtocol all -SSLv2')
+    expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW')
+    expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateFile /etc/pki/abiquo/server.abiquo.com.crt')
+    expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateKeyFile /etc/pki/abiquo/server.abiquo.com.key')
+  end
 
-    it 'has the ui properly configured' do
-        expect(file('/var/www/html/ui/config/client-config-custom.json')).to exist
-        # The suite is forced to configure the hostname
-        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.backto.url": "http://google.com"')
-        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.test.timeout": 600')
-        expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://server.abiquo.com/api"')
-    end
+  it 'has the ui properly configured' do
+    expect(file('/var/www/html/ui/config/client-config-custom.json')).to exist
+    # The suite is forced to configure the hostname
+    expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.backto.url": "http://google.com"')
+    expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.test.timeout": 600')
+    expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://server.abiquo.com/api"')
+  end
 end

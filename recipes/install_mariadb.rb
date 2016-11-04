@@ -18,28 +18,28 @@
 include_recipe 'mariadb'
 
 mysql2_chef_gem 'default' do
-    provider Chef::Provider::Mysql2ChefGem::Mariadb
-    action :install
+  provider Chef::Provider::Mysql2ChefGem::Mariadb
+  action :install
 end
 
 conn_info = {
-    :host     => '127.0.0.1',
-    :username => 'root',
-    :password => node['mariadb']['server_root_password']
+  host: '127.0.0.1',
+  username: 'root',
+  password: node['mariadb']['server_root_password']
 }
 
 mysql_database_user node['abiquo']['db']['user'] do
-    connection conn_info
-    password   node['abiquo']['db']['password']
-    host       node['abiquo']['db']['from']
-    privileges [:all]
-    action     :grant
+  connection conn_info
+  password   node['abiquo']['db']['password']
+  host       node['abiquo']['db']['from']
+  privileges [:all]
+  action     :grant
 end
 
 mysql_database_user node['abiquo']['monitoring']['db']['user'] do
-    connection conn_info
-    password   node['abiquo']['monitoring']['db']['password']
-    host       node['abiquo']['monitoring']['db']['from']
-    privileges [:all]
-    action     :grant
+  connection conn_info
+  password   node['abiquo']['monitoring']['db']['password']
+  host       node['abiquo']['monitoring']['db']['from']
+  privileges [:all]
+  action     :grant
 end

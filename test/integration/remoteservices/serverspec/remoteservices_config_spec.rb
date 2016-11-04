@@ -15,32 +15,32 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Remote Services configuration' do
-    it 'has the epel repos installed' do
-        expect(file('/etc/yum.repos.d/epel.repo')).to be_file
-        expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
-    end
+  it 'has the epel repos installed' do
+    expect(file('/etc/yum.repos.d/epel.repo')).to be_file
+    expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
+  end
 
-    it 'has the yum repositories configured' do
-        %w(base updates).each do |repo|
-            expect(yumrepo("abiquo-#{repo}")).to exist
-            expect(yumrepo("abiquo-#{repo}")).to be_enabled
-        end
+  it 'has the yum repositories configured' do
+    %w(base updates).each do |repo|
+      expect(yumrepo("abiquo-#{repo}")).to exist
+      expect(yumrepo("abiquo-#{repo}")).to be_enabled
     end
+  end
 
-    it 'has tomcat properly configured' do
-        expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
-    end
+  it 'has tomcat properly configured' do
+    expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
+  end
 
-    it 'has the abiquo properties file' do
-        expect(file('/opt/abiquo/config/abiquo.properties')).to exist
-    end
+  it 'has the abiquo properties file' do
+    expect(file('/opt/abiquo/config/abiquo.properties')).to exist
+  end
 
-    it 'has the appliance manager properly configured' do
-        expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.appliancemanager.checkMountedRepository = false')
-    end
+  it 'has the appliance manager properly configured' do
+    expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.appliancemanager.checkMountedRepository = false')
+  end
 
-    it 'has a redis user with a proper login shell' do
-        expect(user('redis')).to exist
-        expect(user('redis')).to have_login_shell('/bin/sh')
-    end
+  it 'has a redis user with a proper login shell' do
+    expect(user('redis')).to exist
+    expect(user('redis')).to have_login_shell('/bin/sh')
+  end
 end

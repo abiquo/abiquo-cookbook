@@ -19,8 +19,8 @@ actions :wait
 
 default_action :nothing
 
-attribute :host, :kind_of => String, :default => nil
-attribute :port, :kind_of => Fixnum, :default => 80
-attribute :webapp, :kind_of => String, :name_attribute => true
-attribute :read_timeout, :kind_of => Fixnum, :default => 1800
-attribute :open_timeout, :kind_of => Fixnum, :default => 10
+attribute :host, kind_of: String, default: nil
+attribute :port, kind_of: Fixnum, default: 80
+attribute :webapp, kind_of: String, name_attribute: true
+attribute :read_timeout, kind_of: Fixnum, default: 1800
+attribute :open_timeout, kind_of: Fixnum, default: 10

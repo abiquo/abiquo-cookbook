@@ -17,9 +17,9 @@
 json_settings = Chef::JSONCompat.to_json_pretty(node['abiquo']['ui_config'])
 
 file '/var/www/html/ui/config/client-config-custom.json' do
-    content json_settings
-    owner 'root'
-    group 'root'
-    action :create
-    notifies :restart, 'service[apache2]'
+  content json_settings
+  owner 'root'
+  group 'root'
+  action :create
+  notifies :restart, 'service[apache2]'
 end

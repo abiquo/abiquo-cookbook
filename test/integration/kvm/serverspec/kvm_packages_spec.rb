@@ -15,17 +15,17 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'KVM packages' do
-    it 'has the qemu package installed' do
-        expect(package('qemu-kvm')).to be_installed
-    end
+  it 'has the qemu package installed' do
+    expect(package('qemu-kvm')).to be_installed
+  end
 
-    it 'has the qemu binary in place' do
-        expect(file('/usr/bin/qemu-system-x86_64')).to exist
-    end
+  it 'has the qemu binary in place' do
+    expect(file('/usr/bin/qemu-system-x86_64')).to exist
+  end
 
-    it 'has the abiquo packages installed' do
-        %w(cloud-node sosreport-plugins).each do |pkg|
-            expect(package("abiquo-#{pkg}")).to be_installed
-        end
+  it 'has the abiquo packages installed' do
+    %w(cloud-node sosreport-plugins).each do |pkg|
+      expect(package("abiquo-#{pkg}")).to be_installed
     end
+  end
 end

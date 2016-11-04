@@ -17,20 +17,20 @@ require_relative 'support/commands'
 require_relative 'support/stubs'
 
 describe 'abiquo::setup_monolithic' do
-    let(:chef_run) do
-        ChefSpec::SoloRunner.new do |node|
-            node.set['abiquo']['certificate']['common_name'] = 'test.local'
-        end.converge('apache2::default', 'abiquo::install_server', described_recipe)
-    end
+  let(:chef_run) do
+    ChefSpec::SoloRunner.new do |node|
+      node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    end.converge('apache2::default', 'abiquo::install_server', described_recipe)
+  end
 
-    before do
-        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
-        stub_command('/usr/sbin/httpd -t').and_return(true)
-    end
+  before do
+    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+    stub_command('/usr/sbin/httpd -t').and_return(true)
+  end
 
-    %w(server remoteservices v2v).each do |recipe|
-        it "includes the #{recipe} setup recipe" do
-            expect(chef_run).to include_recipe("abiquo::setup_#{recipe}")
-        end
+  %w(server remoteservices v2v).each do |recipe|
+    it "includes the #{recipe} setup recipe" do
+      expect(chef_run).to include_recipe("abiquo::setup_#{recipe}")
     end
+  end
 end

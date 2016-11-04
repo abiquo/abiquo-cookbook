@@ -15,30 +15,30 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Monitoring configuration' do
-    it 'has the epel repos installed' do
-        expect(file('/etc/yum.repos.d/epel.repo')).to be_file
-        expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
-    end
+  it 'has the epel repos installed' do
+    expect(file('/etc/yum.repos.d/epel.repo')).to be_file
+    expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
+  end
 
-    it 'kairosdb is configured to use cassandra' do
-        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.jetty.port=8080')
-        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.service.datastore=org.kairosdb.datastore.cassandra.CassandraModule')
-        expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.host_list=localhost:9160')
-    end
+  it 'kairosdb is configured to use cassandra' do
+    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.jetty.port=8080')
+    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.service.datastore=org.kairosdb.datastore.cassandra.CassandraModule')
+    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.host_list=localhost:9160')
+  end
 
-    it 'java 8 is the default one' do
-        expect(command('java -version').stderr).to contain('java version "1.8')
-    end
+  it 'java 8 is the default one' do
+    expect(command('java -version').stderr).to contain('java version "1.8')
+  end
 
-    it 'has delorean properly configured' do
-        expect(file('/etc/abiquo/watchtower/delorean-base.conf')).to exist
-        expect(file('/etc/abiquo/watchtower/delorean.conf')).to exist
-        expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('delorean {')
-    end
+  it 'has delorean properly configured' do
+    expect(file('/etc/abiquo/watchtower/delorean-base.conf')).to exist
+    expect(file('/etc/abiquo/watchtower/delorean.conf')).to exist
+    expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('delorean {')
+  end
 
-    it 'has emmett properly configured' do
-        expect(file('/etc/abiquo/watchtower/emmett-base.conf')).to exist
-        expect(file('/etc/abiquo/watchtower/emmett.conf')).to exist
-        expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('emmett {')
-    end
+  it 'has emmett properly configured' do
+    expect(file('/etc/abiquo/watchtower/emmett-base.conf')).to exist
+    expect(file('/etc/abiquo/watchtower/emmett.conf')).to exist
+    expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('emmett {')
+  end
 end

@@ -19,15 +19,15 @@ Chef::Recipe.send(:include, Abiquo::Commands)
 
 case node['abiquo']['profile']
 when 'monolithic', 'server', 'ext_services'
-    recipes = %w(mariadb redis rabbitmq)
+  recipes = %w(mariadb redis rabbitmq)
 when 'remoteservices'
-    recipes = %w(redis)
+  recipes = %w(redis)
 when 'monitoring'
-    recipes = %w(mariadb)
+  recipes = %w(mariadb)
 else
-    recipes = []
+  recipes = []
 end
 
 recipes.each do |recipe|
-    include_recipe "abiquo::install_#{recipe}"
+  include_recipe "abiquo::install_#{recipe}"
 end

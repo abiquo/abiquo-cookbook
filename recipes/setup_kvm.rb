@@ -17,29 +17,29 @@
 
 # The device attribute is mandatory for the mount resource, so we can't use a regular guard
 unless node['abiquo']['nfs']['location'].nil? # ~FC023
-    mount node['abiquo']['nfs']['mountpoint'] do
-        device node['abiquo']['nfs']['location']
-        fstype 'nfs'
-        action [:enable, :mount]
-    end
+  mount node['abiquo']['nfs']['mountpoint'] do
+    device node['abiquo']['nfs']['location']
+    fstype 'nfs'
+    action [:enable, :mount]
+  end
 end
 
 template '/etc/sysconfig/libvirt-guests' do
-    source 'libvirt-guests.erb'
-    owner 'root'
-    group 'root'
-    action :create
-    notifies :restart, 'service[abiquo-aim]'
+  source 'libvirt-guests.erb'
+  owner 'root'
+  group 'root'
+  action :create
+  notifies :restart, 'service[abiquo-aim]'
 end
 
 template '/etc/abiquo-aim.ini' do
-    source 'abiquo-aim.ini.erb'
-    owner 'root'
-    group 'root'
-    action :create
-    notifies :restart, 'service[abiquo-aim]'
+  source 'abiquo-aim.ini.erb'
+  owner 'root'
+  group 'root'
+  action :create
+  notifies :restart, 'service[abiquo-aim]'
 end
 
 service 'abiquo-aim' do
-    action [:enable, :start]
+  action [:enable, :start]
 end

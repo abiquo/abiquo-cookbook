@@ -20,50 +20,50 @@ Chef::Recipe.send(:include, Abiquo::Commands)
 mysqlcmd = mysql_cmd(node['abiquo']['db'])
 
 mysql2_chef_gem 'server' do
-    provider Chef::Provider::Mysql2ChefGem::Mariadb
-    action :install
+  provider Chef::Provider::Mysql2ChefGem::Mariadb
+  action :install
 end
 
 conn_info = {
-    :host     => node['abiquo']['db']['host'],
-    :username => node['abiquo']['db']['user'],
-    :password => node['abiquo']['db']['password'],
-    :port     => node['abiquo']['db']['port']
+  host: node['abiquo']['db']['host'],
+  username: node['abiquo']['db']['user'],
+  password: node['abiquo']['db']['password'],
+  port: node['abiquo']['db']['port']
 }
 
 # Create DB
 mysql_database 'kinton' do
-    connection conn_info
-    action :create
-    notifies :run, 'execute[install-database]', :immediately
+  connection conn_info
+  action :create
+  notifies :run, 'execute[install-database]', :immediately
 end
 
 execute 'install-database' do
-    command "#{mysqlcmd} kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
-    action :nothing
-    notifies :run, 'ruby_block[extract-m-user-password]', :immediately
-    notifies :query, 'mysql_database[install-license]', :immediately
+  command "#{mysqlcmd} kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
+  action :nothing
+  notifies :run, 'ruby_block[extract-m-user-password]', :immediately
+  notifies :query, 'mysql_database[install-license]', :immediately
 end
 
 # Install license if present
 mysql_database 'install-license' do
-    connection conn_info
-    database_name 'kinton'
-    sql "INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}')"
-    action :nothing
-    not_if { node['abiquo']['license'].nil? || node['abiquo']['license'].empty? }
+  connection conn_info
+  database_name 'kinton'
+  sql "INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}')"
+  action :nothing
+  not_if { node['abiquo']['license'].nil? || node['abiquo']['license'].empty? }
 end
 
 # Extract M user password from databases
 # Randomly generated after liquibase run
 ruby_block 'extract-m-user-password' do
-    block do
-        client = Mysql2::Client.new(conn_info.merge(:database => 'kinton'))
-        query = 'select COMMENTS from DATABASECHANGELOG where ID = "default_user_for_m"'
-        result = client.query(query).first['COMMENTS']
-        node.set['abiquo']['properties']['abiquo.m.credential'] = result
-    end
-    action :nothing
-    not_if { node['abiquo']['properties'].key? 'abiquo.m.credential' }
-    not_if { node['abiquo']['properties'].key? 'abiquo.m.accessToken' }
+  block do
+    client = Mysql2::Client.new(conn_info.merge(database: 'kinton'))
+    query = 'select COMMENTS from DATABASECHANGELOG where ID = "default_user_for_m"'
+    result = client.query(query).first['COMMENTS']
+    node.set['abiquo']['properties']['abiquo.m.credential'] = result
+  end
+  action :nothing
+  not_if { node['abiquo']['properties'].key? 'abiquo.m.credential' }
+  not_if { node['abiquo']['properties'].key? 'abiquo.m.accessToken' }
 end
