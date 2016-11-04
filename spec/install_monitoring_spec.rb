@@ -17,86 +17,86 @@ require_relative 'support/commands'
 require_relative 'support/queries'
 
 describe 'abiquo::install_monitoring' do
-    let(:chef_run) do
-        ChefSpec::SoloRunner.new(:file_cache_path => '/tmp') do |node|
-            node.set['abiquo']['profile'] = 'monitoring'
-        end.converge(described_recipe)
+  let(:chef_run) do
+    ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+      node.set['abiquo']['profile'] = 'monitoring'
+    end.converge(described_recipe)
+  end
+  let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}-#{chef_run.node['abiquo']['monitoring']['kairosdb']['release']}.rpm" }
+  let(:url) { "https://github.com/kairosdb/kairosdb/releases/download/v#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}/#{pkg}" }
+
+  before do
+    stub_queries
+  end
+
+  it 'downloads the kairosdb package' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to create_remote_file("#{Chef::Config[:file_cache_path]}/#{pkg}").with(source: url)
+  end
+
+  it 'installs the kairosdb package' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to install_package('kairosdb').with(source: "#{Chef::Config[:file_cache_path]}/#{pkg}")
+  end
+
+  it 'installs the jdk package' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to install_package('jdk')
+  end
+
+  it 'configures the java alternatives' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to set_java_alternatives('set default jdk8').with(
+      java_location: '/usr/java/default',
+      bin_cmds: %w(java javac)
+    )
+  end
+
+  it 'includes the cassandra recipe' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to include_recipe('cassandra-dse')
+  end
+
+  it 'includes the install_ext_services recipe by default' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to include_recipe('abiquo::install_ext_services')
+  end
+
+  it 'does not include install_ext_services recipe if not configured' do
+    chef_run.node.set['abiquo']['install_ext_services'] = false
+    chef_run.converge(described_recipe)
+    expect(chef_run).to_not include_recipe('abiquo::install_ext_services')
+  end
+
+  %w(delorean emmett).each do |pkg|
+    it "installs the abiquo-#{pkg} package" do
+      chef_run.converge(described_recipe)
+      expect(chef_run).to install_package("abiquo-#{pkg}")
     end
-    let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}-#{chef_run.node['abiquo']['monitoring']['kairosdb']['release']}.rpm" }
-    let(:url) { "https://github.com/kairosdb/kairosdb/releases/download/v#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}/#{pkg}" }
+  end
 
-    before do
-        stub_queries
-    end
+  it 'installs the database by default' do
+    chef_run.node.set['abiquo']['install_ext_services'] = false
+    chef_run.converge(described_recipe)
+    expect(chef_run).to include_recipe('mariadb::client')
+    expect(chef_run).to create_mysql_database('watchtower')
 
-    it 'downloads the kairosdb package' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to create_remote_file("#{Chef::Config[:file_cache_path]}/#{pkg}").with(:source => url)
-    end
+    expect(chef_run).to_not run_execute('install-watchtower-database')
+    resource = chef_run.find_resource(:mysql_database, 'watchtower')
+    expect(resource).to notify('execute[install-watchtower-database]').to(:run).immediately
 
-    it 'installs the kairosdb package' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to install_package('kairosdb').with(:source => "#{Chef::Config[:file_cache_path]}/#{pkg}")
-    end
+    expect(chef_run).to_not run_execute('watchtower-liquibase-update')
+    resource = chef_run.find_resource(:execute, 'install-watchtower-database')
+    expect(resource).to notify('execute[watchtower-liquibase-update]').to(:run).immediately
 
-    it 'installs the jdk package' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to install_package('jdk')
-    end
+    resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
+    expect(resource.command).to eq('abiquo-watchtower-liquibase -h localhost -P 3306 -u root update')
+  end
 
-    it 'configures the java alternatives' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to set_java_alternatives('set default jdk8').with(
-            :java_location => '/usr/java/default',
-            :bin_cmds => %w(java javac)
-        )
-    end
-
-    it 'includes the cassandra recipe' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('cassandra-dse')
-    end
-
-    it 'includes the install_ext_services recipe by default' do
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('abiquo::install_ext_services')
-    end
-
-    it 'does not include install_ext_services recipe if not configured' do
-        chef_run.node.set['abiquo']['install_ext_services'] = false
-        chef_run.converge(described_recipe)
-        expect(chef_run).to_not include_recipe('abiquo::install_ext_services')
-    end
-
-    %w(delorean emmett).each do |pkg|
-        it "installs the abiquo-#{pkg} package" do
-            chef_run.converge(described_recipe)
-            expect(chef_run).to install_package("abiquo-#{pkg}")
-        end
-    end
-
-    it 'installs the database by default' do
-        chef_run.node.set['abiquo']['install_ext_services'] = false
-        chef_run.converge(described_recipe)
-        expect(chef_run).to include_recipe('mariadb::client')
-        expect(chef_run).to create_mysql_database('watchtower')
-
-        expect(chef_run).to_not run_execute('install-watchtower-database')
-        resource = chef_run.find_resource(:mysql_database, 'watchtower')
-        expect(resource).to notify('execute[install-watchtower-database]').to(:run).immediately
-
-        expect(chef_run).to_not run_execute('watchtower-liquibase-update')
-        resource = chef_run.find_resource(:execute, 'install-watchtower-database')
-        expect(resource).to notify('execute[watchtower-liquibase-update]').to(:run).immediately
-
-        resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
-        expect(resource.command).to eq('abiquo-watchtower-liquibase -h localhost -P 3306 -u root update')
-    end
-
-    it 'does not install the database if not configured' do
-        chef_run.node.set['abiquo']['monitoring']['db']['install'] = false
-        chef_run.node.set['abiquo']['install_ext_services'] = false
-        chef_run.converge(described_recipe)
-        expect(chef_run).to_not query_mysql_database('watchtower')
-    end
+  it 'does not install the database if not configured' do
+    chef_run.node.set['abiquo']['monitoring']['db']['install'] = false
+    chef_run.node.set['abiquo']['install_ext_services'] = false
+    chef_run.converge(described_recipe)
+    expect(chef_run).to_not query_mysql_database('watchtower')
+  end
 end

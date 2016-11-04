@@ -16,24 +16,24 @@ require 'spec_helper'
 require_relative 'support/stubs'
 
 describe 'abiquo::setup_ui' do
-    let(:chef_run) do
-        ChefSpec::SoloRunner.new do |node|
-            node.set['abiquo']['certificate']['common_name'] = 'test.local'
-        end
+  let(:chef_run) do
+    ChefSpec::SoloRunner.new do |node|
+      node.set['abiquo']['certificate']['common_name'] = 'test.local'
     end
+  end
 
-    before do
-        stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
-    end
+  before do
+    stub_command('/usr/sbin/httpd -t').and_return(true)
+    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+  end
 
-    it 'renders ui configuration file' do
-        chef_run.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
-        json_settings = Chef::JSONCompat.to_json_pretty(chef_run.node['abiquo']['ui_config'])
-        expect(chef_run).to create_file('/var/www/html/ui/config/client-config-custom.json').with(
-            :content => json_settings,
-            :owner   => 'root',
-            :group   => 'root'
-        )
-    end
+  it 'renders ui configuration file' do
+    chef_run.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
+    json_settings = Chef::JSONCompat.to_json_pretty(chef_run.node['abiquo']['ui_config'])
+    expect(chef_run).to create_file('/var/www/html/ui/config/client-config-custom.json').with(
+      content: json_settings,
+      owner: 'root',
+      group: 'root'
+    )
+  end
 end

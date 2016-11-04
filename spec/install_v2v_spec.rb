@@ -15,27 +15,27 @@
 require 'spec_helper'
 
 describe 'abiquo::install_v2v' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+  let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
-    it 'installs the jdk package' do
-        expect(chef_run).to install_package('jdk')
+  it 'installs the jdk package' do
+    expect(chef_run).to install_package('jdk')
+  end
+
+  %w(abiquo-v2v redis abiquo-sosreport-plugins).each do |pkg|
+    it "installs the #{pkg} abiquo package" do
+      expect(chef_run).to install_package(pkg)
     end
+  end
 
-    %w(abiquo-v2v redis abiquo-sosreport-plugins).each do |pkg|
-        it "installs the #{pkg} abiquo package" do
-            expect(chef_run).to install_package(pkg)
-        end
-    end
+  # The apache webapp calls can be tested because it is not a LWRP
+  # but a definition and does not exist in the resource list
 
-    # The apache webapp calls can be tested because it is not a LWRP
-    # but a definition and does not exist in the resource list
+  it 'includes the java oracle jce recipe' do
+    expect(chef_run).to include_recipe('java::oracle_jce')
+  end
 
-    it 'includes the java oracle jce recipe' do
-        expect(chef_run).to include_recipe('java::oracle_jce')
-    end
-
-    it 'configures the rpcbind service' do
-        expect(chef_run).to enable_service('rpcbind')
-        expect(chef_run).to start_service('rpcbind')
-    end
+  it 'configures the rpcbind service' do
+    expect(chef_run).to enable_service('rpcbind')
+    expect(chef_run).to start_service('rpcbind')
+  end
 end

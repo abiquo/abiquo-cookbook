@@ -16,25 +16,25 @@
 # limitations under the License.
 
 file '/etc/cron.d/novnc_tokens' do
-    content "* * * * * root /opt/websockify/novnc_tokens.rb -a #{node['abiquo']['websockify']['api_url']} -u #{node['abiquo']['websockify']['user']} -p #{node['abiquo']['websockify']['pass']} -f /opt/websockify/config.vnc"
-    owner 'root'
-    group 'root'
-    mode  '0644'
-    action :create
-    notifies :restart, 'service[websockify]'
+  content "* * * * * root /opt/websockify/novnc_tokens.rb -a #{node['abiquo']['websockify']['api_url']} -u #{node['abiquo']['websockify']['user']} -p #{node['abiquo']['websockify']['pass']} -f /opt/websockify/config.vnc"
+  owner 'root'
+  group 'root'
+  mode  '0644'
+  action :create
+  notifies :restart, 'service[websockify]'
 end
 
 template '/etc/init.d/websockify' do
-    source 'websockify.erb'
-    owner 'root'
-    group 'root'
-    variables(:websockify_port => node['abiquo']['websockify']['port'],
-              :websockify_address => node['abiquo']['websockify']['address'])
-    action :create
-    notifies :restart, 'service[websockify]'
+  source 'websockify.erb'
+  owner 'root'
+  group 'root'
+  variables(websockify_port: node['abiquo']['websockify']['port'],
+            websockify_address: node['abiquo']['websockify']['address'])
+  action :create
+  notifies :restart, 'service[websockify]'
 end
 
 haproxy_instance 'haproxy' do
-    proxies [resources(:haproxy_frontend => 'public'), resources(:haproxy_backend => 'ws')]
-    tuning ['maxconn 1024']
+  proxies [resources(haproxy_frontend: 'public'), resources(haproxy_backend: 'ws')]
+  tuning ['maxconn 1024']
 end

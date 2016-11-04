@@ -18,18 +18,18 @@
 include_recipe 'rabbitmq'
 
 rabbitmq_user node['abiquo']['rabbitmq']['username'] do
-    password node['abiquo']['rabbitmq']['password']
-    action :add
+  password node['abiquo']['rabbitmq']['password']
+  action :add
 end
 
 rabbitmq_user node['abiquo']['rabbitmq']['username'] do
-    tag node['abiquo']['rabbitmq']['tags']
-    action :set_tags
+  tag node['abiquo']['rabbitmq']['tags']
+  action :set_tags
 end
 
 rabbitmq_user node['abiquo']['rabbitmq']['username'] do
-    vhost node['abiquo']['rabbitmq']['vhost']
-    permissions '.* .* .*'
-    action :set_permissions
-    notifies :restart, 'service[abiquo-tomcat]' unless node['abiquo']['profile'] == 'ext_services'
+  vhost node['abiquo']['rabbitmq']['vhost']
+  permissions '.* .* .*'
+  action :set_permissions
+  notifies :restart, 'service[abiquo-tomcat]' unless node['abiquo']['profile'] == 'ext_services'
 end

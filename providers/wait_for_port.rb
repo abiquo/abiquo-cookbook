@@ -16,29 +16,29 @@
 # limitations under the License.
 
 def whyrun_supported?
-    true
+  true
 end
 
 use_inline_resources
 
 action :wait do
-    converge_by("Waiting for #{new_resource.name}") do
-        available = false
-        loop do
-            Chef::Log.debug "Waiting untile #{new_resource.name} is available..."
-            Timeout.timeout(new_resource.timeout) do
-                begin
-                    TCPSocket.new(new_resource.host, new_resource.port).close
-                    available = true
-                    break
-                rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Timeout::Error
-                    available = false
-                end
-            end
-            Chef::Log.debug "Waiting #{new_resource.delay} seconds before retrying..."
-            sleep(new_resource.delay) unless available
-            break if available
+  converge_by("Waiting for #{new_resource.name}") do
+    available = false
+    loop do
+      Chef::Log.debug "Waiting untile #{new_resource.name} is available..."
+      Timeout.timeout(new_resource.timeout) do
+        begin
+          TCPSocket.new(new_resource.host, new_resource.port).close
+          available = true
+          break
+        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Timeout::Error
+          available = false
         end
-        new_resource.updated_by_last_action(true)
+      end
+      Chef::Log.debug "Waiting #{new_resource.delay} seconds before retrying..."
+      sleep(new_resource.delay) unless available
+      break if available
     end
+    new_resource.updated_by_last_action(true)
+  end
 end

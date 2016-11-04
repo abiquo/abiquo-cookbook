@@ -47,9 +47,9 @@ default['abiquo']['db']['upgrade'] = true
 
 # Redis configuration
 default['redisio']['servers'] = [{
-    'name' => '-master',
-    'port' => 6379,
-    'address' => '0.0.0.0'
+  'name' => '-master',
+  'port' => 6379,
+  'address' => '0.0.0.0'
 }]
 default['redisio']['package_install'] = true
 default['redisio']['version'] = nil
@@ -151,19 +151,19 @@ default['abiquo']['properties']['abiquo.vncport.max'] = 5999
 
 case node['abiquo']['profile']
 when 'monolithic', 'server'
-    default['abiquo']['properties']['abiquo.m.identity'] = 'default_outbound_api_user'
-    default['abiquo']['properties']['abiquo.server.sessionTimeout'] = 30
-    default['abiquo']['properties']['abiquo.server.mail.server'] = '127.0.0.1'
-    default['abiquo']['properties']['abiquo.server.mail.user'] = 'none@none.es'
-    default['abiquo']['properties']['abiquo.server.mail.password'] = 'none'
-    default['abiquo']['properties']['abiquo.redis.host'] = '127.0.0.1'
-    default['abiquo']['properties']['abiquo.redis.port'] = 6379
-    default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
-    default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['fqdn']}/api"
+  default['abiquo']['properties']['abiquo.m.identity'] = 'default_outbound_api_user'
+  default['abiquo']['properties']['abiquo.server.sessionTimeout'] = 30
+  default['abiquo']['properties']['abiquo.server.mail.server'] = '127.0.0.1'
+  default['abiquo']['properties']['abiquo.server.mail.user'] = 'none@none.es'
+  default['abiquo']['properties']['abiquo.server.mail.password'] = 'none'
+  default['abiquo']['properties']['abiquo.redis.host'] = '127.0.0.1'
+  default['abiquo']['properties']['abiquo.redis.port'] = 6379
+  default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
+  default['abiquo']['properties']['abiquo.server.api.location'] = "https://#{node['fqdn']}/api"
 when 'remoteservices'
-    default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint']
-    default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
-    default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
+  default['abiquo']['properties']['abiquo.appliancemanager.localRepositoryPath'] = node['abiquo']['nfs']['mountpoint']
+  default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
+  default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
 end
 
 # Configure Abiquo websockify

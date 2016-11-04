@@ -16,9 +16,9 @@
 # limitations under the License.
 
 %w(liquibase jdk).each do |pkg|
-    package pkg do
-        action :install
-    end
+  package pkg do
+    action :install
+  end
 end
 
 include_recipe 'mariadb::client'
@@ -26,14 +26,14 @@ include_recipe 'java::oracle_jce'
 include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
 
 %w(server sosreport-plugins).each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
+  package "abiquo-#{pkg}" do
+    action :install
+  end
 end
 
 include_recipe 'abiquo::install_database'
 
 if node['abiquo']['server']['install_frontend']
-    include_recipe 'abiquo::install_ui'
-    include_recipe 'abiquo::install_websockify'
+  include_recipe 'abiquo::install_ui'
+  include_recipe 'abiquo::install_websockify'
 end

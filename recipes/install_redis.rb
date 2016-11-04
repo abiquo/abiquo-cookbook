@@ -18,7 +18,7 @@
 include_recipe 'redisio'
 
 user 'redis' do
-    shell '/bin/sh'
+  shell '/bin/sh'
 end
 
 include_recipe 'redisio::enable'

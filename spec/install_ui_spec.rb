@@ -16,38 +16,38 @@ require 'spec_helper'
 require_relative 'support/stubs'
 
 describe 'abiquo::install_ui' do
-    let(:chef_run) do
-        ChefSpec::SoloRunner.new do |node|
-            node.set['abiquo']['certificate']['common_name'] = 'test.local'
-        end
+  let(:chef_run) do
+    ChefSpec::SoloRunner.new do |node|
+      node.set['abiquo']['certificate']['common_name'] = 'test.local'
     end
-    let(:cn) { 'test.local' }
+  end
+  let(:cn) { 'test.local' }
 
-    before do
-        stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
-        stub_command('/usr/sbin/httpd -t').and_return(true)
-        stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
+  before do
+    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+    stub_command('/usr/sbin/httpd -t').and_return(true)
+    stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
+  end
+
+  it 'installs the Apache recipes' do
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    expect(chef_run).to include_recipe('apache2')
+    expect(chef_run).to include_recipe('apache2::mod_proxy_ajp')
+    expect(chef_run).to include_recipe('apache2::mod_ssl')
+  end
+
+  %w(ui tutorials).each do |pkg|
+    it "installs the abiquo-#{pkg} abiquo package" do
+      chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+      expect(chef_run).to install_package("abiquo-#{pkg}")
     end
+  end
 
-    it 'installs the Apache recipes' do
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-        expect(chef_run).to include_recipe('apache2')
-        expect(chef_run).to include_recipe('apache2::mod_proxy_ajp')
-        expect(chef_run).to include_recipe('apache2::mod_ssl')
-    end
+  it 'includes the certificate recipe' do
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    expect(chef_run).to include_recipe('abiquo::certificate')
+  end
 
-    %w(ui tutorials).each do |pkg|
-        it "installs the abiquo-#{pkg} abiquo package" do
-            chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-            expect(chef_run).to install_package("abiquo-#{pkg}")
-        end
-    end
-
-    it 'includes the certificate recipe' do
-        chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-        expect(chef_run).to include_recipe('abiquo::certificate')
-    end
-
-    # The apache webapp calls can't be tested because it is not a LWRP
-    # but a definition and does not exist in the resource list
+  # The apache webapp calls can't be tested because it is not a LWRP
+  # but a definition and does not exist in the resource list
 end

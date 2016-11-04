@@ -16,7 +16,7 @@
 # limitations under the License.
 
 selinux_state 'SELinux Permissive' do
-    action :permissive
+  action :permissive
 end
 
 include_recipe 'abiquo::repository'
@@ -28,9 +28,9 @@ iptables_rule 'firewall-common'
 iptables_rule "firewall-#{node['abiquo']['profile']}"
 
 package 'cronie' do
-    action :install
+  action :install
 end
 
 service 'crond' do
-    action [:enable, :start]
+  action [:enable, :start]
 end

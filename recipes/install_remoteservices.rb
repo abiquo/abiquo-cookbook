@@ -16,7 +16,7 @@
 # limitations under the License.
 
 package 'jdk' do
-    action :install
+  action :install
 end
 
 include_recipe 'java::oracle_jce'
@@ -24,18 +24,18 @@ include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_ser
 
 # Add API cert as additional SSL cert if defined
 if node['abiquo']['properties']['abiquo.server.api.location']
-    node.set['abiquo']['certificate']['additional_certs'] = {
-        'api' => node['abiquo']['properties']['abiquo.server.api.location']
-    }.merge(node['abiquo']['certificate']['additional_certs'])
+  node.set['abiquo']['certificate']['additional_certs'] = {
+    'api' => node['abiquo']['properties']['abiquo.server.api.location']
+  }.merge(node['abiquo']['certificate']['additional_certs'])
 end
 include_recipe 'abiquo::certificate'
 
 %w(remote-services sosreport-plugins).each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
+  package "abiquo-#{pkg}" do
+    action :install
+  end
 end
 
 service 'rpcbind' do
-    action [:enable, :start]
+  action [:enable, :start]
 end

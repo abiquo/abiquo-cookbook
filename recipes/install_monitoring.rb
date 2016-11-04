@@ -20,21 +20,21 @@ Chef::Recipe.send(:include, Abiquo::Commands)
 include_recipe 'mariadb::client'
 
 remote_file "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}" do
-    source node['abiquo']['monitoring']['kairosdb_url']
+  source node['abiquo']['monitoring']['kairosdb_url']
 end
 
 package 'kairosdb' do
-    source "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}"
+  source "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}"
 end
 
 package 'jdk' do
-    action :install
+  action :install
 end
 
 java_alternatives 'set default jdk8' do
-    java_location node['java']['java_home']
-    bin_cmds %w(java javac)
-    action :set
+  java_location node['java']['java_home']
+  bin_cmds %w(java javac)
+  action :set
 end
 
 node.set['cassandra']['config']['cluster_name'] = node['abiquo']['monitoring']['cassandra']['cluster_name']
@@ -44,43 +44,43 @@ include_recipe 'cassandra-dse'
 include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
 
 %w(delorean emmett).each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
+  package "abiquo-#{pkg}" do
+    action :install
+  end
 end
 
 if node['abiquo']['monitoring']['db']['install']
 
-    mysql2_chef_gem 'default' do
-        provider Chef::Provider::Mysql2ChefGem::Mariadb
-        action :install
-    end
+  mysql2_chef_gem 'default' do
+    provider Chef::Provider::Mysql2ChefGem::Mariadb
+    action :install
+  end
 
-    mysqlcmd = mysql_cmd(node['abiquo']['monitoring']['db'])
+  mysqlcmd = mysql_cmd(node['abiquo']['monitoring']['db'])
 
-    conn_info = {
-        :host     => node['abiquo']['monitoring']['db']['host'],
-        :username => node['abiquo']['monitoring']['db']['user'],
-        :password => node['abiquo']['monitoring']['db']['password'],
-        :port     => node['abiquo']['monitoring']['db']['port']
-    }
+  conn_info = {
+    host: node['abiquo']['monitoring']['db']['host'],
+    username: node['abiquo']['monitoring']['db']['user'],
+    password: node['abiquo']['monitoring']['db']['password'],
+    port: node['abiquo']['monitoring']['db']['port']
+  }
 
-    # Create DB
-    mysql_database 'watchtower' do
-        connection conn_info
-        action :create
-        notifies :run, 'execute[install-watchtower-database]', :immediately
-    end
+  # Create DB
+  mysql_database 'watchtower' do
+    connection conn_info
+    action :create
+    notifies :run, 'execute[install-watchtower-database]', :immediately
+  end
 
-    execute 'install-watchtower-database' do
-        command "#{mysqlcmd} watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql"
-        action :nothing
-        notifies :run, 'execute[watchtower-liquibase-update]', :immediately
-    end
+  execute 'install-watchtower-database' do
+    command "#{mysqlcmd} watchtower < /usr/share/doc/abiquo-watchtower/database/src/watchtower-1.0.0.sql"
+    action :nothing
+    notifies :run, 'execute[watchtower-liquibase-update]', :immediately
+  end
 
-    lqb_cmd = liquibase_cmd('update', node['abiquo']['db'], true)
-    execute 'watchtower-liquibase-update' do
-        command lqb_cmd
-        action :nothing
-    end
+  lqb_cmd = liquibase_cmd('update', node['abiquo']['db'], true)
+  execute 'watchtower-liquibase-update' do
+    command lqb_cmd
+    action :nothing
+  end
 end

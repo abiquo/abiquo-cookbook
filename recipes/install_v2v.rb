@@ -16,19 +16,19 @@
 # limitations under the License.
 
 %w(redis jdk).each do |pkg|
-    package pkg do
-        action :install
-    end
+  package pkg do
+    action :install
+  end
 end
 
 include_recipe 'java::oracle_jce'
 
 %w(v2v sosreport-plugins).each do |pkg|
-    package "abiquo-#{pkg}" do
-        action :install
-    end
+  package "abiquo-#{pkg}" do
+    action :install
+  end
 end
 
 service 'rpcbind' do
-    action [:enable, :start]
+  action [:enable, :start]
 end

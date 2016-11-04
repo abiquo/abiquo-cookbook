@@ -16,35 +16,35 @@ require 'spec_helper'
 require_relative 'support/commands'
 
 describe 'abiquo::install_remoteservices' do
-    let(:chef_run) do
-        ChefSpec::SoloRunner.new(:internal_locale => 'en_US.UTF-8') do |node|
-            node.set['abiquo']['certificate']['common_name'] = 'test.local'
-        end.converge(described_recipe, 'abiquo::service')
-    end
+  let(:chef_run) do
+    ChefSpec::SoloRunner.new(internal_locale: 'en_US.UTF-8') do |node|
+      node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    end.converge(described_recipe, 'abiquo::service')
+  end
 
-    before do
-        stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
-        stub_check_db_pass_command('root', '')
-    end
+  before do
+    stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
+    stub_check_db_pass_command('root', '')
+  end
 
-    it 'includes needed recipes' do
-        %w(java::oracle_jce abiquo::install_ext_services abiquo::certificate).each do |recipe|
-            expect(chef_run).to include_recipe(recipe)
-        end
+  it 'includes needed recipes' do
+    %w(java::oracle_jce abiquo::install_ext_services abiquo::certificate).each do |recipe|
+      expect(chef_run).to include_recipe(recipe)
     end
+  end
 
-    it 'installs the jdk system package' do
-        expect(chef_run).to install_package('jdk')
-    end
+  it 'installs the jdk system package' do
+    expect(chef_run).to install_package('jdk')
+  end
 
-    %w(abiquo-remote-services abiquo-sosreport-plugins).each do |pkg|
-        it "installs the #{pkg} abiquo package" do
-            expect(chef_run).to install_package(pkg)
-        end
+  %w(abiquo-remote-services abiquo-sosreport-plugins).each do |pkg|
+    it "installs the #{pkg} abiquo package" do
+      expect(chef_run).to install_package(pkg)
     end
+  end
 
-    it 'configures the rpcbind service' do
-        expect(chef_run).to enable_service('rpcbind')
-        expect(chef_run).to start_service('rpcbind')
-    end
+  it 'configures the rpcbind service' do
+    expect(chef_run).to enable_service('rpcbind')
+    expect(chef_run).to start_service('rpcbind')
+  end
 end

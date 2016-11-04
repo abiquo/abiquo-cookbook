@@ -19,6 +19,6 @@ actions :download
 
 default_action :download
 
-attribute :host,        :kind_of => String, :name_attribute => true
-attribute :server_name, :kind_of => String, :default => nil
-attribute :file_path,   :kind_of => String, :default => '/etc/pki/abiquo'
+attribute :host,        kind_of: String, name_attribute: true
+attribute :server_name, kind_of: String, default: nil
+attribute :file_path,   kind_of: String, default: '/etc/pki/abiquo'

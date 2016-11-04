@@ -16,21 +16,21 @@
 # limitations under the License.
 
 def whyrun_supported?
-    true
+  true
 end
 
 use_inline_resources
 
 action :wait do
-    converge_by("Waiting for #{new_resource.name}") do
-        http = Net::HTTP.new(new_resource.host, new_resource.port)
-        http.read_timeout = new_resource.read_timeout
-        http.open_timeout = new_resource.open_timeout
-        http.start do |h|
-            request = Net::HTTP::Get.new("/#{new_resource.webapp}")
-            response = h.request(request)
-            Chef::Log.debug "Request returned status: #{response.code}"
-        end
-        new_resource.updated_by_last_action(true)
+  converge_by("Waiting for #{new_resource.name}") do
+    http = Net::HTTP.new(new_resource.host, new_resource.port)
+    http.read_timeout = new_resource.read_timeout
+    http.open_timeout = new_resource.open_timeout
+    http.start do |h|
+      request = Net::HTTP::Get.new("/#{new_resource.webapp}")
+      response = h.request(request)
+      Chef::Log.debug "Request returned status: #{response.code}"
     end
+    new_resource.updated_by_last_action(true)
+  end
 end

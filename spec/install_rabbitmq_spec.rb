@@ -15,28 +15,28 @@
 require 'spec_helper'
 
 describe 'abiquo::install_rabbitmq' do
-    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe, 'abiquo::service') }
+  let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe, 'abiquo::service') }
 
-    it 'includes the rabbitmq recipe' do
-        expect(chef_run).to include_recipe('rabbitmq')
-    end
+  it 'includes the rabbitmq recipe' do
+    expect(chef_run).to include_recipe('rabbitmq')
+  end
 
-    it 'creates the Abiquo RabbitMQ user' do
-        expect(chef_run).to add_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
-            :password => chef_run.node['abiquo']['rabbitmq']['password']
-        )
-    end
+  it 'creates the Abiquo RabbitMQ user' do
+    expect(chef_run).to add_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
+      password: chef_run.node['abiquo']['rabbitmq']['password']
+    )
+  end
 
-    it 'sets the apropraite tags to the Abiquo RabbitMQ user' do
-        expect(chef_run).to set_tags_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
-            :tag => chef_run.node['abiquo']['rabbitmq']['tags']
-        )
-    end
+  it 'sets the apropraite tags to the Abiquo RabbitMQ user' do
+    expect(chef_run).to set_tags_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
+      tag: chef_run.node['abiquo']['rabbitmq']['tags']
+    )
+  end
 
-    it 'creates the Abiquo RabbitMQ user' do
-        expect(chef_run).to add_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
-            :vhost => chef_run.node['abiquo']['rabbitmq']['vhost'],
-            :permissions => '.* .* .*'
-        )
-    end
+  it 'creates the Abiquo RabbitMQ user' do
+    expect(chef_run).to add_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
+      vhost: chef_run.node['abiquo']['rabbitmq']['vhost'],
+      permissions: '.* .* .*'
+    )
+  end
 end
