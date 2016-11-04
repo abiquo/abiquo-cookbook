@@ -47,7 +47,7 @@ describe 'abiquo::repository' do
     chef_run.converge(described_recipe)
     expect(chef_run).to create_yum_repository('abiquo-base').with(
       description: 'Abiquo base repository',
-      baseurl: 'http://mirror.abiquo.com/abiquo/3.8/os/x86_64',
+      baseurl: 'http://mirror.abiquo.com/el$releasever/3.8/os/x86_64',
       gpgcheck: true,
       gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                  'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
@@ -71,7 +71,7 @@ describe 'abiquo::repository' do
     chef_run.converge(described_recipe)
     expect(chef_run).to create_yum_repository('abiquo-updates').with(
       description: 'Abiquo updates repository',
-      baseurl: 'http://mirror.abiquo.com/abiquo/3.8/updates/x86_64',
+      baseurl: 'http://mirror.abiquo.com/el$releasever/3.8/updates/x86_64',
       gpgcheck: true,
       gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
                  'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \

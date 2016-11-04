@@ -12,7 +12,12 @@ transport:
   compression: none
 
 platforms:
-  - name: centos-6.8
+  - name: c6
+    driver:
+      box: bento/centos-6.8
+  - name: c7
+    driver:
+      box: bento/centos-7.3
 
 suites:
   - name: monolithic

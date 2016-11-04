@@ -45,7 +45,7 @@ when 'server'
 end
 
 web_app 'abiquo' do
-  template 'abiquo.conf.erb'
+  template "#{node['platform_family']}/#{node['platform_version'].to_i}/abiquo.conf.erb"
   server_name node['abiquo']['certificate']['common_name']
   cert_file node['abiquo']['certificate']['file']
   key_file node['abiquo']['certificate']['key_file']

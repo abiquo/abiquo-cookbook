@@ -1,0 +1,55 @@
+<% node['apache']['listen_ports'].each do |port| -%>
+<% if port != 443 -%>
+<VirtualHost *:<%= port %>>
+    RewriteEngine On
+    RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [L,R=301]
+</VirtualHost>
+<% end %>
+<% end %>
+
+<VirtualHost *:443>
+    ServerName <%= @params[:server_name] %>
+    DocumentRoot "/var/www/html"
+    RewriteEngine On
+    ProxyRequests Off
+    ProxyPreserveHost On
+    ProxyTimeout <%= node['apache']['timeout'] %>
+
+    <% node['abiquo']['ui_apache_opts'].each do |opt, val| %>
+    <%= opt %> <%= val %>
+    <% end %>
+
+    <Directory "/var/www/html/ui">
+        Options MultiViews FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    RewriteRule ^/$ /ui/ [R]
+
+<% node['abiquo']['ui_proxies'].each do |local_path, proxy| %>
+    <Location <%= local_path %>>
+        ProxyPass <%= proxy['url'] %>
+        ProxyPassReverse <%= proxy['url'] %>
+        <% if proxy.key? 'options' %>
+        <% proxy['options'].each do |opt, value| %>
+        <%= opt %> <%= value %>
+        <% end %>
+        <% end %>
+    </Location>
+<% end %>
+
+    SSLEngine on
+    SSLCompression off
+    SSLProtocol All -SSLv2 -SSLv3
+    SSLCipherSuite EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH
+    <% unless @params[:cert_file].nil? %>
+    SSLCertificateFile <%= @params[:cert_file] %>
+    <% end %>
+    <% unless @params[:key_file].nil? %>
+    SSLCertificateKeyFile <%= @params[:key_file] %>
+    <% end %>
+    <% unless @params[:ca_file].nil? %>
+    SSLCACertificateFile <%= @params[:ca_file] %>
+    <% end %>
+</VirtualHost>
