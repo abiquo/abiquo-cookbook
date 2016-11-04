@@ -76,4 +76,4 @@ execute 'watchtower-liquibase-update' do
   action :nothing
 end
 
-include_recipe "abiquo::setup_#{node['abiquo']['profile']}"
+include_recipe 'abiquo::default'

@@ -307,18 +307,18 @@ describe 'abiquo::upgrade' do
   end
 
   %w(monolithic server).each do |profile|
-    it "includes the #{profile} setup recipe" do
+    it "includes the default recipe for the #{profile} profile" do
       chef_run.node.set['abiquo']['profile'] = profile
       chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service', 'abiquo::install_server')
-      expect(chef_run).to include_recipe("abiquo::setup_#{profile}")
+      expect(chef_run).to include_recipe('abiquo::default')
     end
   end
 
   %w(remoteservices kvm monitoring v2v).each do |profile|
-    it "includes the #{profile} setup recipe" do
+    it "includes the default recipe for the #{profile} profile" do
       chef_run.node.set['abiquo']['profile'] = profile
       chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
-      expect(chef_run).to include_recipe("abiquo::setup_#{profile}")
+      expect(chef_run).to include_recipe('abiquo::default')
     end
   end
 end
