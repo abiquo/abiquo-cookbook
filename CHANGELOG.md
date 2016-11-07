@@ -1,6 +1,11 @@
 abiquo CHANGELOG
 ================
 
+## 0.9.1
+
+* The update recipe includes the default one.
+* Enforce a Ruby friendly style.
+
 ## 0.9.0
 
 * Enforce a proper Ruby style with Rubocop.
