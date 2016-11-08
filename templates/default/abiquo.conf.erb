@@ -28,10 +28,15 @@
 
     RewriteRule ^/$ /ui/ [R]
 
-<% node['abiquo']['ui_proxies'].each do |path, remote| %>
-    <Location <%= path %>>
-        ProxyPass <%= remote %>
-        ProxyPassReverse <%= remote %>
+<% node['abiquo']['ui_proxies'].each do |local_path, proxy| %>
+    <Location <%= local_path %>>
+        ProxyPass <%= proxy['url'] %>
+        ProxyPassReverse <%= proxy['url'] %>
+        <% if proxy.key? 'options' %>
+        <% proxy['options'].each do |opt, value| %>
+        <%= opt %> <%= value %>
+        <% end %>
+        <% end %>
     </Location>
 <% end %>
 

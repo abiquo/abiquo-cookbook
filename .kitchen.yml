@@ -28,7 +28,12 @@ suites:
           MaxKeepAliveRequests: 100
           KeepAliveTimeout: 60
         ui_proxies:
-          /am2: http://some_am:8009/am
+          /am2: 
+            url: http://some_am:8009/am
+          /cms:
+            url: https://some_cms/blah
+            options:
+              Header: add "Access-Control-Allow-Origin" "*"
         certificate:
           common_name: monolithic.abiquo.com
   - name: server
@@ -58,7 +63,8 @@ suites:
           MaxKeepAliveRequests: 100
           KeepAliveTimeout: 60
         ui_proxies:
-          /am2: http://some_am:8009/am
+          /am2:
+            url: http://some_am:8009/am
         certificate:
           common_name: server.abiquo.com
   - name: frontend
@@ -73,6 +79,13 @@ suites:
           client.backto.url: "http://google.com"
           client.google.maps.key: "trocotro"
           client.test.timeout: 600
+        ui_proxies:
+          /api:
+            url: ajp://some_api:8010/api
+          /cms:
+            url: https://some_cms/blah
+            options:
+              Header: add "Access-Control-Allow-Origin" "*"
         certificate:
           common_name: frontend.abiquo.com
   - name: ui
