@@ -1,5 +1,3 @@
-<% unless node['abiquo']['profile'] == "kvm" or node['abiquo']['profile'] == "monitoring" %>
 # Enable the Tomcat ports
 -A INPUT -p tcp -m tcp --dport <%= node['abiquo']['tomcat']['http-port'] %> -j ACCEPT
 -A INPUT -p tcp -m tcp --dport <%= node['abiquo']['tomcat']['ajp-port'] %> -j ACCEPT
-<% end %>
