@@ -11,6 +11,6 @@ gem 'hashie', '<= 3.4.4', group: :unit
 
 group :integration do
   gem 'serverspec', '~> 2.24.1'
-  gem 'test-kitchen', '~> 1.4.2'
-  gem 'kitchen-vagrant', '~> 0.19.0'
+  gem 'test-kitchen', '~> 1.13.2'
+  gem 'kitchen-vagrant', '~> 0.20.0'
 end
