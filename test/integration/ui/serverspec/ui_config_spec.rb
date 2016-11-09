@@ -51,4 +51,17 @@ describe 'UI configuration' do
     expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"client.test.timeout": 600')
     expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://server.abiquo.com/api"')
   end
+
+  it 'has the right backends for the search' do
+    expect(file('/etc/haproxy/haproxy.cfg')).to exist
+    expect(file('/etc/haproxy/haproxy.cfg')).to contain('"client.backto.url": "http://google.com"')
+
+    expect(file('/etc/haproxy/haproxy.cfg')).to contain('acl edce1347bb2ea28a455769a1ea4c92449e5dc1ee path edce1347bb2ea28a455769a1ea4c92449e5dc1ee')
+    expect(file('/etc/haproxy/haproxy.cfg')).to contain('acl b7cb0f38c6c7b16036802f3cd78e75f818bafab6 path b7cb0f38c6c7b16036802f3cd78e75f818bafab6')
+    expect(file('/etc/haproxy/haproxy.cfg')).to contain('use_backend edce1347bb2ea28a455769a1ea4c92449e5dc1ee if edce1347bb2ea28a455769a1ea4c92449e5dc1ee')
+    expect(file('/etc/haproxy/haproxy.cfg')).to contain('use_backend b7cb0f38c6c7b16036802f3cd78e75f818bafab6 if b7cb0f38c6c7b16036802f3cd78e75f818bafab6')
+
+    expect(file('/etc/haproxy/haproxy.cfg')).to contain('server websockify0 10.0.0.75:41338 weight 1 maxconn 1024 check')
+    expect(file('/etc/haproxy/haproxy.cfg')).to contain('server websockify0 10.0.1.75:41338 weight 1 maxconn 1024 check')
+  end
 end

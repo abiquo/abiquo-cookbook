@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Chef::Recipe.send(:include, Abiquo::Search)
+
 include_recipe 'apache2'
 include_recipe 'apache2::mod_proxy_ajp'
 include_recipe 'apache2::mod_proxy_http'
@@ -59,4 +61,86 @@ web_app 'abiquo' do
   cert_file node['abiquo']['certificate']['file']
   key_file node['abiquo']['certificate']['key_file']
   ca_file node['abiquo']['certificate']['ca_file']
+end
+
+include_recipe 'haproxy-ng::install'
+include_recipe 'haproxy-ng::service'
+
+if node['abiquo']['haproxy']['use_default_path']
+  first_path = node['abiquo']['haproxy']['ws_paths'].first
+  ip, port = first_path.last.first.split(':')
+  # Build backend
+  haproxy_backend 'ws' do
+    balance 'source'
+    mode 'http'
+    servers [
+      { 'name' => 'websockify0',
+        'address' => ip,
+        'port' => port,
+        'config' => 'weight 1 maxconn 1024 check' }
+    ]
+    config [
+      'log global',
+      'timeout queue 3600s',
+      'timeout server 3600s',
+      'timeout connect 3600s'
+    ]
+  end
+
+  haproxy_frontend 'public' do
+    bind "#{node['abiquo']['haproxy']['address']}:#{node['abiquo']['haproxy']['port']} ssl crt #{node['abiquo']['haproxy']['certificate']}"
+    default_backend 'ws'
+    mode 'http'
+    config [
+      'timeout client 3600s',
+      'log global'
+    ]
+  end
+else
+  unless node['abiquo']['haproxy']['node_search_query'].nil?
+    # Use the search if search query str attr is set
+    node.set['abiquo']['haproxy']['ws_paths'] = search_websockify(node['abiquo']['haproxy']['node_search_query'])
+  end
+
+  ws_acls = []
+  ws_use_backends = []
+  node['abiquo']['haproxy']['ws_paths'].each do |path, dest|
+    # Build backends
+    haproxy_backend path.downcase.tr('/', '_') do
+      balance 'source'
+      mode 'http'
+      dest.each_with_index do |d, i|
+        ip, port = d.split(':')
+        servers [
+          { 'name' => "websockify#{i}",
+            'address' => ip,
+            'port' => port,
+            'config' => 'weight 1 maxconn 1024 check' }
+        ]
+      end
+      config [
+        'log global',
+        'timeout queue 3600s',
+        'timeout server 3600s',
+        'timeout connect 3600s'
+      ]
+    end
+
+    # Create ACLs for the frontend
+    ws_acls << { 'name' => path.downcase.tr('/', '_'), 'criterion' => "path #{path}" }
+    ws_use_backends << { 'backend' => path.downcase.tr('/', '_'), 'condition' => "if #{path.downcase.tr('/', '_')}" }
+  end
+  node.set['abiquo']['haproxy']['acls'] = ws_acls
+  node.set['abiquo']['haproxy']['use_backends'] = ws_use_backends
+
+  haproxy_frontend 'public' do
+    bind "#{node['abiquo']['haproxy']['address']}:#{node['abiquo']['haproxy']['port']} ssl crt #{node['abiquo']['haproxy']['certificate']}"
+    acls node['abiquo']['haproxy']['acls']
+    use_backends node['abiquo']['haproxy']['use_backends']
+    mode 'http'
+    config [
+      'timeout client 3600s',
+      'log global'
+    ]
+  end
 end

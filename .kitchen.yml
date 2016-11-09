@@ -8,6 +8,7 @@ provisioner:
   chef_zero_port: 8899
   require_chef_omnibus: 12.5.1
   data_path: test/fixtures
+  nodes_path: test/nodes
 
 transport:
   compression: none
@@ -75,6 +76,13 @@ suites:
             url: http://some_am:8009/am
         certificate:
           common_name: server.abiquo.com
+        haproxy:
+          use_default_path: true
+          ws_paths:
+            /somePath: 
+              - 10.10.10.10:41338
+            /someOtherPath: 
+              - 20.20.20.20:41338
   - name: frontend
     run_list:
       - recipe[abiquo::default]
@@ -96,6 +104,12 @@ suites:
               Header: add "Access-Control-Allow-Origin" "*"
         certificate:
           common_name: frontend.abiquo.com
+        haproxy:
+          ws_paths:
+            /somePath: 
+              - 10.10.10.10:41338
+            /someOtherPath: 
+              - 20.20.20.20:41338
   - name: ui
     run_list:
       - recipe[abiquo::default]
@@ -110,6 +124,8 @@ suites:
           client.test.timeout: 600
         certificate:
           common_name: server.abiquo.com
+        haproxy:
+          node_search_query: role:remoteservices
   - name: websockify
     run_list:
       - recipe[abiquo::default]
@@ -126,6 +142,10 @@ suites:
     attributes:
       abiquo:
         profile: remoteservices
+        yum:
+          base-repo: http://q683q694b6:973kkkfzhh@mirror.abiquo.com/abiquo/3.10-SNAPSHOT/os/x86_64
+          updates-repo: http://10.60.20.42/master/rpm
+          gpg-check: false
   - name: v2v
     run_list:
       - recipe[abiquo::default]

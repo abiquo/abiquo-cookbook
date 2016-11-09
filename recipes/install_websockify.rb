@@ -30,27 +30,3 @@ service 'websockify' do
 end
 
 include_recipe 'abiquo::certificate'
-
-include_recipe 'haproxy-ng::install'
-include_recipe 'haproxy-ng::service'
-
-haproxy_backend 'ws' do
-  balance 'source'
-  servers [
-    { 'name' => 'websockify1',
-      'address' => node['abiquo']['websockify']['address'],
-      'port' => node['abiquo']['websockify']['port'],
-      'config' => 'weight 1 maxconn 1024 check' }
-  ]
-  config [
-    'timeout queue 3600s',
-    'timeout server 3600s',
-    'timeout connect 3600s'
-  ]
-end
-
-haproxy_frontend 'public' do
-  bind "#{node['abiquo']['haproxy']['address']}:#{node['abiquo']['haproxy']['port']} ssl crt #{node['abiquo']['haproxy']['certificate']}"
-  default_backend 'ws'
-  config ['timeout client 3600s']
-end

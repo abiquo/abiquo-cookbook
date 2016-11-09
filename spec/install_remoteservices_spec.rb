@@ -47,4 +47,8 @@ describe 'abiquo::install_remoteservices' do
     expect(chef_run).to enable_service('rpcbind')
     expect(chef_run).to start_service('rpcbind')
   end
+
+  it 'includes the install_websockify recipe' do
+    expect(chef_run).to include_recipe('abiquo::install_websockify')
+  end
 end

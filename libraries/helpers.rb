@@ -13,8 +13,33 @@
 # limitations under the License.
 
 require 'chef/platform'
+require 'digest/sha1'
 
 module Abiquo
+  module Search
+    def search_websockify(query_str)
+      paths = {}
+      nodes = Chef::Search::Query.new.search(:node, query_str).first || []
+      Chef::Log.info('No nodes returned by the search query') if nodes.count.zero?
+      nodes.each do |rnode|
+        begin
+          if rnode['abiquo']['properties']['abiquo.datacenter.id'].nil? || rnode['abiquo']['websockify']['port'].nil?
+            # Skip the host if does not have dc id property and ws port
+            Chef::Log.info("Node #{node['hostname']} does not have DC id property or Websockify port set. Skipping.")
+            next
+          end
+        rescue NoMethodError
+          Chef::Log.info("Node #{node['hostname']} does not have DC id property or Websockify port set. Skipping.")
+          next
+        end
+        idhash = Digest::SHA1.hexdigest(rnode['abiquo']['properties']['abiquo.datacenter.id'])
+        dest = "#{rnode['ipaddress']}:#{rnode['abiquo']['websockify']['port']}"
+        paths[idhash] = [dest]
+      end
+      paths
+    end
+  end
+
   module Packages
     include Chef::Mixin::ShellOut
 

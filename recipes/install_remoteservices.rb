@@ -39,3 +39,5 @@ end
 service 'rpcbind' do
   action [:enable, :start]
 end
+
+include_recipe 'abiquo::install_websockify'

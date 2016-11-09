@@ -18,8 +18,8 @@ require_relative 'support/stubs'
 describe 'abiquo::setup_frontend' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
-      node.set['abiquo']['certificate']['common_name'] = 'test.local'
-    end.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
+      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+    end.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
   end
   let(:cn) { 'test.local' }
 
@@ -31,9 +31,7 @@ describe 'abiquo::setup_frontend' do
     stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
   end
 
-  %w(ui websockify).each do |recipe|
-    it "includes the #{recipe} setup recipe" do
-      expect(chef_run).to include_recipe("abiquo::setup_#{recipe}")
-    end
+  it 'includes the ui setup recipe' do
+    expect(chef_run).to include_recipe('abiquo::setup_ui')
   end
 end

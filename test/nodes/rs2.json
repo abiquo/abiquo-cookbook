@@ -1,0 +1,20 @@
+{
+  "name": "rs2",
+  "chef_type": "node",
+  "json_class": "Chef::Node",
+  "chef_environment": "_default",
+  "run_list": ["role[remoteservices]"],
+  "automatic": {
+    "ipaddress": "10.0.1.75"
+  },
+  "default": {
+    "abiquo": {
+      "properties": {
+        "abiquo.datacenter.id": "rs2"
+      },
+      "websockify": {
+        "port": 41338
+      }
+    }
+  }
+}
