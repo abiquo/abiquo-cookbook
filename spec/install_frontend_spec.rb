@@ -31,9 +31,7 @@ describe 'abiquo::install_frontend' do
     stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
   end
 
-  %w(ui websockify).each do |recipe|
-    it "includes the #{recipe} install recipe" do
-      expect(chef_run).to include_recipe("abiquo::install_#{recipe}")
-    end
+  it 'includes the ui install recipe' do
+    expect(chef_run).to include_recipe('abiquo::install_ui')
   end
 end

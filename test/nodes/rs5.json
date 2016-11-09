@@ -1,0 +1,20 @@
+{
+  "name": "rs5",
+  "chef_type": "node",
+  "json_class": "Chef::Node",
+  "chef_environment": "_default",
+  "run_list": ["role[somerole]"],
+  "automatic": {
+    "ipaddress": "10.0.5.75"
+  },
+  "default": {
+    "abiquo": {
+      "properties": {
+        "abiquo.datacenter.id": "rs5"
+      },
+      "websockify": {
+        "port": 41338
+      }
+    }
+  }
+}

@@ -36,4 +36,9 @@ describe 'abiquo::setup_ui' do
       group: 'root'
     )
   end
+
+  it 'creates the haproxy instance' do
+    chef_run.converge('abiquo::install_ui', described_recipe, 'abiquo::service')
+    expect(chef_run).to create_haproxy_instance('haproxy')
+  end
 end

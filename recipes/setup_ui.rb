@@ -23,3 +23,20 @@ file '/var/www/html/ui/config/client-config-custom.json' do
   action :create
   notifies :restart, 'service[apache2]'
 end
+
+ws_proxies = []
+ws_proxies << resources(haproxy_frontend: 'public')
+if node['abiquo']['haproxy']['use_default_path']
+  ws_proxies << resources(haproxy_backend: 'ws')
+else
+  node['abiquo']['haproxy']['ws_paths'].each do |path, _dest|
+    ws_proxies << resources(haproxy_backend: path.downcase.tr('/', '_'))
+  end
+end
+node.set['abiquo']['haproxy']['ws_proxies'] = ws_proxies
+
+haproxy_instance 'haproxy' do
+  proxies node['abiquo']['haproxy']['ws_proxies']
+  config ['user haproxy', 'group haproxy', 'log /dev/log local0']
+  tuning ['maxconn 1024']
+end

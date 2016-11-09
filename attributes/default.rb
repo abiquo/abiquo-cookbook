@@ -187,7 +187,14 @@ default['abiquo']['websockify']['conf'] = { token_expiration: 10000,
                                             api_pass: 'xabiquo' }
 default['abiquo']['websockify']['crt'] = node['abiquo']['certificate']['file']
 default['abiquo']['websockify']['key'] = node['abiquo']['certificate']['key_file']
+default['haproxy']['enable_default_http'] = false
 default['abiquo']['haproxy']['address'] = '*'
 default['abiquo']['haproxy']['port'] = 41337
 default['abiquo']['haproxy']['certificate'] = "#{node['abiquo']['certificate']['file']}.haproxy.crt"
-default['haproxy']['enable_default_http'] = false
+# TMP
+# Define WS paths as attributes. This wwil be moved to a search
+# on upcoming releases
+# eg. { '/path' => [websockify_ip] }
+default['abiquo']['haproxy']['ws_paths'] = {}
+default['abiquo']['haproxy']['node_search_query'] = nil
+default['abiquo']['haproxy']['use_default_path'] = false

@@ -51,37 +51,4 @@ describe 'abiquo::install_websockify' do
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
     expect(chef_run).to include_recipe('abiquo::certificate')
   end
-
-  it 'installs haproxy' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    expect(chef_run).to include_recipe('haproxy-ng::install')
-    expect(chef_run).to include_recipe('haproxy-ng::service')
-  end
-
-  it 'sets up the haproxy frontend' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    expect(chef_run).to create_haproxy_frontend('public').with(
-      bind: "#{chef_run.node['abiquo']['haproxy']['address']}:#{chef_run.node['abiquo']['haproxy']['port']} ssl crt #{chef_run.node['abiquo']['haproxy']['certificate']}",
-      default_backend: 'ws',
-      config: ['timeout client 3600s']
-    )
-  end
-
-  it 'sets up the haproxy backend' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    expect(chef_run).to create_haproxy_backend('ws').with(
-      balance: 'source',
-      servers: [
-        { 'name' => 'websockify1',
-          'address' => chef_run.node['abiquo']['websockify']['address'],
-          'port' => chef_run.node['abiquo']['websockify']['port'],
-          'config' => 'weight 1 maxconn 1024 check' }
-      ],
-      config: [
-        'timeout queue 3600s',
-        'timeout server 3600s',
-        'timeout connect 3600s'
-      ]
-    )
-  end
 end

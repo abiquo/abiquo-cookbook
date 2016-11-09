@@ -15,16 +15,26 @@
 require 'spec_helper'
 
 describe 'abiquo::setup_remoteservices' do
-  let(:chef_run) { ChefSpec::SoloRunner.new }
+  let(:chef_run) do
+    ChefSpec::SoloRunner.new do |node|
+      node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    end.converge('abiquo::install_websockify', described_recipe)
+  end
+  let(:cn) { 'test.local' }
+
+  before do
+    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+    stub_command('/usr/sbin/httpd -t').and_return(true)
+    stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
+  end
 
   it 'does not mount the nfs repository by default' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])
   end
 
   it 'enables and mounts the nfs repository if configured' do
     chef_run.node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
-    chef_run.converge(described_recipe)
+    chef_run.converge('abiquo::install_websockify', described_recipe)
     expect(chef_run).to mount_mount('/opt/vm_repository').with(
       fstype: 'nfs',
       device: '10.60.1.222:/opt/nfs-devel'
@@ -36,7 +46,10 @@ describe 'abiquo::setup_remoteservices' do
   end
 
   it 'includes the service recipe' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to include_recipe('abiquo::service')
+  end
+
+  it 'includes the setup_websockify recipe' do
+    expect(chef_run).to include_recipe('abiquo::setup_websockify')
   end
 end

@@ -16,4 +16,3 @@
 # limitations under the License.
 
 include_recipe 'abiquo::install_ui'
-include_recipe 'abiquo::install_websockify'

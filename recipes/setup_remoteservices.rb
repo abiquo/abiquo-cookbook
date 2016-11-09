@@ -24,4 +24,6 @@ unless node['abiquo']['nfs']['location'].nil? # ~FC023
   end
 end
 
+include_recipe 'abiquo::setup_websockify'
+
 include_recipe 'abiquo::service'
