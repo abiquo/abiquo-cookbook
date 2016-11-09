@@ -33,8 +33,3 @@ template '/opt/websockify/abiquo.cfg' do
   action :create
   notifies :restart, 'service[websockify]'
 end
-
-haproxy_instance 'haproxy' do
-  proxies [resources(haproxy_frontend: 'public'), resources(haproxy_backend: 'ws')]
-  tuning ['maxconn 1024']
-end

@@ -51,3 +51,47 @@ web_app 'abiquo' do
   key_file node['abiquo']['certificate']['key_file']
   ca_file node['abiquo']['certificate']['ca_file']
 end
+
+include_recipe 'haproxy-ng::install'
+include_recipe 'haproxy-ng::service'
+
+ws_acls = []
+ws_use_backends = []
+node['abiquo']['haproxy']['ws_paths'].each do |path, dest|
+  # Build backends
+  haproxy_backend path.downcase.tr('/', '_') do
+    balance 'source'
+    mode 'http'
+    dest.each_with_index do |d, i|
+      servers [
+        { 'name' => "websockify#{i}",
+          'address' => d,
+          'port' => node['abiquo']['websockify']['port'],
+          'config' => 'weight 1 maxconn 1024 check' }
+      ]
+    end
+    config [
+      'log global',
+      'timeout queue 3600s',
+      'timeout server 3600s',
+      'timeout connect 3600s'
+    ]
+  end
+
+  # Create ACLs for the frontend
+  ws_acls << { 'name' => path.downcase.tr('/', '_'), 'criterion' => "path #{path}" }
+  ws_use_backends << { 'backend' => path.downcase.tr('/', '_'), 'condition' => "if #{path.downcase.tr('/', '_')}" }
+end
+node.set['abiquo']['haproxy']['acls'] = ws_acls
+node.set['abiquo']['haproxy']['use_backends'] = ws_use_backends
+
+haproxy_frontend 'public' do
+  bind "#{node['abiquo']['haproxy']['address']}:#{node['abiquo']['haproxy']['port']} ssl crt #{node['abiquo']['haproxy']['certificate']}"
+  acls node['abiquo']['haproxy']['acls']
+  use_backends node['abiquo']['haproxy']['use_backends']
+  mode 'http'
+  config [
+    'timeout client 3600s',
+    'log global'
+  ]
+end

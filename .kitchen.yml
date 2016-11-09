@@ -90,6 +90,12 @@ suites:
               Header: add "Access-Control-Allow-Origin" "*"
         certificate:
           common_name: frontend.abiquo.com
+        haproxy:
+          ws_paths:
+            /somePath: 
+              - 10.10.10.10
+            /someOtherPath: 
+              - 20.20.20.20
   - name: ui
     run_list:
       - recipe[abiquo::default]
@@ -120,6 +126,10 @@ suites:
     attributes:
       abiquo:
         profile: remoteservices
+        yum:
+          base-repo: http://q683q694b6:973kkkfzhh@mirror.abiquo.com/abiquo/3.10-SNAPSHOT/os/x86_64
+          updates-repo: http://10.60.20.42/master/rpm
+          gpg-check: false
   - name: v2v
     run_list:
       - recipe[abiquo::default]
