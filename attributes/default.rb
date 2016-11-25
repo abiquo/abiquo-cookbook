@@ -44,6 +44,7 @@ default['abiquo']['db']['user'] = 'root'
 default['abiquo']['db']['from'] = 'localhost'
 default['abiquo']['db']['password'] = nil
 default['abiquo']['db']['upgrade'] = true
+default['abiquo']['db']['enable-master'] = false
 
 # Redis configuration
 default['redisio']['servers'] = [{

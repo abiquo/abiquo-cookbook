@@ -104,4 +104,8 @@ describe 'Monolithic configuration' do
     expect(user('redis')).to exist
     expect(user('redis')).to have_login_shell('/bin/sh')
   end
+
+  it 'has mariadb configured as master' do
+    expect(command('mysql -e "show master status"').stdout).to contain('mariadb-bin.000')
+  end
 end

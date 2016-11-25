@@ -21,6 +21,8 @@ suites:
       - recipe[abiquo::upgrade]
     attributes:
       abiquo:
+        db:
+          enable-master: true
         ui_config:
           config.endpoint: "https://monolithic.abiquo.com/api"
         ui_apache_opts:

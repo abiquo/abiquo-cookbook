@@ -16,7 +16,11 @@ require 'spec_helper'
 require_relative 'support/queries'
 
 describe 'abiquo::install_mariadb' do
-  let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+  let(:chef_run) do
+    ChefSpec::SoloRunner.new do |node|
+      node.set['abiquo']['db']['enable-master'] = true
+    end.converge(described_recipe)
+  end
 
   before do
     stub_queries
@@ -24,6 +28,12 @@ describe 'abiquo::install_mariadb' do
 
   it 'includes the mariadb recipe' do
     expect(chef_run).to include_recipe('mariadb')
+  end
+
+  it 'restarts mysql service if necessary' do
+    resource = chef_run.find_resource(:service, 'mysql')
+    expect(resource).to do_nothing
+    expect(resource).to subscribe_to('mariadb_configuration[replication]').on(:restart).immediately
   end
 
   it 'installs the mysql2 gem' do

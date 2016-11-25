@@ -15,7 +15,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Enable replication if specified
+node.set['mariadb']['replication']['server_id'] = '1' if node['abiquo']['db']['enable-master']
+
 include_recipe 'mariadb'
+
+# MariaDB cookbook does not restart the service after changing the config
+# files, so we subscribe to the replication config file and restart if
+# changed.
+service 'mysql' do
+  action :nothing
+  subscribes :restart, 'mariadb_configuration[replication]', :immediately
+  not_if { node['abiquo']['db']['enable-master'].nil? }
+end
 
 mysql2_chef_gem 'default' do
   provider Chef::Provider::Mysql2ChefGem::Mariadb
