@@ -40,18 +40,35 @@ conn_info = {
   password: node['mariadb']['server_root_password']
 }
 
-mysql_database_user node['abiquo']['db']['user'] do
-  connection conn_info
-  password   node['abiquo']['db']['password']
-  host       node['abiquo']['db']['from']
-  privileges [:all]
-  action     :grant
+# Need to grant for localhost to run the scripts
+kinton_grants_from = if node['abiquo']['db']['from'] != 'localhost'
+                       ['localhost', node['abiquo']['db']['from']]
+                     else
+                       ['localhost']
+                     end
+kinton_grants_from.each do |from_host|
+  mysql_database_user "kinton-#{node['abiquo']['db']['user']}-#{from_host}" do
+    connection    conn_info
+    database_name 'kinton'
+    password      node['abiquo']['db']['password']
+    host          from_host
+    privileges    [:all]
+    action        :grant
+  end
 end
 
-mysql_database_user node['abiquo']['monitoring']['db']['user'] do
-  connection conn_info
-  password   node['abiquo']['monitoring']['db']['password']
-  host       node['abiquo']['monitoring']['db']['from']
-  privileges [:all]
-  action     :grant
+watchtower_grants_from = if node['abiquo']['monitoring']['db']['from'] != 'localhost'
+                           ['localhost', node['abiquo']['monitoring']['db']['from']]
+                         else
+                           ['localhost']
+                         end
+watchtower_grants_from.each do |from_host|
+  mysql_database_user "watchtower-#{node['abiquo']['monitoring']['db']['user']}-#{from_host}" do
+    connection    conn_info
+    database_name 'watchtower'
+    password      node['abiquo']['monitoring']['db']['password']
+    host          from_host
+    privileges    [:all]
+    action        :grant
+  end
 end
