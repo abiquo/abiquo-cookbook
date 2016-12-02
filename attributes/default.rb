@@ -128,8 +128,6 @@ default['abiquo']['monitoring']['db']['password'] = nil
 default['abiquo']['monitoring']['db']['from'] = 'localhost'
 default['abiquo']['monitoring']['db']['install'] = true
 default['abiquo']['monitoring']['emmett']['port'] = 36638
-default['abiquo']['monitoring']['kairosdb_package'] = "kairosdb-#{node['abiquo']['monitoring']['kairosdb']['version']}-#{node['abiquo']['monitoring']['kairosdb']['release']}.rpm"
-default['abiquo']['monitoring']['kairosdb_url'] = "https://github.com/kairosdb/kairosdb/releases/download/v#{node['abiquo']['monitoring']['kairosdb']['version']}/#{node['abiquo']['monitoring']['kairosdb_package']}"
 
 # Override the default java configuration
 default['java']['oracle']['accept_oracle_download_terms'] = true

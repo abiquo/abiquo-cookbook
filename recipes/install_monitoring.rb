@@ -19,16 +19,10 @@ Chef::Recipe.send(:include, Abiquo::Commands)
 
 include_recipe 'mariadb::client'
 
-remote_file "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}" do
-  source node['abiquo']['monitoring']['kairosdb_url']
-end
-
-package 'kairosdb' do
-  source "#{Chef::Config[:file_cache_path]}/#{node['abiquo']['monitoring']['kairosdb_package']}"
-end
-
-package 'jdk' do
-  action :install
+%w(kairosdb jdk).each do |pkg|
+  package pkg do
+    action :install
+  end
 end
 
 java_alternatives 'set default jdk8' do

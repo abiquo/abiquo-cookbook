@@ -18,34 +18,24 @@ require_relative 'support/queries'
 
 describe 'abiquo::install_monitoring' do
   let(:chef_run) do
-    ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+    ChefSpec::SoloRunner.new do |node|
       node.set['abiquo']['profile'] = 'monitoring'
     end.converge(described_recipe)
   end
-  let(:pkg) { "kairosdb-#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}-#{chef_run.node['abiquo']['monitoring']['kairosdb']['release']}.rpm" }
-  let(:url) { "https://github.com/kairosdb/kairosdb/releases/download/v#{chef_run.node['abiquo']['monitoring']['kairosdb']['version']}/#{pkg}" }
 
   before do
     stub_queries
   end
 
-  it 'downloads the kairosdb package' do
-    chef_run.converge(described_recipe)
-    expect(chef_run).to create_remote_file("#{Chef::Config[:file_cache_path]}/#{pkg}").with(source: url)
-  end
-
   it 'installs the kairosdb package' do
-    chef_run.converge(described_recipe)
-    expect(chef_run).to install_package('kairosdb').with(source: "#{Chef::Config[:file_cache_path]}/#{pkg}")
+    expect(chef_run).to install_package('kairosdb')
   end
 
   it 'installs the jdk package' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to install_package('jdk')
   end
 
   it 'configures the java alternatives' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to set_java_alternatives('set default jdk8').with(
       java_location: '/usr/java/default',
       bin_cmds: %w(java javac)
@@ -53,12 +43,10 @@ describe 'abiquo::install_monitoring' do
   end
 
   it 'includes the cassandra recipe' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to include_recipe('cassandra-dse')
   end
 
   it 'includes the install_ext_services recipe by default' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to include_recipe('abiquo::install_ext_services')
   end
 
@@ -70,7 +58,6 @@ describe 'abiquo::install_monitoring' do
 
   %w(delorean emmett).each do |pkg|
     it "installs the abiquo-#{pkg} package" do
-      chef_run.converge(described_recipe)
       expect(chef_run).to install_package("abiquo-#{pkg}")
     end
   end
