@@ -50,6 +50,7 @@ kinton_grants_from.each do |from_host|
   mysql_database_user "kinton-#{node['abiquo']['db']['user']}-#{from_host}" do
     connection    conn_info
     database_name 'kinton'
+    username      node['abiquo']['db']['user']
     password      node['abiquo']['db']['password']
     host          from_host
     privileges    [:all]
@@ -66,6 +67,7 @@ watchtower_grants_from.each do |from_host|
   mysql_database_user "watchtower-#{node['abiquo']['monitoring']['db']['user']}-#{from_host}" do
     connection    conn_info
     database_name 'watchtower'
+    username      node['abiquo']['monitoring']['db']['user']
     password      node['abiquo']['monitoring']['db']['password']
     host          from_host
     privileges    [:all]
