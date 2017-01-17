@@ -181,3 +181,5 @@ default['abiquo']['haproxy']['certificate'] = "#{node['abiquo']['certificate']['
 # on upcoming releases
 # eg. { '/path' => [websockify_ip] }
 default['abiquo']['haproxy']['ws_paths'] = {}
+default['abiquo']['haproxy']['node_search_query'] = nil
+default['abiquo']['haproxy']['use_default_path'] = false

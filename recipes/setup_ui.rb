@@ -26,8 +26,12 @@ end
 
 ws_proxies = []
 ws_proxies << resources(haproxy_frontend: 'public')
-node['abiquo']['haproxy']['ws_paths'].each do |path, _dest|
-  ws_proxies << resources(haproxy_backend: path.downcase.tr('/', '_'))
+if node['abiquo']['haproxy']['use_default_path']
+  ws_proxies << resources(haproxy_backend: 'ws')
+else
+  node['abiquo']['haproxy']['ws_paths'].each do |path, _dest|
+    ws_proxies << resources(haproxy_backend: path.downcase.tr('/', '_'))
+  end
 end
 node.set['abiquo']['haproxy']['ws_proxies'] = ws_proxies
 

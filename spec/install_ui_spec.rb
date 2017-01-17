@@ -58,7 +58,7 @@ describe 'abiquo::install_ui' do
   end
 
   it 'sets up the haproxy frontend' do
-    chef_run.node.set['abiquo']['haproxy']['ws_paths'] = { '/somePath' => ['10.10.10.10'], '/someOtherPath' => ['20.20.20.20'] }
+    chef_run.node.set['abiquo']['haproxy']['ws_paths'] = { '/somePath' => ['10.10.10.10:41338'], '/someOtherPath' => ['20.20.20.20:41338'] }
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
     expect(chef_run).to create_haproxy_frontend('public').with(
       bind: "#{chef_run.node['abiquo']['haproxy']['address']}:#{chef_run.node['abiquo']['haproxy']['port']} ssl crt #{chef_run.node['abiquo']['haproxy']['certificate']}",
@@ -75,7 +75,7 @@ describe 'abiquo::install_ui' do
   end
 
   it 'sets up the haproxy backends' do
-    chef_run.node.set['abiquo']['haproxy']['ws_paths'] = { '/somePath' => ['10.10.10.10'], '/someOtherPath' => ['20.20.20.20'] }
+    chef_run.node.set['abiquo']['haproxy']['ws_paths'] = { '/somePath' => ['10.10.10.10:41338'], '/someOtherPath' => ['20.20.20.20:41338'] }
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
 
     expect(chef_run).to create_haproxy_backend('_somepath').with(
@@ -84,7 +84,7 @@ describe 'abiquo::install_ui' do
       servers: [
         { 'name' => 'websockify0',
           'address' => '10.10.10.10',
-          'port' => chef_run.node['abiquo']['websockify']['port'],
+          'port' => '41338',
           'config' => 'weight 1 maxconn 1024 check' }
       ],
       config: [
@@ -101,7 +101,7 @@ describe 'abiquo::install_ui' do
       servers: [
         { 'name' => 'websockify0',
           'address' => '20.20.20.20',
-          'port' => chef_run.node['abiquo']['websockify']['port'],
+          'port' => '41338',
           'config' => 'weight 1 maxconn 1024 check' }
       ],
       config: [
