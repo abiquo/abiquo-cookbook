@@ -17,7 +17,7 @@ require 'spec_helper'
 describe 'abiquo::install_kvm' do
   let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
-  %w(qemu-kvm abiquo-cloud-node abiquo-sosreport-plugins).each do |pkg|
+  %w(qemu-kvm abiquo-aim abiquo-sosreport-plugins).each do |pkg|
     it "installs the #{pkg} package" do
       expect(chef_run).to install_package(pkg)
     end
