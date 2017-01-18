@@ -52,6 +52,8 @@
 
         <Engine name="Catalina" defaultHost="localhost">
 
+            <Alias><%= node['fqdn'] %></Alias>
+
             <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
                 resourceName="UserDatabase"/>
 
