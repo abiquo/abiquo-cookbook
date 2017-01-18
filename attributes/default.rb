@@ -69,6 +69,7 @@ default['rabbitmq']['port'] = 5672
 default['abiquo']['tomcat']['http-port'] = 8009
 default['abiquo']['tomcat']['ajp-port'] = 8010
 default['abiquo']['tomcat']['wait-for-webapps'] = false
+default['abiquo']['tomcat']['alias'] = node['fqdn']
 
 # Override the Apache proxy configuration
 default['apache']['proxy']['order'] = 'allow,deny'
