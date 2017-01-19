@@ -49,7 +49,7 @@ end
 require_hash = node['platform_version'].to_i == 6 ? {} : { 'Require' => 'all granted' }
 
 node['abiquo']['ui_proxies'].each_key do |k|
-  node.set['abiquo']['ui_proxies'][k]['options'] = require_hash.merge(node['abiquo']['ui_proxies'][k]['options'])
+  node.set['abiquo']['ui_proxies'][k]['options'] = require_hash.merge(node['abiquo']['ui_proxies'][k]['options']) unless node['abiquo']['ui_proxies'][k]['options'].nil?
 end
 
 web_app 'abiquo' do
