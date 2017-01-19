@@ -30,8 +30,6 @@ end
 
 include_recipe 'yum-epel' if node['abiquo']['yum']['install-repo']
 
-gpg_keys = gpg_key_files.join(' ')
-
 yum_repository 'abiquo-base' do
   description 'Abiquo base repository'
   baseurl node['abiquo']['yum']['base-repo']
