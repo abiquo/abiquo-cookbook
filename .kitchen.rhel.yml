@@ -5,6 +5,7 @@ driver:
 
 provisioner:
   name: chef_zero
+  chef_zero_port: 8899
   require_chef_omnibus: 12.5.1
   data_path: test/fixtures
 
