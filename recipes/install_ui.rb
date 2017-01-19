@@ -44,6 +44,14 @@ when 'server'
   }.merge(node['abiquo']['ui_proxies'])
 end
 
+# Apache 2.4 uses Require directives
+# needed on every location
+require_hash = node['platform_version'].to_i == 6 ? {} : { 'Require' => 'all granted' }
+
+node['abiquo']['ui_proxies'].each_key do |k|
+  node.set['abiquo']['ui_proxies'][k]['options'] = require_hash.merge(node['abiquo']['ui_proxies'][k]['options'])
+end
+
 web_app 'abiquo' do
   template "#{node['platform_family']}/#{node['platform_version'].to_i}/abiquo.conf.erb"
   server_name node['abiquo']['certificate']['common_name']
