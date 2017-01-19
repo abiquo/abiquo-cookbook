@@ -23,20 +23,6 @@ describe 'abiquo::install_kvm' do
     end
   end
 
-  it 'creates link if missing' do
-    allow(File).to receive(:exist?).and_call_original
-    allow(File).to receive(:exist?).with('/usr/bin/qemu-system-x86_64').and_return(false)
-    expect(chef_run).to create_link('/usr/bin/qemu-system-x86_64').with(
-      to: '/usr/bin/qemu-kvm'
-    )
-  end
-
-  it 'does not create link if exists' do
-    allow(File).to receive(:exist?).and_call_original
-    allow(File).to receive(:exist?).with('/usr/bin/qemu-system-x86_64').and_return(true)
-    expect(chef_run).to_not create_link('/usr/bin/qemu-system-x86_64')
-  end
-
   it 'configures the rpcbind service' do
     expect(chef_run).to enable_service('rpcbind')
     expect(chef_run).to start_service('rpcbind')

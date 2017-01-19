@@ -26,7 +26,7 @@ describe 'KVM services' do
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8889 -j ACCEPT')
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 16509 -j ACCEPT')
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 16514 -j ACCEPT')
-    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 6000:6999 -j ACCEPT')
+    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 5900:5999 -j ACCEPT')
     expect(iptables).to have_rule('-P INPUT DROP')
 
     # Cannot use have_rule with comma
@@ -38,6 +38,11 @@ describe 'KVM services' do
     expect(service('rpcbind')).to be_running
   end
 
+  it 'has the libvirtd service running' do
+    expect(service('libvirtd')).to be_enabled
+    expect(service('libvirtd')).to be_running
+  end
+
   it 'has the abiquo-aim service running' do
     expect(service('abiquo-aim')).to be_enabled
     expect(service('abiquo-aim')).to be_running
@@ -46,7 +51,10 @@ describe 'KVM services' do
 
   it 'has the linuxbridge agent running' do
     expect(service('neutron-linuxbridge-agent')).to be_enabled
-    expect(service('neutron-linuxbridge-agent')).to be_running
+  end
+
+  it 'has loaded the br_nbetfilter kernel module' do
+    expect(kernel_module('br_netfilter')).to be_loaded
   end
 
   it 'has iptables enabled on bridged interfaces' do

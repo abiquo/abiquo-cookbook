@@ -55,6 +55,11 @@ service 'neutron-linuxbridge-agent' do
 end
 
 # Required to let iptables filter traffic on bridged interfaces
+kernel_module 'br_netfilter' do
+  onboot true
+  reload false
+end
+
 include_recipe 'sysctl'
 sysctl_param 'net.bridge.bridge-nf-call-iptables' do
   value 1

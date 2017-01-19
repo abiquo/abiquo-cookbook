@@ -29,7 +29,7 @@ template '/etc/sysconfig/libvirt-guests' do
   owner 'root'
   group 'root'
   action :create
-  notifies :restart, 'service[abiquo-aim]'
+  notifies :restart, 'service[libvirtd]'
 end
 
 template '/etc/abiquo-aim.ini' do
@@ -40,6 +40,10 @@ template '/etc/abiquo-aim.ini' do
   notifies :restart, 'service[abiquo-aim]'
 end
 
+service 'libvirtd' do
+  action :enable
+end
+
 service 'abiquo-aim' do
-  action [:enable, :start]
+  action :enable
 end

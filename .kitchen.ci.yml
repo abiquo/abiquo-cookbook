@@ -1,5 +1,8 @@
+
 platforms:
-  - name: centos-6.8
+  - name: c6
+    driver:
+      box: bento/centos-6.8
     driver_config:
       customize:
         memory: 1024
@@ -7,6 +10,19 @@ platforms:
     attributes:
       abiquo:
         yum:
-          updates-repo: http://10.60.20.42/<%= ENV['CI_BRANCH']%>/rpm
+          updates-repo: http://10.60.20.42/<%= ENV['CI_BRANCH']%>/pkgs/el$releasever
+          gpg-check: false
+    <% end %>
+  - name: c7
+    driver:
+      box: bento/centos-7.3
+    driver_config:
+      customize:
+        memory: 1024
+    <% if ENV['CI_BRANCH'] %>
+    attributes:
+      abiquo:
+        yum:
+          updates-repo: http://10.60.20.42/<%= ENV['CI_BRANCH']%>/pkgs/el$releasever
           gpg-check: false
     <% end %>

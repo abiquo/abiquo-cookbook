@@ -43,7 +43,7 @@ describe 'abiquo::setup_kvm' do
       group: 'root'
     )
     resource = chef_run.template('/etc/sysconfig/libvirt-guests')
-    expect(resource).to notify('service[abiquo-aim]').to(:restart).delayed
+    expect(resource).to notify('service[libvirtd]').to(:restart).delayed
   end
 
   it 'renders the abiquo-aim file' do
@@ -57,9 +57,14 @@ describe 'abiquo::setup_kvm' do
     expect(resource).to notify('service[abiquo-aim]').to(:restart).delayed
   end
 
+  it 'enables and restarts the libvirtd service' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to enable_service('libvirtd')
+  end
+
   it 'enables and restarts the abiquo-aim service' do
     chef_run.converge(described_recipe)
     expect(chef_run).to enable_service('abiquo-aim')
-    expect(chef_run).to start_service('abiquo-aim')
+    expect(chef_run).to enable_service('abiquo-aim')
   end
 end

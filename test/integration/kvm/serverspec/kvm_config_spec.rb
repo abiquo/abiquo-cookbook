@@ -35,6 +35,6 @@ describe 'KVM configuration' do
 
   it 'has the linuxbridge agent configuration files' do
     expect(file('/etc/neutron/plugin.ini')).to exist
-    expect(file('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')).to contain('network_vlan_ranges = \'abq-vlans:2:4094\'')
+    expect(file('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')).to contain('network_vlan_ranges = abq-vlans:2:4094')
   end
 end
