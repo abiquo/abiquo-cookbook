@@ -133,12 +133,16 @@ suites:
       abiquo:
         profile: v2v
   - name: kvm
+    excludes:
+      - c6
     run_list:
       - recipe[abiquo::default]
       - recipe[abiquo::upgrade]
     attributes:
       abiquo:
         profile: kvm
+        aim:
+         include_neutron: true
   - name: monitoring
     run_list:
       # The Delorean service needs a running RabbitMQ instance

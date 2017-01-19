@@ -34,7 +34,7 @@ describe 'abiquo::kvm_neutron' do
       group: 'root'
     )
     resource = chef_run.template('/etc/neutron/neutron.conf')
-    expect(resource).to notify('service[neutron-linuxbridge-agent.service]').to(:restart).delayed
+    expect(resource).to notify('service[neutron-linuxbridge-agent]').to(:restart).delayed
   end
 
   it 'creates the config file for neutron linuxbridge plugin' do
@@ -44,7 +44,7 @@ describe 'abiquo::kvm_neutron' do
       group: 'root'
     )
     resource = chef_run.template('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')
-    expect(resource).to notify('service[neutron-linuxbridge-agent.service]').to(:restart).delayed
+    expect(resource).to notify('service[neutron-linuxbridge-agent]').to(:restart).delayed
   end
 
   it 'deletes the plugin.ini file if exists' do
@@ -63,8 +63,13 @@ describe 'abiquo::kvm_neutron' do
     )
   end
 
-  it 'restarts the neutron-linuxbridge-agent.service service' do
-    expect(chef_run).to enable_service('neutron-linuxbridge-agent.service')
-    expect(chef_run).to start_service('neutron-linuxbridge-agent.service')
+  it 'restarts the neutron-linuxbridge-agent service' do
+    expect(chef_run).to enable_service('neutron-linuxbridge-agent')
+    expect(chef_run).to start_service('neutron-linuxbridge-agent')
+  end
+
+  it 'configures the sysctl properties to filter traffic in bridged interfaces' do
+    expect(chef_run).to include_recipe('sysctl')
+    expect(chef_run).to apply_sysctl_param('net.bridge.bridge-nf-call-iptables').with(value: 1)
   end
 end

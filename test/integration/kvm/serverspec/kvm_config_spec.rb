@@ -28,4 +28,13 @@ describe 'KVM configuration' do
   it 'has the libvirt configuration file' do
     expect(file('/etc/sysconfig/libvirt-guests')).to exist
   end
+
+  it 'has the neutron configuration files' do
+    expect(file('/etc/neutron/neutron.conf')).to contain('admin_password = xabiquo')
+  end
+
+  it 'has the linuxbridge agent configuration files' do
+    expect(file('/etc/neutron/plugin.ini')).to exist
+    expect(file('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')).to contain('network_vlan_ranges = \'abq-vlans:2:4094\'')
+  end
 end

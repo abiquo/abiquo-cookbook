@@ -30,7 +30,7 @@ template '/etc/neutron/neutron.conf' do
   owner 'root'
   group 'root'
   action :create
-  notifies :restart, 'service[neutron-linuxbridge-agent.service]'
+  notifies :restart, 'service[neutron-linuxbridge-agent]'
 end
 
 template '/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini' do
@@ -38,7 +38,7 @@ template '/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini' do
   owner 'root'
   group 'root'
   action :create
-  notifies :restart, 'service[neutron-linuxbridge-agent.service]'
+  notifies :restart, 'service[neutron-linuxbridge-agent]'
 end
 
 file '/etc/neutron/plugin.ini' do
@@ -50,6 +50,12 @@ link '/etc/neutron/plugin.ini' do
   to '/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini'
 end
 
-service 'neutron-linuxbridge-agent.service' do
+service 'neutron-linuxbridge-agent' do
   action [:enable, :start]
+end
+
+# Required to let iptables filter traffic on bridged interfaces
+include_recipe 'sysctl'
+sysctl_param 'net.bridge.bridge-nf-call-iptables' do
+  value 1
 end

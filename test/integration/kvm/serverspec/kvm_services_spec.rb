@@ -43,4 +43,13 @@ describe 'KVM services' do
     expect(service('abiquo-aim')).to be_running
     expect(port(8889)).to be_listening
   end
+
+  it 'has the linuxbridge agent running' do
+    expect(service('neutron-linuxbridge-agent')).to be_enabled
+    expect(service('neutron-linuxbridge-agent')).to be_running
+  end
+
+  it 'has iptables enabled on bridged interfaces' do
+    expect(linux_kernel_parameter('net.bridge.bridge-nf-call-iptables').value).to eq 1
+  end
 end

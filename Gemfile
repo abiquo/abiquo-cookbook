@@ -12,6 +12,6 @@ gem 'nio4r', '<= 1.2.1', group: :unit
 
 group :integration do
   gem 'serverspec', '~> 2.24.1'
-  gem 'test-kitchen', '~> 1.13.2'
+  gem 'test-kitchen', '~> 1.15.0'
   gem 'kitchen-vagrant', '~> 0.20.0'
 end

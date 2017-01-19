@@ -28,4 +28,10 @@ describe 'KVM packages' do
       expect(package("abiquo-#{pkg}")).to be_installed
     end
   end
+
+  it 'has the neutron packages installed' do
+    %w(openstack-neutron openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
+      expect(package(pkg)).to be_installed
+    end
+  end
 end
