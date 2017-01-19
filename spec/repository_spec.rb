@@ -49,10 +49,7 @@ describe 'abiquo::repository' do
       description: 'Abiquo base repository',
       baseurl: 'http://mirror.abiquo.com/el$releasever/3.10/os/x86_64',
       gpgcheck: true,
-      gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
-                 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
-                 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
+      gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
     )
 
     resource = chef_run.find_resource(:yum_repository, 'abiquo-base')
@@ -73,10 +70,7 @@ describe 'abiquo::repository' do
       description: 'Abiquo updates repository',
       baseurl: 'http://mirror.abiquo.com/el$releasever/3.10/updates/x86_64',
       gpgcheck: true,
-      gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Abiquo ' \
-                 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-MariaDB ' \
-                 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-RabbitMQ ' \
-                 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
+      gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
     )
 
     resource = chef_run.find_resource(:yum_repository, 'abiquo-updates')

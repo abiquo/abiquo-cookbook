@@ -36,7 +36,7 @@ yum_repository 'abiquo-base' do
   description 'Abiquo base repository'
   baseurl node['abiquo']['yum']['base-repo']
   gpgcheck node['abiquo']['yum']['gpg-check']
-  gpgkey gpg_keys
+  gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
   proxy node['abiquo']['yum']['proxy'] unless node['abiquo']['yum']['proxy'].nil?
   action :create
   subscribes :create, 'package[abiquo-release-ee]', :immediately
@@ -49,7 +49,7 @@ yum_repository 'abiquo-updates' do
   description 'Abiquo updates repository'
   baseurl node['abiquo']['yum']['updates-repo']
   gpgcheck node['abiquo']['yum']['gpg-check']
-  gpgkey gpg_keys
+  gpgkey 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
   proxy node['abiquo']['yum']['proxy'] unless node['abiquo']['yum']['proxy'].nil?
   action :create
   subscribes :create, 'package[abiquo-release-ee]', :immediately
