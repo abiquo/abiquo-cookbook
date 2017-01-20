@@ -50,9 +50,9 @@ module Abiquo
 
     def liquibase_cmd(command, props, monitoring = false)
       liquibasecmd = if monitoring
-                       "abiquo-watchtower-liquibase -h #{props['host']}"
+                       "watchtower-db -h #{props['host']}"
                      else
-                       "abiquo-liquibase -h #{props['host']}"
+                       "abiquo-db -h #{props['host']}"
                      end
       liquibasecmd += " -P #{props['port']}"
       liquibasecmd += " -u #{props['user']}"

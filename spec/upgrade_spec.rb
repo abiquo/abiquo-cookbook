@@ -201,7 +201,7 @@ describe 'abiquo::upgrade' do
     expect(resource).to subscribe_to('package[abiquo-server]').on(:run).immediately
     expect(resource).to do_nothing
     expect(resource.cwd).to eq('/usr/share/doc/abiquo-server/database')
-    expect(resource.command).to eq('abiquo-liquibase -h localhost -P 3306 -u root update')
+    expect(resource.command).to eq('abiquo-db -h localhost -P 3306 -u root update')
     expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
   end
 
@@ -215,7 +215,7 @@ describe 'abiquo::upgrade' do
     expect(resource).to subscribe_to('package[abiquo-server]').on(:run).immediately
     expect(resource).to do_nothing
     expect(resource.cwd).to eq('/usr/share/doc/abiquo-server/database')
-    expect(resource.command).to eq('abiquo-liquibase -h 127.0.0.1 -P 3306 -u root -p abiquo update')
+    expect(resource.command).to eq('abiquo-db -h 127.0.0.1 -P 3306 -u root -p abiquo update')
     expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
   end
 
@@ -235,7 +235,7 @@ describe 'abiquo::upgrade' do
     chef_run.converge('apache2::default', 'abiquo::install_server', 'abiquo::service', described_recipe)
     resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
     expect(resource).to do_nothing
-    expect(resource.command).to eq('abiquo-watchtower-liquibase -h localhost -P 3306 -u root update')
+    expect(resource.command).to eq('watchtower-db -h localhost -P 3306 -u root update')
     # We can't test this if there is no explicit resource notifying it, due to how ChefSpec subscription matchers are implemented
     # expect(resource).to subscribe_to('package[abiquo-delorean]')
     expect(resource).to notify('service[abiquo-delorean]').to(:restart).delayed

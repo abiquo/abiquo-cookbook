@@ -77,7 +77,7 @@ describe 'abiquo::install_monitoring' do
     expect(resource).to notify('execute[watchtower-liquibase-update]').to(:run).immediately
 
     resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
-    expect(resource.command).to eq('abiquo-watchtower-liquibase -h localhost -P 3306 -u root update')
+    expect(resource.command).to eq('watchtower-db -h localhost -P 3306 -u root update')
   end
 
   it 'does not install the database if not configured' do

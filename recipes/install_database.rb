@@ -39,7 +39,7 @@ mysql_database 'kinton' do
 end
 
 execute 'install-database' do
-  command "#{mysqlcmd} kinton </usr/share/doc/abiquo-server/database/kinton-schema.sql"
+  command "#{mysqlcmd} kinton </usr/share/doc/abiquo-model/database/kinton-schema.sql"
   action :nothing
   notifies :run, 'ruby_block[extract-m-user-password]', :immediately
   notifies :query, 'mysql_database[install-license]', :immediately
