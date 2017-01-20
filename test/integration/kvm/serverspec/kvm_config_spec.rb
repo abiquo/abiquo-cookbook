@@ -34,11 +34,12 @@ describe 'KVM configuration' do
   end
 
   it 'has the neutron configuration files' do
+    expect(file('/etc/neutron/neutron.conf')).to be_grouped_into('neutron')
     expect(file('/etc/neutron/neutron.conf')).to contain('admin_password = xabiquo')
   end
 
   it 'has the linuxbridge agent configuration files' do
-    expect(file('/etc/neutron/plugin.ini')).to be_grouped_into('neutron')
+    expect(file('/etc/neutron/plugin.ini')).to exist
     expect(file('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')).to be_grouped_into('neutron')
     expect(file('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')).to contain('network_vlan_ranges = abq-vlans:2:4094')
   end
