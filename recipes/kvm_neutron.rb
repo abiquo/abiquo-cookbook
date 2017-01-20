@@ -34,7 +34,7 @@ end
 template '/etc/neutron/neutron.conf' do
   source 'neutron.conf.erb'
   owner 'root'
-  group 'root'
+  group 'neutron'
   action :create
   notifies :restart, 'service[neutron-linuxbridge-agent]'
 end
@@ -42,7 +42,7 @@ end
 template '/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini' do
   source 'neutron-linuxbridge.conf.erb'
   owner 'root'
-  group 'root'
+  group 'neutron'
   action :create
   notifies :restart, 'service[neutron-linuxbridge-agent]'
 end

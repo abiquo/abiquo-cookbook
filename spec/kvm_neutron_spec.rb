@@ -35,7 +35,7 @@ describe 'abiquo::kvm_neutron' do
     expect(chef_run).to create_template('/etc/neutron/neutron.conf').with(
       source: 'neutron.conf.erb',
       owner: 'root',
-      group: 'root'
+      group: 'neutron'
     )
     resource = chef_run.template('/etc/neutron/neutron.conf')
     expect(resource).to notify('service[neutron-linuxbridge-agent]').to(:restart).delayed
@@ -45,7 +45,7 @@ describe 'abiquo::kvm_neutron' do
     expect(chef_run).to create_template('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini').with(
       source: 'neutron-linuxbridge.conf.erb',
       owner: 'root',
-      group: 'root'
+      group: 'neutron'
     )
     resource = chef_run.template('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')
     expect(resource).to notify('service[neutron-linuxbridge-agent]').to(:restart).delayed
