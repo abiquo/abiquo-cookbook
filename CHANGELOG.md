@@ -3,6 +3,9 @@ abiquo CHANGELOG
 
 ## 0.10.0
 
+* Added support for OpenStack Neutron in KVM hosts.
+* Add support for CentOS 7.
+* Allow to configure MariaDB as master so new slaves can replicate from it.
 * Use a custom plugin for webSockify instead of the token scripts.
 
 ## 0.9.1
