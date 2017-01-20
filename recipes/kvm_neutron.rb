@@ -19,7 +19,13 @@ package 'centos-release-openstack-kilo' do
   action :install
 end
 
-%w(openstack-neutron openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
+package 'openstack-neutron' do
+  # There are several versions of the package in the CentOS repos, so we'd better be explicit
+  version '2015.1.4'
+  action :install
+end
+
+%w(openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
   package pkg do
     action :install
   end
