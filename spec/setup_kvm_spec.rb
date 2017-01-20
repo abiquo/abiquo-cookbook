@@ -17,6 +17,14 @@ require 'spec_helper'
 describe 'abiquo::setup_kvm' do
   let(:chef_run) { ChefSpec::SoloRunner.new }
 
+  it 'creates the /opt/vm_repository directory' do
+    chef_run.converge(described_recipe)
+    expect(chef_run).to create_directory('/opt/vm_repository').with(
+      owner: 'root',
+      group: 'root'
+    )
+  end
+
   it 'does not mount the nfs repository by default' do
     chef_run.converge(described_recipe)
     expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])

@@ -25,6 +25,10 @@ describe 'KVM configuration' do
     expect(file('/etc/abiquo-aim.ini')).to contain('repository = /opt/vm_repository')
   end
 
+  it 'has the /opt/vm_repository directory' do
+    expect(file('/opt/vm_repository')).to be_directory
+  end
+
   it 'has the libvirt configuration file' do
     expect(file('/etc/sysconfig/libvirt-guests')).to exist
   end

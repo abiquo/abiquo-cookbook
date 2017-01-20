@@ -15,6 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+directory '/opt/vm_repository' do
+  owner 'root'
+  group 'root'
+  action :create
+end
+
 # The device attribute is mandatory for the mount resource, so we can't use a regular guard
 unless node['abiquo']['nfs']['location'].nil? # ~FC023
   mount node['abiquo']['nfs']['mountpoint'] do
