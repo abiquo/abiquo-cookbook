@@ -21,7 +21,7 @@ end
 
 package 'openstack-neutron' do
   # There are several versions of the package in the CentOS repos, so we'd better be explicit
-  version '2015.1.4'
+  version '2015.1.4-1.el7'
   action :install
 end
 

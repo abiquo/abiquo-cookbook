@@ -22,7 +22,7 @@ describe 'abiquo::kvm_neutron' do
   end
 
   it 'installs the right version of the openstack-neutron package' do
-    expect(chef_run).to install_package('openstack-neutron').with(version: '2015.1.4')
+    expect(chef_run).to install_package('openstack-neutron').with(version: '2015.1.4-1.el7')
   end
 
   %w(openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
