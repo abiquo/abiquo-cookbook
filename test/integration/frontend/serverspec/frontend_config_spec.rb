@@ -53,8 +53,9 @@ describe 'Front-end configuration' do
   end
 
   it 'has websockify service script configured' do
-    expect(file('/etc/init.d/websockify')).to contain('WEBSOCKIFY_PORT=41338')
-    expect(file('/etc/init.d/websockify')).to contain('LOG_FILE=/var/log/websockify')
+    config_file = os[:release].to_i == 6 ? '/etc/init.d/websockify' : '/etc/sysconfig/websockify'
+    expect(file(config_file)).to contain('WEBSOCKIFY_PORT=41338')
+    expect(file(config_file)).to contain('LOG_FILE=/var/log/websockify')
   end
 
   it 'has haproxy service configured' do

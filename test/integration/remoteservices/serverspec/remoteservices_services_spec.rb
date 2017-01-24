@@ -16,10 +16,10 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Remote Services services' do
   it 'has redis running' do
-    redisproc = os['release'].to_i < 7 ? 'redis' : 'redis@'
-    expect(service("#{redisproc}-master")).to be_enabled
-    expect(service("#{redisproc}-master")).to be_running
-    expect(service("#{redisproc}-master")).to be_running.under('systemd') if os['release'].to_i >= 7
+    redisproc = os[:release].to_i < 7 ? 'redis' : 'redis@'
+    expect(service("#{redisproc}master")).to be_enabled
+    expect(service("#{redisproc}master")).to be_running
+    expect(service("#{redisproc}master")).to be_running.under('systemd') if os[:release].to_i >= 7
     expect(port(6379)).to be_listening
   end
 
