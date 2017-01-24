@@ -1,0 +1,7 @@
+WEBSOCKIFY=/opt/websockify/run
+WEBSOCKIFY_PORT=<%= node['abiquo']['websockify']['port'] %>
+WEBSOCKIFY_ADDRESS=<%= node['abiquo']['websockify']['address'] %>
+CERT_FILE=<%= node['abiquo']['websockify']['crt'] %>
+KEY_FILE=<%= node['abiquo']['websockify']['key'] %>
+LOG_FILE=/var/log/websockify.log
+CONFIG_FILE=/opt/websockify/abiquo.cfg

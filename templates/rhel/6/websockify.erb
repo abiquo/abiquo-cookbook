@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# websockify   This shell script takes care of starting and stopping
+#              the websockify server.
+#
+# chkconfig: 2345 90 10
+# description: websockify server.
+# processname: websockify
+# pidfile: /var/websockify/websockify.pid
+
+# Installation instructions:
+# cp init.d/websockify /etc/init.d/websockify
+# chkconfig --add websockify
+# service websockify start
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+BINDIR=/opt/websockify
+VARDIR=/var/websockify
+WEBSOCKIFY=$BINDIR/run
+WEBSOCKIFY_ADDR=<%= @websockify_address %>
+WEBSOCKIFY_PORT=<%= @websockify_port %>
+PIDFILE=/var/run/websockify.pid
+CONFIG_FILE=$BINDIR/abiquo.cfg
+LOG_FILE=/var/log/websockify
+USER=root
+
+# See how we were called.
+case "$1" in
+  start)
+  [ -x $WEBSOCKIFY ] || exit 1
+  echo -n $"Starting websockify server: "
+  daemon --user "$USER" --pidfile $PIDFILE python "$WEBSOCKIFY" -D "$WEBSOCKIFY_ADDR":"$WEBSOCKIFY_PORT" --token-plugin websockify.abiquo_plugin.AbiquoTokenPlugin --token-source $CONFIG_FILE --log-file="$LOG_FILE"
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] && sleep 1 && ps aux | grep [/]opt/websockify/run | awk '{print $2}' > $PIDFILE
+  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/websockify
+  ;;
+  stop)
+  # Stop daemon.
+  echo -n $"Shutting down websockify server: "
+  killproc websockify
+  RETVAL=$?
+  echo
+  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/websockify
+  ;;
+  status)
+  status websockify
+  RETVAL=$?
+  ;;
+  restart|reload)
+  $0 stop
+  $0 start
+  ;;
+  condrestart)
+  [ -f /var/lock/subsys/websockify ] && restart || :
+  ;;
+  *)
+  echo $"Usage: $0 {start|stop|status|restart}"
+  RETVAL=3
+  ;;
+esac
