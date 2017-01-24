@@ -38,11 +38,6 @@ describe 'Server services' do
     expect(port(6379)).to be_listening
   end
 
-  it 'has rpcbind running' do
-    expect(service('rpcbind')).to be_enabled
-    expect(service('rpcbind')).to be_running
-  end
-
   it 'has apache running' do
     expect(service('httpd')).to be_enabled
     expect(service('httpd')).to be_running

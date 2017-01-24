@@ -65,7 +65,7 @@ describe 'Server configuration' do
 
   it 'has ssl properly configured' do
     expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLEngine on')
-    expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLProtocol all -SSLv2 -SSLv3')
+    expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLProtocol All -SSLv2 -SSLv3')
     expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCipherSuite EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH')
     expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateFile /etc/pki/abiquo/server.abiquo.com.crt')
     expect(file('/etc/httpd/sites-available/abiquo.conf')).to contain('SSLCertificateKeyFile /etc/pki/abiquo/server.abiquo.com.key')
