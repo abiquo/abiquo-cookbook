@@ -48,7 +48,7 @@ default['abiquo']['db']['enable-master'] = false
 
 # Redis configuration
 default['redisio']['servers'] = [{
-  'name' => '-master',
+  'name' => 'master',
   'port' => 6379,
   'address' => '0.0.0.0'
 }]

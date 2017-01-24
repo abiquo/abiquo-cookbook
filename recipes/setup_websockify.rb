@@ -15,14 +15,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-template '/etc/init.d/websockify' do
-  source 'websockify.erb'
-  owner 'root'
-  group 'root'
-  variables(websockify_port: node['abiquo']['websockify']['port'],
-            websockify_address: node['abiquo']['websockify']['address'])
-  action :create
-  notifies :restart, 'service[websockify]'
+if node['platform_version'].to_i == 7
+  template '/etc/sysconfig/websockify' do
+    source "#{node['platform_family']}/#{node['platform_version'].to_i}/conf-websockify.erb"
+    owner 'root'
+    group 'root'
+    action :create
+    notifies :restart, 'service[websockify]'
+  end
+else
+  template '/etc/init.d/websockify' do
+    source 'websockify.erb'
+    owner 'root'
+    group 'root'
+    variables(websockify_port: node['abiquo']['websockify']['port'],
+              websockify_address: node['abiquo']['websockify']['address'])
+    action :create
+    notifies :restart, 'service[websockify]'
+  end
 end
 
 template '/opt/websockify/abiquo.cfg' do

@@ -33,7 +33,7 @@ describe 'Monolithic services' do
   end
 
   it 'has redis running' do
-    redisproc = os['release'].to_i < 7 ? 'redis' : 'redis@'
+    redisproc = os[:release].to_i < 7 ? 'redis' : 'redis@'
     expect(service("#{redisproc}-master")).to be_enabled
     expect(service("#{redisproc}-master")).to be_running
     expect(service("#{redisproc}-master")).to be_running.under('systemd') if os['release'].to_i >= 7

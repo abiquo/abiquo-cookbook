@@ -27,9 +27,16 @@ describe 'Monolithic configuration' do
     end
   end
 
-  it 'has websockify service script configured' do
-    expect(file('/etc/init.d/websockify')).to contain('WEBSOCKIFY_PORT=41338')
-    expect(file('/etc/init.d/websockify')).to contain('LOG_FILE=/var/log/websockify')
+  if os[:release].to_i == 6
+    it 'has websockify service script configured' do
+      expect(file('/etc/init.d/websockify')).to contain('WEBSOCKIFY_PORT=41338')
+      expect(file('/etc/init.d/websockify')).to contain('LOG_FILE=/var/log/websockify')
+    end
+  else
+    it 'has websockify service script configured' do
+      expect(file('/etc/sysconfig/websockify')).to contain('WEBSOCKIFY_PORT=41338')
+      expect(file('/etc/sysconfig/websockify')).to contain('LOG_FILE=/var/log/websockify')
+    end
   end
 
   it 'has the config file for the websockify plugin' do
