@@ -19,3 +19,7 @@ end
 def permissive_selinux_state(resource_name)
   ChefSpec::Matchers::ResourceMatcher.new(:selinux_state, :permissive, resource_name)
 end
+
+def lock_yum_package(resource_name)
+  ChefSpec::Matchers::ResourceMatcher.new(:yum_package, :lock, resource_name)
+end

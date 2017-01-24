@@ -3,7 +3,7 @@ Abiquo Cookbook
 
 [![Build Status](https://travis-ci.org/abiquo/abiquo-cookbook.svg?branch=master)](https://travis-ci.org/abiquo/abiquo-cookbook)
 [![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.10.0-blue.svg?style=flat)](https://supermarket.chef.io/cookbooks/abiquo)
-[![Chef Version](http://img.shields.io/badge/chef-v12.5.1-orange.svg?style=flat)](https://www.chef.io)
+[![Chef Version](http://img.shields.io/badge/chef-v12.16.42-orange.svg?style=flat)](https://www.chef.io)
 
 This cookbook provides several recipes to install and upgrade an Abiquo platform.
 It allows you to provision an Abiquo Server, the Remote Services server, standalone V2V
@@ -46,7 +46,7 @@ Once installed you can run the unit and integration tests as follows:
     bundle exec rake          # Run the unit and style tests
     bundle exec rake kitchen  # Run the integration tests
 
-The tests and Gemfile have been developed using Ruby 2.1.5, and that is the recommended Ruby version to use to run the tests.
+The tests and Gemfile have been developed using Ruby 2.2.5, and that is the recommended Ruby version to use to run the tests.
 Other versions may cause conflicts with the versions of the gems Bundler will install.
 
 ## RHEL testing

@@ -20,7 +20,7 @@ require_relative 'support/stubs'
 describe 'abiquo::upgrade' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new(file_cache_path: '/tmp', internal_locale: 'en_US.UTF-8') do |node|
-      node.set['abiquo']['certificate']['common_name'] = 'test.local'
+      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     end
   end
 
@@ -31,7 +31,7 @@ describe 'abiquo::upgrade' do
     allow(::File).to receive(:executable?).with('/sbin/initctl').and_return(false)
     stub_package_commands(['abiquo-api', 'abiquo-server'])
     stub_check_db_pass_command('root', '')
-    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
   end
 
   it 'does nothing if repoquery is not installed' do

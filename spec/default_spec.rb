@@ -21,13 +21,13 @@ describe 'abiquo::default' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
       node.set['cassandra']['config']['cluster_name'] = 'abiquo'
-      node.set['abiquo']['certificate']['common_name'] = 'test.local'
+      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     end
   end
-  let(:cn) { 'test.local' }
+  let(:cn) { 'fauxhai.local' }
 
   before do
-    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
     stub_command('/usr/sbin/httpd -t').and_return(true)
     stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
   end

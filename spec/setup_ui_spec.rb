@@ -18,13 +18,13 @@ require_relative 'support/stubs'
 describe 'abiquo::setup_ui' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
-      node.set['abiquo']['certificate']['common_name'] = 'test.local'
+      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     end
   end
 
   before do
     stub_command('/usr/sbin/httpd -t').and_return(true)
-    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
   end
 
   it 'renders ui configuration file' do

@@ -19,14 +19,14 @@ require_relative 'support/stubs'
 describe 'abiquo::install_monolithic' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
-      node.set['abiquo']['certificate']['common_name'] = 'test.local'
+      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     end.converge('apache2::default', described_recipe, 'abiquo::service')
   end
-  let(:cn) { 'test.local' }
+  let(:cn) { 'fauxhai.local' }
 
   before do
     stub_check_db_pass_command('root', '')
-    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
     stub_command('/usr/sbin/httpd -t').and_return(true)
     stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
     stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)

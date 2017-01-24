@@ -15,6 +15,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# CentOS 7 issue: https://bugs.centos.org/view.php?id=12632&nbn=2
+if node['virtualization']['role'] == 'guest' && node['platform_version'].to_i >= 7
+  yum_repository 'kvm-common' do
+    description 'Backports for the seabios package'
+    baseurl 'http://buildlogs.centos.org/centos/7/virt/x86_64/kvm-common'
+    includepkgs 'seabios,seabios-bin,seavgabios-bin'
+    gpgcheck false
+    action :create
+  end
+
+  package 'yum-plugin-versionlock' do
+    action :install
+  end
+
+  yum_package 'seabios' do
+    version '1.7.5-11.el7'
+    action [:lock, :install]
+  end
+end
+
 package 'qemu-kvm' do
   action :install
 end

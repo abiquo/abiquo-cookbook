@@ -18,14 +18,14 @@ require_relative 'support/stubs'
 describe 'abiquo::certificate' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
-      node.set['abiquo']['certificate']['common_name'] = 'test.local'
+      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     end.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
   end
-  let(:cn) { 'test.local' }
+  let(:cn) { 'fauxhai.local' }
 
   before do
     stub_command('/usr/sbin/httpd -t').and_return(true)
-    stub_certificate_files('/etc/pki/abiquo/test.local.crt', '/etc/pki/abiquo/test.local.key')
+    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
   end
 
   it 'creates the /etc/pki/abiquo directory' do
@@ -48,14 +48,14 @@ describe 'abiquo::certificate' do
 
   it 'does not create a self signed cert if "source" is not "self-signed"' do
     chef_run.node.set['abiquo']['certificate']['source'] = 'file'
-    chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    chef_run.node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
     expect(chef_run).to_not create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
   end
 
   it 'creates does not overwrite self signed certificate' do
     allow(::File).to receive(:file?).and_return(true)
-    chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    chef_run.node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
     resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
     expect(resource).to do_nothing
@@ -70,7 +70,7 @@ describe 'abiquo::certificate' do
 
   it 'does not install the certificate in the java trust store if only UI is installed' do
     chef_run.node.set['abiquo']['profile'] = 'ui'
-    chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    chef_run.node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
     resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
     expect(resource).to do_nothing
@@ -78,7 +78,7 @@ describe 'abiquo::certificate' do
 
   it 'does not install the certificate in the java trust store if only websockify is installed' do
     chef_run.node.set['abiquo']['profile'] = 'websockify'
-    chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    chef_run.node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     chef_run.converge('abiquo::install_websockify', described_recipe, 'abiquo::service')
     resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
     expect(resource).to do_nothing
@@ -88,7 +88,7 @@ describe 'abiquo::certificate' do
     chef_run.node.set['abiquo']['profile'] = 'remoteservices'
     chef_run.node.set['abiquo']['properties']['abiquo.server.api.location'] = 'https://some.fqdn.org/api'
     chef_run.node.set['abiquo']['certificate']['additional_certs'] = { 'someservice' => 'https://some.fqdn.org' }
-    chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    chef_run.node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     chef_run.converge('apache2::default', 'abiquo::install_remoteservices', described_recipe, 'abiquo::service')
 
     expect(chef_run).to download_abiquo_download_cert('api')
@@ -103,7 +103,7 @@ describe 'abiquo::certificate' do
   it 'retrieves additional certs if specified' do
     chef_run.node.set['abiquo']['properties']['abiquo.server.api.location'] = 'https://some.apifqdn.org/api'
     chef_run.node.set['abiquo']['certificate']['additional_certs'] = { 'someservice' => 'https://some.fqdn.org' }
-    chef_run.node.set['abiquo']['certificate']['common_name'] = 'test.local'
+    chef_run.node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
 
     expect(chef_run).to download_abiquo_download_cert('someservice')

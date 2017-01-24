@@ -32,7 +32,7 @@ describe 'Monolithic configuration' do
     expect(file(config_file)).to contain('WEBSOCKIFY_PORT=41338')
     expect(file(config_file)).to contain('LOG_FILE=/var/log/websockify')
   end
-  
+
   it 'has the config file for the websockify plugin' do
     expect(file('/opt/websockify/abiquo.cfg')).to contain('[websockify]')
     expect(file('/opt/websockify/abiquo.cfg')).to contain('ssl_verify = false')

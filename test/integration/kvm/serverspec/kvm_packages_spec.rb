@@ -19,6 +19,10 @@ describe 'KVM packages' do
     expect(package('qemu-kvm')).to be_installed
   end
 
+  it 'has the qemu package installed' do
+    expect(package('qemu-kvm')).to be_installed
+  end
+
   it 'has the qemu binary in place' do
     expect(file('/usr/bin/qemu-system-x86_64')).to exist
   end
@@ -33,5 +37,12 @@ describe 'KVM packages' do
     %w(openstack-neutron openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
       expect(package(pkg)).to be_installed
     end
+  end
+end
+
+describe 'KVM packages for CentOS 7', if: os[:release].to_i >= 7 do
+  it 'has the seabios backport installed' do
+    expect(package('yum-plugin-versionlock')).to be_installed
+    expect(package('seabios')).to be_installed.with_version('1.7.5-11.el7')
   end
 end

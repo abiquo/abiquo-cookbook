@@ -20,7 +20,7 @@ actions :wait
 default_action :nothing
 
 attribute :host, kind_of: String, default: 'localhost'
-attribute :port, kind_of: Fixnum
+attribute :port, kind_of: Integer
 attribute :service, kind_of: String, name_attribute: true
-attribute :delay, kind_of: Fixnum, default: 10
-attribute :timeout, kind_of: Fixnum, default: 5
+attribute :delay, kind_of: Integer, default: 10
+attribute :timeout, kind_of: Integer, default: 5

@@ -3,6 +3,8 @@ abiquo CHANGELOG
 
 ## 0.10.0
 
+* Lock the version of the seabios dependency in CentOS 7 virtualized KVMs
+  to bypass CentOS bug: https://bugs.centos.org/view.php?id=12632&nbn=2
 * Added support for OpenStack Neutron in KVM hosts.
 * Add support for CentOS 7.
 * Allow to configure MariaDB as master so new slaves can replicate from it.

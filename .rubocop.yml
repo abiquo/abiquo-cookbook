@@ -1,12 +1,18 @@
+Bundler/OrderedGems:
+  Exclude:
+    - 'Gemfile'
+
 LineLength:
   Max: 250
+
+Metrics/AbcSize:
+  Enabled: false
+Metrics/BlockLength:
+  Enabled: false
+Metrics/MethodLength:
+  Max: 50
 
 Style/Documentation:
   Enabled: false
 Style/NumericLiterals:
   Enabled: false
-
-Metrics/AbcSize:
-  Enabled: false
-Metrics/MethodLength:
-  Max: 50
