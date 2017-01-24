@@ -34,7 +34,7 @@ The available profiles are:
 
 When installing the Abiquo Monolithic profile, you may also want to set the `node['abiquo']['certificate']`
 properties so the right certificate is used or a self-signed one is generated. You can also use it together
-with the [hostname](http://community.opscode.com/cookbooks/hostname) cookbook to make sure the node will have it properly configured.
+with the [hostnames](http://community.opscode.com/cookbooks/hostnames) cookbook to make sure the node will have it properly configured.
 
 # Testing
 

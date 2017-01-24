@@ -33,8 +33,10 @@ describe 'Monolithic services' do
   end
 
   it 'has redis running' do
-    expect(service('redis-master')).to be_enabled
-    expect(service('redis-master')).to be_running
+    redisproc = host_inventory['platform_version'] < 7 ? 'redis' : 'redis@'
+    expect(service("#{redisproc}-master")).to be_enabled
+    expect(service("#{redisproc}-master")).to be_running
+    expect(service("#{redisproc}-master")).to be_running.under('systemd') if host_inventory['platform_version'] >= 7
     expect(port(6379)).to be_listening
   end
 
