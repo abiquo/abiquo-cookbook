@@ -61,7 +61,7 @@ end
 lqb_cmd = node['abiquo']['profile'] == 'monitoring' ? liquibase_cmd('update', node['abiquo']['monitoring']['db'], true) : liquibase_cmd('update', node['abiquo']['db'])
 execute 'liquibase-update' do
   command lqb_cmd
-  cwd '/usr/share/doc/abiquo-server/database'
+  cwd '/usr/share/doc/abiquo-model/database'
   only_if { (node['abiquo']['profile'] == 'monolithic' || node['abiquo']['profile'] == 'server') && node['abiquo']['db']['upgrade'] }
   action :nothing
   subscribes :run, 'package[abiquo-server]', :immediately

@@ -200,7 +200,7 @@ describe 'abiquo::upgrade' do
     resource = chef_run.find_resource(:execute, 'liquibase-update')
     expect(resource).to subscribe_to('package[abiquo-server]').on(:run).immediately
     expect(resource).to do_nothing
-    expect(resource.cwd).to eq('/usr/share/doc/abiquo-server/database')
+    expect(resource.cwd).to eq('/usr/share/doc/abiquo-model/database')
     expect(resource.command).to eq('abiquo-db -h localhost -P 3306 -u root update')
     expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
   end
@@ -214,7 +214,7 @@ describe 'abiquo::upgrade' do
     resource = chef_run.find_resource(:execute, 'liquibase-update')
     expect(resource).to subscribe_to('package[abiquo-server]').on(:run).immediately
     expect(resource).to do_nothing
-    expect(resource.cwd).to eq('/usr/share/doc/abiquo-server/database')
+    expect(resource.cwd).to eq('/usr/share/doc/abiquo-model/database')
     expect(resource.command).to eq('abiquo-db -h 127.0.0.1 -P 3306 -u root -p abiquo update')
     expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
   end
