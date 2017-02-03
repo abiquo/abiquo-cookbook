@@ -33,7 +33,7 @@ describe 'V2V packages' do
 
   it 'has the iSCSI initiator name configured' do
     expect(file('/etc/iscsi/initiatorname.iscsi')).to exist
-    expect(file('/etc/iscsi/initiatorname.iscsi').size).to be > 0
+    expect(file('/etc/iscsi/initiatorname.iscsi').size).to be.positive?
   end
 
   it 'has the strong jce encryption policies installed' do

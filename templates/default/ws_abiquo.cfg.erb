@@ -1,5 +1,4 @@
 [websockify]
-ssl_verify = false
-<% @creds.each do |k, v| %>
+<% @wsvars.each do |k, v| %>
 <%= k %> = <%= v %>
 <% end %>
