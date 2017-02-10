@@ -34,16 +34,25 @@ describe 'abiquo::install_mariadb' do
   it 'restarts mysql service if necessary' do
     resource = chef_run.find_resource(:service, 'mysql')
     expect(resource).to do_nothing
-    expect(resource).to subscribe_to('mariadb_configuration[replication]').on(:restart).immediately
+    expect(resource).to subscribe_to('mariadb_configuration[30-replication]').on(:restart).immediately
   end
 
   it 'installs the mysql2 gem' do
     expect(chef_run).to install_mysql2_chef_gem('default')
   end
 
-  it 'creates the Abiquo DB user' do
+  it 'creates the Abiquo DB kinton user' do
     expect(chef_run).to grant_mysql_database_user("kinton-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
     resource = chef_run.find_resource(:mysql_database_user, "kinton-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
+    expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
+    expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
+    expect(resource.host).to eq(chef_run.node['abiquo']['db']['from'])
+    expect(resource.privileges).to eq([:all])
+  end
+
+  it 'creates the Abiquo DB kinton_accounting user' do
+    expect(chef_run).to grant_mysql_database_user("kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
+    resource = chef_run.find_resource(:mysql_database_user, "kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
     expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
     expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
     expect(resource.host).to eq(chef_run.node['abiquo']['db']['from'])

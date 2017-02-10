@@ -25,7 +25,7 @@ include_recipe 'mariadb'
 # changed.
 service 'mysql' do
   action :nothing
-  subscribes :restart, 'mariadb_configuration[replication]', :immediately
+  subscribes :restart, 'mariadb_configuration[30-replication]', :immediately
   not_if { node['abiquo']['db']['enable-master'].nil? }
 end
 
@@ -41,20 +41,23 @@ conn_info = {
 }
 
 # Need to grant for localhost to run the scripts
+schemas = %w(kinton kinton_accounting)
 kinton_grants_from = if node['abiquo']['db']['from'] != 'localhost'
                        ['localhost', node['abiquo']['db']['from']]
                      else
                        ['localhost']
                      end
-kinton_grants_from.each do |from_host|
-  mysql_database_user "kinton-#{node['abiquo']['db']['user']}-#{from_host}" do
-    connection    conn_info
-    database_name 'kinton'
-    username      node['abiquo']['db']['user']
-    password      node['abiquo']['db']['password']
-    host          from_host
-    privileges    [:all]
-    action        :grant
+schemas.each do |schema|
+  kinton_grants_from.each do |from_host|
+    mysql_database_user "#{schema}-#{node['abiquo']['db']['user']}-#{from_host}" do
+      connection    conn_info
+      database_name schema
+      username      node['abiquo']['db']['user']
+      password      node['abiquo']['db']['password']
+      host          from_host
+      privileges    [:all]
+      action        :grant
+    end
   end
 end
 
