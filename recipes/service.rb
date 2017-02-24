@@ -17,7 +17,7 @@
 
 template '/opt/abiquo/tomcat/conf/server.xml' do
   source 'server.xml.erb'
-  owner 'root'
+  owner 'tomcat'
   group 'root'
   action :create
   notifies :restart, 'service[abiquo-tomcat]'

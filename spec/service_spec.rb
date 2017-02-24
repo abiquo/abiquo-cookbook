@@ -43,9 +43,10 @@ describe 'abiquo::service' do
     chef_run.converge(described_recipe)
     expect(chef_run).to create_template('/opt/abiquo/tomcat/conf/server.xml').with(
       source: 'server.xml.erb',
-      owner: 'root',
+      owner: 'tomcat',
       group: 'root'
     )
+
     resource = chef_run.template('/opt/abiquo/tomcat/conf/server.xml')
     expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
   end
