@@ -38,7 +38,15 @@ with the [hostnames](http://community.opscode.com/cookbooks/hostnames) cookbook 
 
 # Testing
 
-In order to test the cookbook you will need to install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/).
+In order to test the cookbook you will need to install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/). 
+
+* Tested on:
+
+| Operating System | Vagrant version | VirtualBox version |
+|---|---|---|
+| Fedora 25 |  1.8.5 | 5.1.14r112924 |
+| OS X 10.12.2 | 1.9.1 | 5.0.32r112930 |
+
 Once installed you can run the unit and integration tests as follows:
 
     bundle install
