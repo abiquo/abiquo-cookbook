@@ -82,6 +82,7 @@ describe 'Server configuration' do
 
   it 'has tomcat properly configured' do
     expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
+    expect(file('/opt/abiquo/tomcat/conf/server.xml')).to be_owned_by('tomcat')
   end
 
   it 'has DB properly configured' do
