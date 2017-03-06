@@ -22,7 +22,12 @@ describe 'Server services' do
 
   it 'has mysql running' do
     expect(service('mysql')).to be_enabled
-    expect(service('mysql')).to be_running
+    # MySQL systemd hack
+    if os[:release].to_i < 7
+      expect(service('mysql')).to be_running
+    else
+      expect(command("kill -0 `cat /var/lib/mysql/#{host_inventory[:hostname]}.pid`").exit_status).to eq 0
+    end
     expect(port(3306)).to be_listening
   end
 
