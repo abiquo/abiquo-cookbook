@@ -89,7 +89,11 @@ suites:
           client.test.timeout: 600
         ui_proxies:
           /api:
-            url: ajp://some_api:8010/api
+            url: ajp://localhost:8010/api
+          /m:
+            url: http://localhost:8009/m
+          /legal:
+            url: ajp://localhost:8010/legal 
           /cms:
             url: https://some_cms/blah
             options:
