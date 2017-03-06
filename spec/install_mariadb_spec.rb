@@ -77,6 +77,15 @@ describe 'abiquo::install_mariadb' do
     expect(resource.privileges).to eq([:all])
   end
 
+  it 'creates the Abiquo DB kinton_accounting user in localhost' do
+    expect(chef_run).to grant_mysql_database_user("kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-localhost")
+    resource = chef_run.find_resource(:mysql_database_user, "kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-localhost")
+    expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
+    expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
+    expect(resource.host).to eq('localhost')
+    expect(resource.privileges).to eq([:all])
+  end
+
   it 'creates the Watchtower DB user in localhost' do
     expect(chef_run).to grant_mysql_database_user("watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-localhost")
     resource = chef_run.find_resource(:mysql_database_user, "watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-localhost")

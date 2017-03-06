@@ -61,7 +61,7 @@ ruby_block 'extract-m-user-password' do
     client = Mysql2::Client.new(conn_info.merge(database: 'kinton'))
     query = 'select COMMENTS from DATABASECHANGELOG where ID = "default_user_for_m"'
     result = client.query(query).first['COMMENTS']
-    node.set['abiquo']['properties']['abiquo.m.credential'] = result
+    node.normal['abiquo']['properties']['abiquo.m.credential'] = result
   end
   action :nothing
   not_if { node['abiquo']['properties'].key? 'abiquo.m.credential' }
