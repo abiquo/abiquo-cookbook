@@ -15,22 +15,13 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Monitoring services' do
-  it 'has selinux configured as permissive' do
-    expect(selinux).to be_permissive
-  end
+  include_examples 'common::services'
 
-  it 'has the firewall configured' do
-    expect(iptables).to have_rule('-A INPUT -i lo -j ACCEPT')
-    expect(iptables).to have_rule('-A INPUT -p icmp -j ACCEPT')
-    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT')
+  it 'has the monitoring firewall rules configured' do
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT')
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 9160 -j ACCEPT')
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 7000 -j ACCEPT')
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 36638 -j ACCEPT')
-    expect(iptables).to have_rule('-P INPUT DROP')
-
-    # Cannot use have_rule with comma
-    expect(command('iptables -S | grep -- "-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT"').exit_status).to eq 0
   end
 
   it 'has the cassandra service running' do

@@ -21,9 +21,9 @@ describe 'abiquo::install_v2v' do
     expect(chef_run).to install_package('jdk')
   end
 
-  %w(abiquo-v2v redis abiquo-sosreport-plugins).each do |pkg|
+  %w(v2v sosreport-plugins).each do |pkg|
     it "installs the #{pkg} abiquo package" do
-      expect(chef_run).to install_package(pkg)
+      expect(chef_run).to install_package("abiquo-#{pkg}")
     end
   end
 

@@ -35,14 +35,9 @@ describe 'abiquo::setup_server' do
     expect(chef_run).to include_recipe('abiquo::service')
   end
 
-  it 'includes the setup-ui recipe' do
+  it 'includes the setup frontend recipe' do
     chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe, 'abiquo::service')
-    expect(chef_run).to include_recipe('abiquo::setup_ui')
-  end
-
-  it 'includes the setup-websockify recipe' do
-    chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe, 'abiquo::service')
-    expect(chef_run).to include_recipe('abiquo::setup_websockify')
+    expect(chef_run).to include_recipe('abiquo::setup_frontend')
   end
 
   it 'renders API DB configuration file' do
@@ -67,10 +62,9 @@ describe 'abiquo::setup_server' do
     expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
   end
 
-  it 'does not configure frontend components if configured' do
+  it 'does not configure frontend components if not configured' do
     chef_run.node.set['abiquo']['server']['install_frontend'] = false
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    expect(chef_run).to_not include_recipe('abiquo::setup_websockify')
-    expect(chef_run).to_not include_recipe('abiquo::setup_ui')
+    expect(chef_run).to_not include_recipe('abiquo::setup_frontend')
   end
 end

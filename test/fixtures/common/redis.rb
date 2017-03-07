@@ -1,4 +1,4 @@
-# Copyright 2014, Abiquo
+# Copyright 2014,
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,22 +14,21 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Remote Services packages' do
-  include_examples 'common::packages'
-  include_examples 'abiquo::packages'
-  include_examples 'websockify::packages'
+shared_examples 'common::redis' do
+  it 'has a redis user with a proper login shell' do
+    expect(user('redis')).to exist
+    expect(user('redis')).to have_login_shell('/bin/sh')
+  end
 
-  it 'has the remote services system packages installed' do
+  it 'has the redis package installed' do
     expect(package('redis')).to be_installed
   end
 
-  it 'has the remote services packages installed' do
-    expect(package('abiquo-remote-services')).to be_installed
-  end
-
-  it 'does not have other abiquo installed' do
-    %w(ui server v2v monolithic).each do |pkg|
-      expect(package("abiquo-#{pkg}")).to_not be_installed
-    end
+  it 'has redis running' do
+    redisproc = os[:release].to_i < 7 ? 'redis' : 'redis@'
+    expect(service("#{redisproc}master")).to be_enabled
+    expect(service("#{redisproc}master")).to be_running
+    expect(service("#{redisproc}master")).to be_running.under('systemd') if os[:release].to_i >= 7
+    expect(port(6379)).to be_listening
   end
 end

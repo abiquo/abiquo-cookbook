@@ -16,8 +16,7 @@
 # limitations under the License.
 
 if node['abiquo']['server']['install_frontend']
-  include_recipe 'abiquo::setup_ui'
-  include_recipe 'abiquo::setup_websockify'
+  include_recipe 'abiquo::setup_frontend'
 end
 
 template '/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml' do

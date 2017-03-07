@@ -14,7 +14,16 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'common::config' do
+  it 'has the epel repos installed' do
+    expect(file('/etc/yum.repos.d/epel.repo')).to be_file
+    expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
+  end
+
+  it 'has the yum repositories configured' do
+    %w(base updates).each do |repo|
+      expect(yumrepo("abiquo-#{repo}")).to exist
+      expect(yumrepo("abiquo-#{repo}")).to be_enabled
+    end
+  end
 end

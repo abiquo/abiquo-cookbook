@@ -26,7 +26,8 @@ ssl_certificate node['abiquo']['certificate']['common_name'] do
   key_path  node['abiquo']['certificate']['key_file']
   not_if { ::File.file? "node['abiquo']['certificate']['file']" }
   only_if { node['abiquo']['certificate']['source'] == 'self-signed' }
-  notifies :restart, 'service[apache2]' if node.recipe?('abiquo::install_ui')
+  notifies :restart, 'service[apache2]' if node.recipe?('abiquo::install_frontend')
+  notifies :restart, 'service[haproxy]' if node.recipe?('abiquo::install_frontend')
   notifies :import, "java_management_truststore_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
   notifies :create, "template[#{node['abiquo']['certificate']['file']}.haproxy.crt]", :immediately
 end

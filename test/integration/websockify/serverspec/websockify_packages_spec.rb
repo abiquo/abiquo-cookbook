@@ -15,17 +15,8 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Websockify packages' do
-  it 'has the system packages installed' do
-    expect(package('cronie')).to be_installed
-  end
-
-  it 'has the abiquo packages installed' do
-    expect(package('abiquo-websockify')).to be_installed
-  end
-
-  it 'has the haproxy package installed' do
-    expect(package('haproxy')).to be_installed
-  end
+  include_examples 'common::packages'
+  include_examples 'websockify::packages'
 
   it 'does not have other abiquo installed' do
     %w(ui server remote-services monolithic nodecollector).each do |pkg|

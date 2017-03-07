@@ -14,5 +14,29 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+json_settings = Chef::JSONCompat.to_json_pretty(node['abiquo']['ui_config'])
 
-include_recipe 'abiquo::setup_ui'
+file '/var/www/html/ui/config/client-config-custom.json' do
+  content json_settings
+  owner 'root'
+  group 'root'
+  action :create
+  notifies :restart, 'service[apache2]'
+end
+
+ws_proxies = []
+ws_proxies << resources(haproxy_frontend: 'public')
+if node['abiquo']['haproxy']['use_default_path']
+  ws_proxies << resources(haproxy_backend: 'ws')
+else
+  node['abiquo']['haproxy']['ws_paths'].each do |path, _dest|
+    ws_proxies << resources(haproxy_backend: path.downcase.tr('/', '_'))
+  end
+end
+node.set['abiquo']['haproxy']['ws_proxies'] = ws_proxies
+
+haproxy_instance 'haproxy' do
+  proxies node['abiquo']['haproxy']['ws_proxies']
+  config ['user haproxy', 'group haproxy', 'log /dev/log local0']
+  tuning ['maxconn 1024']
+end

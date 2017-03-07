@@ -30,8 +30,6 @@ suites:
       abiquo:
         db:
           enable-master: true
-        ui_config:
-          config.endpoint: "https://monolithic.abiquo.com/api"
         ui_apache_opts:
           KeepAlive: "On"
           MaxKeepAliveRequests: 100
@@ -39,12 +37,17 @@ suites:
         ui_proxies:
           /am2: 
             url: http://some_am:8009/am
-          /cms:
-            url: https://some_cms/blah
             options:
               Header: add "Access-Control-Allow-Origin" "*"
         certificate:
-          common_name: monolithic.abiquo.com
+          common_name: frontend.bcn.abiquo.com
+        haproxy:
+          use_default_path: true
+          ws_paths:
+            /somePath: 
+              - 10.10.10.10:41338
+            /someOtherPath: 
+              - 20.20.20.20:41338
   - name: server
     run_list:
       - recipe[abiquo::default]
@@ -55,18 +58,6 @@ suites:
         db:
           user: abiquo
           password: abiquo
-        ui_config:
-          config.endpoint: "https://server.abiquo.com/api"
-          client.backto.url: "http://google.com"
-          client.google.maps.key: "trocotro"
-          client.test.timeout: 600
-          config.languages:
-            - value: en_US
-              name: US English
-              isDefault: true
-          client.themes:
-            - abicloudDefault
-            - someothertheme
         ui_apache_opts:
           KeepAlive: "On"
           MaxKeepAliveRequests: 100
@@ -74,15 +65,10 @@ suites:
         ui_proxies:
           /am2:
             url: http://some_am:8009/am
+            options:
+              Header: add "Access-Control-Allow-Origin" "*"
         certificate:
-          common_name: server.abiquo.com
-        haproxy:
-          use_default_path: true
-          ws_paths:
-            /somePath: 
-              - 10.10.10.10:41338
-            /someOtherPath: 
-              - 20.20.20.20:41338
+          common_name: frontend.bcn.abiquo.com
   - name: frontend
     run_list:
       - recipe[abiquo::default]
@@ -95,41 +81,31 @@ suites:
           client.backto.url: "http://google.com"
           client.google.maps.key: "trocotro"
           client.test.timeout: 600
+          client.themes:
+            - abicloudDefault
+            - someothertheme
+        ui_apache_opts:
+          KeepAlive: "On"
+          MaxKeepAliveRequests: 100
+          KeepAliveTimeout: 60
         ui_proxies:
           /api:
-            url: ajp://localhost:8010/api
-          /m:
-            url: http://localhost:8009/m
+            url: ajp://serverhost:8010/api
           /legal:
-            url: ajp://localhost:8010/legal 
+            url: ajp://serverhost:8010/legal
           /cms:
             url: https://some_cms/blah
             options:
               Header: add "Access-Control-Allow-Origin" "*"
         certificate:
-          common_name: frontend.abiquo.com
+          common_name: frontend.bcn.abiquo.com
         haproxy:
+          node_search_query: role:remoteservices
           ws_paths:
             /somePath: 
               - 10.10.10.10:41338
             /someOtherPath: 
               - 20.20.20.20:41338
-  - name: ui
-    run_list:
-      - recipe[abiquo::default]
-      - recipe[abiquo::upgrade]
-    attributes:
-      abiquo:
-        profile: ui
-        ui_config:
-          config.endpoint: "https://server.abiquo.com/api"
-          client.backto.url: "http://google.com"
-          client.google.maps.key: "trocotro"
-          client.test.timeout: 600
-        certificate:
-          common_name: server.abiquo.com
-        haproxy:
-          node_search_query: role:remoteservices
   - name: websockify
     run_list:
       - recipe[abiquo::default]
@@ -146,10 +122,6 @@ suites:
     attributes:
       abiquo:
         profile: remoteservices
-        yum:
-          base-repo: http://q683q694b6:973kkkfzhh@mirror.abiquo.com/abiquo/3.10-SNAPSHOT/os/x86_64
-          updates-repo: http://10.60.20.42/master/rpm
-          gpg-check: false
   - name: v2v
     run_list:
       - recipe[abiquo::default]

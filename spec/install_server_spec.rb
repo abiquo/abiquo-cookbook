@@ -75,20 +75,14 @@ describe 'abiquo::install_server' do
     expect(chef_run).to include_recipe('abiquo::install_database')
   end
 
-  it 'includes the install-ui recipe' do
+  it 'includes the install frontend recipe' do
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    expect(chef_run).to include_recipe('abiquo::install_ui')
-  end
-
-  it 'includes the install-websockify recipe' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    expect(chef_run).to include_recipe('abiquo::install_websockify')
+    expect(chef_run).to include_recipe('abiquo::install_frontend')
   end
 
   it 'does not install frontend components if configured' do
     chef_run.node.set['abiquo']['server']['install_frontend'] = false
     chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    expect(chef_run).to_not include_recipe('abiquo::install_websockify')
-    expect(chef_run).to_not include_recipe('abiquo::install_ui')
+    expect(chef_run).to_not include_recipe('abiquo::install_frontend')
   end
 end

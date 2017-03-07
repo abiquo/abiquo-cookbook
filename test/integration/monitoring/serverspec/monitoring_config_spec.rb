@@ -15,10 +15,7 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'Monitoring configuration' do
-  it 'has the epel repos installed' do
-    expect(file('/etc/yum.repos.d/epel.repo')).to be_file
-    expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
-  end
+  include_examples 'common::config'
 
   it 'kairosdb is configured to use cassandra' do
     expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.jetty.port=8080')

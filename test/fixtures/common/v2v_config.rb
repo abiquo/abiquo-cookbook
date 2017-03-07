@@ -14,7 +14,13 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'v2v::config' do
+  it 'has the ec2 api tools configured' do
+    expect(file('/etc/sysconfig/abiquo/ec2-api-tools')).to contain('^export EC2_HOME=')
+  end
+
+  it 'has the iSCSI initiator name configured' do
+    expect(file('/etc/iscsi/initiatorname.iscsi')).to exist
+    expect(file('/etc/iscsi/initiatorname.iscsi')).to contain('InitiatorName=iqn.')
+  end
 end

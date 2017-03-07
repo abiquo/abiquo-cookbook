@@ -14,7 +14,14 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'websockify::services' do
+  it 'has websockify running' do
+    expect(service('websockify')).to be_enabled
+    expect(service('websockify')).to be_running
+    expect(port(41338)).to be_listening.on('127.0.0.1')
+  end
+
+  it 'has the websockify firewall rules configured' do
+    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 41338 -j ACCEPT')
+  end
 end

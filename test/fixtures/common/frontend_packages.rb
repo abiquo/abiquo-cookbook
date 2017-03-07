@@ -14,7 +14,14 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'frontend::packages' do
+  it 'has the frontend packages installed' do
+    %w(ui tutorials).each do |pkg|
+      expect(package("abiquo-#{pkg}")).to be_installed
+    end
+  end
+
+  it 'has the haproxy package installed' do
+    expect(package('haproxy')).to be_installed
+  end
 end

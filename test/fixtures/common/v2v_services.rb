@@ -14,7 +14,9 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'v2v::services' do
+  it 'has rpcbind running' do
+    expect(service('rpcbind')).to be_enabled
+    expect(service('rpcbind')).to be_running
+  end
 end

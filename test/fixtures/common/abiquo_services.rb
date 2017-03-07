@@ -14,7 +14,16 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'abiquo::services' do
+  it 'has tomcat running' do
+    expect(service('abiquo-tomcat')).to be_enabled
+    expect(service('abiquo-tomcat')).to be_running
+    expect(port(8009)).to be_listening
+    expect(port(8010)).to be_listening
+  end
+
+  it 'has the tomcat firewall rules configured' do
+    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8009 -j ACCEPT')
+    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 8010 -j ACCEPT')
+  end
 end

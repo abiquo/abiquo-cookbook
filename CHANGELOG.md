@@ -1,6 +1,13 @@
 abiquo CHANGELOG
 ================
 
+## 0.11.0
+
+* Deprecated the 'ui' profile. The 'frontend' one must be used.
+* Install the Websockify server with the 'remoteservices' profile. The frontend
+  can be configured with a set of attributes to define the Websockify backends
+  or use a search query to discover and dynamically configure them.
+
 ## 0.10.0
 
 * Lock the version of the seabios dependency in CentOS 7 virtualized KVMs

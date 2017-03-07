@@ -24,7 +24,6 @@ The available profiles are:
 - `monolithic` sets up all Abiquo components in one host.
 - `remoteservices` sets up the Abiquo remote services (except V2V).
 - `server` sets up the Abiquo management components (API, M) plus the frontend components (UI, websockify).
-- `ui` sets up the Abiquo UI.
 - `websockify` sets up the Websockify proxy for noVNC connections.
 - `frontend` sets up the frontend components, UI and Websockify.
 - `v2v` sets up the Abiquo V2V conversion manager.

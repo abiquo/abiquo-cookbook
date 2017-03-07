@@ -44,7 +44,7 @@ describe 'abiquo::default' do
     expect(chef_run).to start_service('crond')
   end
 
-  %w(monolithic server v2v remoteservices kvm monitoring ui websockify).each do |profile|
+  %w(monolithic server v2v remoteservices kvm monitoring frontend websockify).each do |profile|
     it "includes the recipes for the #{profile} profile" do
       chef_run.node.set['abiquo']['profile'] = profile
       chef_run.converge(described_recipe)

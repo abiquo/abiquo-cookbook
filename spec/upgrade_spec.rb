@@ -77,19 +77,28 @@ describe 'abiquo::upgrade' do
       expect(chef_run).to_not stop_service('abiquo-delorean')
       expect(chef_run).to_not stop_service('abiquo-emmett')
       expect(chef_run).to stop_service('apache2')
-      expect(chef_run).to stop_service('websockify')
+      expect(chef_run).to stop_service('haproxy')
     end
   end
 
-  %w(remoteservices v2v).each do |profile|
-    it "stops the #{profile} services" do
-      chef_run.node.set['abiquo']['profile'] = profile
-      chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-      expect(chef_run).to stop_service('abiquo-tomcat')
-      expect(chef_run).to_not stop_service('abiquo-aim')
-      expect(chef_run).to_not stop_service('abiquo-delorean')
-      expect(chef_run).to_not stop_service('abiquo-emmett')
-    end
+  it 'stops the v2v services' do
+    chef_run.node.set['abiquo']['profile'] = 'v2v'
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    expect(chef_run).to stop_service('abiquo-tomcat')
+    expect(chef_run).to_not stop_service('abiquo-aim')
+    expect(chef_run).to_not stop_service('abiquo-delorean')
+    expect(chef_run).to_not stop_service('abiquo-emmett')
+    expect(chef_run).to_not stop_service('websockify')
+  end
+
+  it 'stops the remoteservices services' do
+    chef_run.node.set['abiquo']['profile'] = 'remoteservices'
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    expect(chef_run).to stop_service('abiquo-tomcat')
+    expect(chef_run).to stop_service('websockify')
+    expect(chef_run).to_not stop_service('abiquo-aim')
+    expect(chef_run).to_not stop_service('abiquo-delorean')
+    expect(chef_run).to_not stop_service('abiquo-emmett')
   end
 
   it 'stops the kvm services' do
@@ -110,10 +119,11 @@ describe 'abiquo::upgrade' do
     expect(chef_run).to stop_service('abiquo-emmett')
   end
 
-  it 'stops the ui services' do
-    chef_run.node.set['abiquo']['profile'] = 'ui'
+  it 'stops the frontend services' do
+    chef_run.node.set['abiquo']['profile'] = 'frontend'
     chef_run.converge('abiquo::install_websockify', 'abiquo::setup_websockify', described_recipe)
     expect(chef_run).to stop_service('apache2')
+    expect(chef_run).to stop_service('haproxy')
     expect(chef_run).to_not stop_service('websockify')
     expect(chef_run).to_not stop_service('abiquo-aim')
     expect(chef_run).to_not stop_service('abiquo-tomcat')
@@ -244,26 +254,36 @@ describe 'abiquo::upgrade' do
   %w(monolithic server).each do |profile|
     it "starts the #{profile} services" do
       chef_run.node.set['abiquo']['profile'] = profile
-      chef_run.converge('apache2::default', 'abiquo::install_server', 'abiquo::setup_websockify', described_recipe)
+      chef_run.converge('apache2::default', 'abiquo::install_server', 'abiquo::install_websockify', described_recipe)
       expect(chef_run).to start_service('abiquo-tomcat')
       expect(chef_run).to_not start_service('abiquo-aim')
       expect(chef_run).to_not start_service('abiquo-delorean')
       expect(chef_run).to_not start_service('abiquo-emmett')
       expect(chef_run).to start_service('apache2')
-      expect(chef_run).to start_service('websockify')
+      expect(chef_run).to start_service('haproxy')
     end
   end
 
-  %w(remoteservices v2v).each do |profile|
-    it "starts the #{profile} services" do
-      chef_run.node.set['abiquo']['profile'] = profile
-      # Remote Services and V2V do not need to include the install_server recipe
-      chef_run.converge('apache2::default', described_recipe)
-      expect(chef_run).to start_service('abiquo-tomcat')
-      expect(chef_run).to_not start_service('abiquo-aim')
-      expect(chef_run).to_not start_service('abiquo-delorean')
-      expect(chef_run).to_not start_service('abiquo-emmett')
-    end
+  it 'starts the v2v services' do
+    chef_run.node.set['abiquo']['profile'] = 'v2v'
+    # V2V does not need to include the install_server recipe
+    chef_run.converge('apache2::default', described_recipe)
+    expect(chef_run).to start_service('abiquo-tomcat')
+    expect(chef_run).to_not start_service('abiquo-aim')
+    expect(chef_run).to_not start_service('abiquo-delorean')
+    expect(chef_run).to_not start_service('abiquo-emmett')
+    expect(chef_run).to_not start_service('websockify')
+  end
+
+  it 'starts the remoteservices services' do
+    chef_run.node.set['abiquo']['profile'] = 'remoteservices'
+    # Remote Services does not need to include the install_server recipe
+    chef_run.converge('apache2::default', described_recipe)
+    expect(chef_run).to start_service('abiquo-tomcat')
+    expect(chef_run).to start_service('websockify')
+    expect(chef_run).to_not start_service('abiquo-aim')
+    expect(chef_run).to_not start_service('abiquo-delorean')
+    expect(chef_run).to_not start_service('abiquo-emmett')
   end
 
   it 'starts the kvm services' do
@@ -284,14 +304,15 @@ describe 'abiquo::upgrade' do
     expect(chef_run).to start_service('abiquo-emmett')
   end
 
-  it 'starts the ui services' do
-    chef_run.node.set['abiquo']['profile'] = 'ui'
+  it 'starts the frontend services' do
+    chef_run.node.set['abiquo']['profile'] = 'frontend'
     chef_run.converge(described_recipe)
     expect(chef_run).to_not start_service('abiquo-tomcat')
     expect(chef_run).to_not start_service('abiquo-aim')
     expect(chef_run).to_not start_service('abiquo-delorean')
     expect(chef_run).to_not start_service('abiquo-emmett')
     expect(chef_run).to start_service('apache2')
+    expect(chef_run).to start_service('haproxy')
     expect(chef_run).to_not start_service('websockify')
   end
 

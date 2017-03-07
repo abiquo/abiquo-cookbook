@@ -191,10 +191,9 @@ default['haproxy']['enable_default_http'] = false
 default['abiquo']['haproxy']['address'] = '*'
 default['abiquo']['haproxy']['port'] = 41337
 default['abiquo']['haproxy']['certificate'] = "#{node['abiquo']['certificate']['file']}.haproxy.crt"
-# TMP
-# Define WS paths as attributes. This wwil be moved to a search
-# on upcoming releases
-# eg. { '/path' => [websockify_ip] }
+
+# Define WS paths as attributes or using a search query
+# eg. { '/path' => <websockify_ip>:<websockify_port> }
 default['abiquo']['haproxy']['ws_paths'] = {}
 default['abiquo']['haproxy']['node_search_query'] = nil
 default['abiquo']['haproxy']['use_default_path'] = false

@@ -19,7 +19,7 @@ describe 'abiquo::certificate' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-    end.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
+    end.converge('apache2::default', 'abiquo::install_frontend', described_recipe, 'abiquo::service')
   end
   let(:cn) { 'fauxhai.local' }
 
@@ -36,6 +36,7 @@ describe 'abiquo::certificate' do
     expect(chef_run).to create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
     resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
     expect(resource).to notify('service[apache2]').to(:restart).delayed
+    expect(resource).to notify('service[haproxy]').to(:restart).delayed
     expect(resource).to notify("template[#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt]").to(:create).immediately
     expect(resource).to notify("java_management_truststore_certificate[#{chef_run.node['abiquo']['certificate']['common_name']}]").to(:import).immediately
   end

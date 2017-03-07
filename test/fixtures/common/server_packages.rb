@@ -14,7 +14,14 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'server::packages' do
+  it 'has the server system packages installed' do
+    %w(MariaDB-server MariaDB-client liquibase rabbitmq-server).each do |pkg|
+      expect(package(pkg)).to be_installed
+    end
+  end
+
+  it 'has the server packages installed' do
+    expect(package('abiquo-server')).to be_installed
+  end
 end

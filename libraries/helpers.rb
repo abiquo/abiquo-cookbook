@@ -34,7 +34,7 @@ module Abiquo
         end
         idhash = Digest::SHA1.hexdigest(rnode['abiquo']['properties']['abiquo.datacenter.id'])
         dest = "#{rnode['ipaddress']}:#{rnode['abiquo']['websockify']['port']}"
-        paths[idhash] = [dest]
+        paths["/#{idhash}"] = [dest]
       end
       paths
     end

@@ -14,7 +14,8 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'websockify::packages' do
+  it 'has the websockify packages installed' do
+    expect(package('abiquo-websockify')).to be_installed
+  end
 end

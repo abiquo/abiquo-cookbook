@@ -15,10 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-%w(redis jdk).each do |pkg|
-  package pkg do
-    action :install
-  end
+package 'jdk' do
+  action :install
 end
 
 include_recipe 'java::oracle_jce'

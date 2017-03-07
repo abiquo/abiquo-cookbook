@@ -19,19 +19,26 @@ describe 'abiquo::setup_frontend' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-    end.converge('apache2::default', 'abiquo::install_ui', described_recipe, 'abiquo::service')
+    end
   end
-  let(:cn) { 'fauxhai.local' }
 
   before do
-    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
     stub_command('/usr/sbin/httpd -t').and_return(true)
-    stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(true)
-    stub_command('/usr/bin/mysql kinton -e \'SELECT 1\'').and_return(true)
-    stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
+    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
   end
 
-  it 'includes the ui setup recipe' do
-    expect(chef_run).to include_recipe('abiquo::setup_ui')
+  it 'renders ui configuration file' do
+    chef_run.converge('apache2::default', 'abiquo::install_frontend', described_recipe, 'abiquo::service')
+    json_settings = Chef::JSONCompat.to_json_pretty(chef_run.node['abiquo']['ui_config'])
+    expect(chef_run).to create_file('/var/www/html/ui/config/client-config-custom.json').with(
+      content: json_settings,
+      owner: 'root',
+      group: 'root'
+    )
+  end
+
+  it 'creates the haproxy instance' do
+    chef_run.converge('abiquo::install_frontend', described_recipe, 'abiquo::service')
+    expect(chef_run).to create_haproxy_instance('haproxy')
   end
 end

@@ -34,6 +34,5 @@ end
 include_recipe 'abiquo::install_database'
 
 if node['abiquo']['server']['install_frontend']
-  include_recipe 'abiquo::install_ui'
-  include_recipe 'abiquo::install_websockify'
+  include_recipe 'abiquo::install_frontend'
 end

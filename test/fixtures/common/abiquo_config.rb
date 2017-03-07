@@ -14,7 +14,13 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'abiquo::config' do
+  it 'has tomcat properly configured' do
+    expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
+    expect(file('/opt/abiquo/tomcat/conf/server.xml')).to be_owned_by('tomcat')
+  end
+
+  it 'has the abiquo properties file' do
+    expect(file('/opt/abiquo/config/abiquo.properties')).to exist
+  end
 end

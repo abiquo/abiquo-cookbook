@@ -15,28 +15,7 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'V2V configuration' do
-  it 'has the epel repos installed' do
-    expect(file('/etc/yum.repos.d/epel.repo')).to be_file
-    expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
-  end
-
-  it 'has the yum repositories configured' do
-    %w(base updates).each do |repo|
-      expect(yumrepo("abiquo-#{repo}")).to exist
-      expect(yumrepo("abiquo-#{repo}")).to be_enabled
-    end
-  end
-
-  it 'has tomcat properly configured' do
-    expect(file('/opt/abiquo/tomcat/conf/server.xml')).to contain('<Listener className="com.abiquo.listeners.AbiquoConfigurationListener"/>')
-    expect(file('/opt/abiquo/tomcat/conf/server.xml')).to be_owned_by('tomcat')
-  end
-
-  it 'has the ec2 api tools configured' do
-    expect(file('/etc/sysconfig/abiquo/ec2-api-tools')).to contain('^export EC2_HOME=')
-  end
-
-  it 'has the abiquo properties file' do
-    expect(file('/opt/abiquo/config/abiquo.properties')).to exist
-  end
+  include_examples 'common::config'
+  include_examples 'abiquo::config'
+  include_examples 'v2v::config'
 end
