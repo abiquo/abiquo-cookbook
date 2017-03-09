@@ -1,4 +1,3 @@
 <%= render "firewall-ext_services.erb" if node['abiquo']['install_ext_services'] %>
 <%= render "firewall-frontend.erb" if node['abiquo']['server']['install_frontend'] %>
-<%= render "firewall-websockify.erb" %>
 <%= render "firewall-tomcat.erb" %>
