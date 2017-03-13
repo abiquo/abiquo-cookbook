@@ -72,7 +72,7 @@ if node['abiquo']['monitoring']['db']['install']
     notifies :run, 'execute[watchtower-liquibase-update]', :immediately
   end
 
-  lqb_cmd = liquibase_cmd('update', node['abiquo']['db'], true)
+  lqb_cmd = liquibase_cmd('update', node['abiquo']['monitoring']['db'], true)
   execute 'watchtower-liquibase-update' do
     command lqb_cmd
     action :nothing
