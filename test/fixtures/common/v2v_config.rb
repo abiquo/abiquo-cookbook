@@ -23,4 +23,8 @@ shared_examples 'v2v::config' do
     expect(file('/etc/iscsi/initiatorname.iscsi')).to exist
     expect(file('/etc/iscsi/initiatorname.iscsi')).to contain('InitiatorName=iqn.')
   end
+
+  it 'has the sudoers file for the mechadora' do
+    expect(file('/etc/sudoers.d/abiquo-tomcat-mechadora')).to contain('tomcat ALL=(ALL) NOPASSWD: /usr/bin/mechadora')
+  end
 end

@@ -28,4 +28,8 @@ describe 'Remote Services configuration' do
   it 'has the appliance manager properly configured' do
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.appliancemanager.checkMountedRepository = false')
   end
+
+  it 'has the sudoers file for the nfs plugin' do
+    expect(file('/etc/sudoers.d/abiquo-tomcat-nfs')).to contain('tomcat ALL=(ALL) NOPASSWD: /usr/bin/nfs-plugin')
+  end
 end

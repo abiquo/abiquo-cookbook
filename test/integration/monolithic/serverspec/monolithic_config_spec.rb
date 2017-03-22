@@ -36,4 +36,8 @@ describe 'Monolithic configuration' do
     expect(file('/etc/haproxy/haproxy.cfg')).to contain('default_backend ws')
     expect(file('/etc/haproxy/haproxy.cfg')).to contain('server websockify0 10.10.10.10:41338 weight 1 maxconn 1024 check')
   end
+
+  it 'has the sudoers file for the nfs plugin' do
+    expect(file('/etc/sudoers.d/abiquo-tomcat-nfs')).to contain('tomcat ALL=(ALL) NOPASSWD: /usr/bin/nfs-plugin')
+  end
 end
