@@ -15,14 +15,6 @@
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 describe 'KVM packages' do
-  it 'has the qemu package installed' do
-    expect(package('qemu-kvm')).to be_installed
-  end
-
-  it 'has the qemu package installed' do
-    expect(package('qemu-kvm')).to be_installed
-  end
-
   it 'has the qemu binary in place' do
     expect(file('/usr/bin/qemu-system-x86_64')).to exist
   end
@@ -40,9 +32,15 @@ describe 'KVM packages' do
   end
 end
 
+describe 'KVM packages for CentOS 6', if: os[:release].to_i == 6 do
+  it 'has the qemu package installed' do
+    expect(package('qemu-kvm')).to be_installed
+  end
+end
+
 describe 'KVM packages for CentOS 7', if: os[:release].to_i >= 7 do
   it 'has the seabios backport installed' do
-    expect(package('yum-plugin-versionlock')).to be_installed
-    expect(package('seabios')).to be_installed.with_version('1.7.5-11.el7')
+    expect(package('centos-release-qemu-ev')).to be_installed
+    expect(package('qemu-kvm-ev')).to be_installed
   end
 end

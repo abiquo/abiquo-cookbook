@@ -23,25 +23,20 @@ describe 'abiquo::install_kvm' do
   end
   let(:c6_run) { ChefSpec::SoloRunner.new(platform: 'centos', version: '6.5') }
 
-  it 'locks the seabios version on CentOS 7' do
-    expect(chef_run).to create_yum_repository('kvm-common').with(
-      description: 'Backports for the seabios package',
-      baseurl: 'http://buildlogs.centos.org/centos/7/virt/x86_64/kvm-common',
-      includepkgs: 'seabios,seabios-bin,seavgabios-bin',
-      gpgcheck: false
-    )
-    expect(chef_run).to install_package('yum-plugin-versionlock')
-    expect(chef_run).to install_yum_package('seabios').with(version: '1.7.5-11.el7')
-    expect(chef_run).to lock_yum_package('seabios').with(version: '1.7.5-11.el7')
-
-    c6_run.converge(described_recipe)
-    expect(c6_run).to_not install_package('yum-plugin-versionlock')
-    expect(c6_run).to_not create_yum_repository('kvm-common')
-    expect(c6_run).to_not install_yum_package('seabios')
-    expect(c6_run).to_not lock_yum_package('seabios')
+  it 'installs the qemu-ev packages on CentOS 7' do
+    expect(chef_run).to install_package('centos-release-qemu-ev')
+    expect(chef_run).to install_package('qemu-kvm-ev')
+    expect(chef_run).to_not install_package('qemu-kvm')
   end
 
-  %w(qemu-kvm abiquo-aim abiquo-sosreport-plugins).each do |pkg|
+  it 'installs regular qemu packages on CentOS 6' do
+    c6_run.converge(described_recipe)
+    expect(c6_run).to_not install_package('centos-release-qemu-ev')
+    expect(c6_run).to_not install_package('qemu-kvm-ev')
+    expect(c6_run).to install_package('qemu-kvm')
+  end
+
+  %w(abiquo-aim abiquo-sosreport-plugins).each do |pkg|
     it "installs the #{pkg} package" do
       expect(chef_run).to install_package(pkg)
     end
