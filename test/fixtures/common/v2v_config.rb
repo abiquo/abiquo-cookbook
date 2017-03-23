@@ -16,7 +16,7 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 shared_examples 'v2v::config' do
   it 'has the ec2 api tools configured' do
-    expect(file('/etc/sysconfig/abiquo/ec2-api-tools')).to contain('^export EC2_HOME=')
+    expect(file('/etc/sysconfig/abiquo/ec2-api-tools')).to contain('^EC2_HOME=/opt/aws$')
   end
 
   it 'has the iSCSI initiator name configured' do

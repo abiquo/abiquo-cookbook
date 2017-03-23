@@ -23,4 +23,15 @@ shared_examples 'abiquo::config' do
   it 'has the abiquo properties file' do
     expect(file('/opt/abiquo/config/abiquo.properties')).to exist
   end
+
+  if os[:release].to_i >= 7
+    it 'has the abiquo server environment configured' do
+      expect(file('/etc/sysconfig/abiquo/abiquo-tomcat')).to contain('^CATALINA_HOME=/opt/abiquo/tomcat$')
+      expect(file('/etc/sysconfig/abiquo/abiquo-tomcat')).to contain('^CATALINA_BASE=/opt/abiquo/tomcat$')
+      expect(file('/etc/sysconfig/abiquo/abiquo-tomcat')).to contain('^CATALINA_PID=/opt/abiquo/tomcat/work/catalina.pid$')
+      expect(file('/etc/sysconfig/abiquo/abiquo-tomcat')).to contain('^JAVA_HOME=')
+      expect(file('/etc/sysconfig/abiquo/abiquo-tomcat')).to contain('^JAVA_OPTS=')
+      expect(file('/etc/sysconfig/abiquo/abiquo-tomcat')).to contain('^CATALINA_OPTS=')
+    end
+  end
 end

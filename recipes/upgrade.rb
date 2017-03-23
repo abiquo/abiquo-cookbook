@@ -20,6 +20,8 @@ return unless ::File.executable?('/usr/bin/repoquery')
 Chef::Recipe.send(:include, Abiquo::Packages)
 Chef::Recipe.send(:include, Abiquo::Commands)
 
+include_recipe 'abiquo::repository'
+
 unless abiquo_update_available
   log 'No Abiquo updates found.'
   return
@@ -43,8 +45,6 @@ services[node['abiquo']['profile']].each do |svc|
     action :stop
   end
 end
-
-include_recipe 'abiquo::repository'
 
 abiquo_packages.each do |pkg|
   package pkg do
