@@ -25,6 +25,7 @@ shared_examples 'v2v::config' do
   end
 
   it 'has the sudoers file for the mechadora' do
-    expect(file('/etc/sudoers.d/abiquo-tomcat-mechadora')).to contain('tomcat ALL=(ALL) NOPASSWD: /usr/bin/mechadora')
+    expect(file('/etc/sudoers.d/abiquo-tomcat-v2v')).to contain('tomcat ALL=(ALL) NOPASSWD: /usr/bin/v2v-diskmanager')
+    expect(file('/etc/sudoers.d/abiquo-tomcat-v2v')).to contain('tomcat ALL=(ALL) NOPASSWD: /usr/bin/mechadora')
   end
 end
