@@ -16,7 +16,10 @@
 # limitations under the License.
 
 # Enable replication if specified
-node.set['mariadb']['replication']['server_id'] = '1' if node['abiquo']['db']['enable-master']
+if node['abiquo']['db']['enable-master']
+  node.set['mariadb']['replication']['server_id'] = '1'
+  node.set['mariadb']['replication']['options']['binlog_format'] = 'ROW'
+end
 
 include_recipe 'mariadb'
 

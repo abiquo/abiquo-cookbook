@@ -27,6 +27,10 @@ describe 'Monolithic configuration' do
     expect(command('mysql -e "show master status"').stdout).to contain('mariadb-bin.000')
   end
 
+  it 'has mariadb binlog_format as ROW' do
+    expect(command('mysql -e "select @@binlog_format"').stdout).to contain('ROW')
+  end
+
   it 'has DB properly configured' do
     expect(file('/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml')).to contain('username="root" password=""')
     expect(file('/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml')).to contain('username="root" password=""')
