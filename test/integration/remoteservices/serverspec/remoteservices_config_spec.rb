@@ -32,4 +32,8 @@ describe 'Remote Services configuration' do
   it 'has the sudoers file for the nfs plugin' do
     expect(file('/etc/sudoers.d/abiquo-tomcat-nfs')).to contain('tomcat ALL=(ALL) NOPASSWD: /usr/bin/nfs-plugin')
   end
+
+  it 'has the sudoers file for the appliance manater' do
+    expect(file('/etc/sudoers.d/abiquo-tomcat-repo')).to contain('tomcat ALL=(ALL) NOPASSWD: /bin/chown tomcat *')
+  end
 end
