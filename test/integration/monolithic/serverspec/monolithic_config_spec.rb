@@ -46,6 +46,6 @@ describe 'Monolithic configuration' do
   end
 
   it 'has the sudoers file for the appliance manager' do
-    expect(file('/etc/sudoers.d/abiquo-tomcat-repo')).to contain("tomcat ALL=(ALL) NOPASSWD: /bin/chown tomcat *")
+    expect(file('/etc/sudoers.d/abiquo-tomcat-repo')).to contain('tomcat ALL=(ALL) NOPASSWD: /bin/chown tomcat *')
   end
 end
