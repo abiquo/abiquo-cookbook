@@ -7,6 +7,9 @@ abiquo CHANGELOG
 * Install the Websockify server with the 'remoteservices' profile. The frontend
   can be configured with a set of attributes to define the Websockify backends
   or use a search query to discover and dynamically configure them.
+* Configure the MariaDB binlog format if replication is enabled.
+* Fixed the database connection information in the monitoring profile.
+* Properly configure the permissions in the accounting schema.
 
 ## 0.10.0
 
