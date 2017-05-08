@@ -1,5 +1,9 @@
-abiquo CHANGELOG
-================
+CHANGELOG
+=========
+
+## 0.11.1
+
+* Updated metadata and added files to meet the Chef Supermarket quality metrics.
 
 ## 0.11.0
 
