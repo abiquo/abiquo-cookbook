@@ -179,7 +179,7 @@ end
 
 # Configure Abiquo websockify
 default['abiquo']['websockify']['port'] = 41338
-default['abiquo']['websockify']['address'] = '127.0.0.1'
+default['abiquo']['websockify']['address'] = '0.0.0.0'
 default['abiquo']['websockify']['api_url'] = 'https://localhost/api'
 default['abiquo']['websockify']['creds'] = { api_user: 'admin', api_pass: 'xabiquo' }
 default['abiquo']['websockify']['crt'] = node['abiquo']['certificate']['file']
