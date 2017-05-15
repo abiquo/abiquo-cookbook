@@ -33,7 +33,7 @@ services = {
   'server'            => %w(abiquo-tomcat apache2 websockify),
   'kvm'               => %w(abiquo-aim),
   'monitoring'        => %w(abiquo-delorean abiquo-emmett),
-  'ui'                => %w(apache2),
+  'frontend'          => %w(apache2),
   'v2v'               => %w(abiquo-tomcat),
   'websockify'        => %w(websockify)
 }
