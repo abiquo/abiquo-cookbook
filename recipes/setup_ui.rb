@@ -40,3 +40,5 @@ haproxy_instance 'haproxy' do
   config ['user haproxy', 'group haproxy', 'log /dev/log local0']
   tuning ['maxconn 1024']
 end
+
+include_recipe 'haproxy-ng::service'
