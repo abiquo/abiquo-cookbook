@@ -29,7 +29,7 @@ template '/opt/websockify/abiquo.cfg' do
   source 'ws_abiquo.cfg.erb'
   owner 'root'
   group 'root'
-  variables(creds: node['abiquo']['websockify']['creds'])
+  variables(wsvars: node['abiquo']['websockify']['conf'])
   action :create
   notifies :restart, 'service[websockify]'
 end
