@@ -162,6 +162,7 @@ default['abiquo']['properties']['abiquo.vncport.max'] = 5999
 
 case node['abiquo']['profile']
 when 'monolithic', 'server'
+  default['abiquo']['properties']['abiquo.m.instanceid'] = node['hostname']
   default['abiquo']['properties']['abiquo.m.identity'] = 'default_outbound_api_user'
   default['abiquo']['properties']['abiquo.server.sessionTimeout'] = 30
   default['abiquo']['properties']['abiquo.server.mail.server'] = '127.0.0.1'

@@ -19,6 +19,7 @@ shared_examples 'server::config' do
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.m.identity = default_outbound_api_user')
     # Credential is auto generated but at least we want to check it is set
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.m.credential = ')
+    expect(file('/opt/abiquo/config/abiquo.properties')).to contain("abiquo.m.instanceid = #{host_inventory[:hostname]}")
   end
 
   it 'has a user in rabbit for Abiquo' do
