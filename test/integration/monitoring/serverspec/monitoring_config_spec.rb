@@ -31,11 +31,15 @@ describe 'Monitoring configuration' do
     expect(file('/etc/abiquo/watchtower/delorean-base.conf')).to exist
     expect(file('/etc/abiquo/watchtower/delorean.conf')).to exist
     expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('delorean {')
+    # RabbitMQ configuration
+    expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('addresses = ["localhost:5672"]')
   end
 
   it 'has emmett properly configured' do
     expect(file('/etc/abiquo/watchtower/emmett-base.conf')).to exist
     expect(file('/etc/abiquo/watchtower/emmett.conf')).to exist
     expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('emmett {')
+    # RabbitMQ configuration
+    expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('addresses = ["localhost:5672"]')
   end
 end

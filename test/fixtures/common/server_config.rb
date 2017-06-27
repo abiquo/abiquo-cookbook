@@ -30,7 +30,7 @@ shared_examples 'server::config' do
   it 'has the Abiquo rabbit properties' do
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.username = abiquo')
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.password = abiquo')
-    expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.addresses = 127.0.0.1:5672')
+    expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
   end
 
   it 'has apache mappings to tomcat configured' do
