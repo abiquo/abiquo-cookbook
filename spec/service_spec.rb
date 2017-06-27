@@ -60,7 +60,7 @@ describe 'abiquo::service' do
     )
     resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
     expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
-    expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.rabbitmq.host\ =\ 127.0.0.1/)
+    expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.rabbitmq.addresses\ =\ 127.0.0.1:5672$/)
   end
 
   it 'renders abiquo properties file with custom properties' do

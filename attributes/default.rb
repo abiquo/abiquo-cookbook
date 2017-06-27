@@ -155,8 +155,7 @@ default['cassandra']['notify_restart'] = true
 default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
 default['abiquo']['properties']['abiquo.rabbitmq.username'] = node['abiquo']['rabbitmq']['username']
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = node['abiquo']['rabbitmq']['password']
-default['abiquo']['properties']['abiquo.rabbitmq.host'] = '127.0.0.1'
-default['abiquo']['properties']['abiquo.rabbitmq.port'] = 5672
+default['abiquo']['properties']['abiquo.rabbitmq.addresses'] = '127.0.0.1:5672'
 default['abiquo']['properties']['abiquo.vncport.min'] = 5900
 default['abiquo']['properties']['abiquo.vncport.max'] = 5999
 
