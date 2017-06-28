@@ -27,10 +27,11 @@ shared_examples 'server::config' do
     expect(command('rabbitmqctl list_permissions').stdout).to match(/abiquo\t.*\t.*\t.*/)
   end
 
-  it 'has the Abiquo rabbit properties' do
+  it 'has rabbit properly configured' do
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.username = abiquo')
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.password = abiquo')
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
+    expect(file('/etc/rabbitmq/rabbitmq-env.conf')).to contain("NODENAME=rabbit@#{host_inventory[:hostname]}")
   end
 
   it 'has apache mappings to tomcat configured' do

@@ -64,6 +64,7 @@ default['abiquo']['rabbitmq']['tags'] = 'administrator'
 default['abiquo']['rabbitmq']['vhost'] = '/'
 default['rabbitmq']['use_distro_version'] = true
 default['rabbitmq']['port'] = 5672
+default['rabbitmq']['nodename'] = "rabbit@#{node['hostname']}"
 
 # Tomcat configuration
 default['abiquo']['tomcat']['http-port'] = 8009
