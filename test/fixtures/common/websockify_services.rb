@@ -18,7 +18,7 @@ shared_examples 'websockify::services' do
   it 'has websockify running' do
     expect(service('websockify')).to be_enabled
     expect(service('websockify')).to be_running
-    expect(port(41338)).to be_listening.on('127.0.0.1')
+    expect(port(41338)).to be_listening.on('0.0.0.0')
   end
 
   it 'has the websockify firewall rules configured' do
