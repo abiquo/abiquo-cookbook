@@ -15,10 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-service 'kairosdb' do
-  action :nothing
-end
-
 template '/opt/kairosdb/conf/kairosdb.properties' do
   source 'kairosdb.properties.erb'
   owner 'root'

@@ -41,7 +41,7 @@ supports 'centos', '>= 6.7'
 supports 'redhat', '>= 6.7'
 
 depends 'apache2', '~> 3.1.0'
-depends 'cassandra-dse', '~> 4.1.0'
+depends 'cassandra-dse', '~> 4.4.0'
 depends 'iptables', '~> 2.0.1'
 depends 'java', '~> 1.46.0'
 depends 'java-management', '~> 1.0.3'

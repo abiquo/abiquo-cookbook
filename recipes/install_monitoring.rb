@@ -19,10 +19,8 @@ Chef::Recipe.send(:include, Abiquo::Commands)
 
 include_recipe 'mariadb::client'
 
-%w(kairosdb jdk).each do |pkg|
-  package pkg do
-    action :install
-  end
+package 'jdk' do
+  action :install
 end
 
 java_alternatives 'set default jdk8' do
@@ -34,6 +32,45 @@ end
 node.set['cassandra']['config']['cluster_name'] = node['abiquo']['monitoring']['cassandra']['cluster_name']
 node.set['cassandra']['install_java'] = false # The Abiquo jdk package is installed instead
 include_recipe 'cassandra-dse'
+
+service 'kairosdb' do
+  action :nothing
+end
+
+package 'kairosdb' do
+  action :install
+  # We want the service to be stopped immediately after the rpm package starts it, if we are going
+  # to replace its config file by a systemd unit. Otherwise we won't be able to properly manage it.
+  notifies :stop, 'service[kairosdb]', :immediately if node['platform_version'].to_i == 7
+end
+
+# Configure a systemd script if we are in CentOS 7
+file '/etc/init.d/kairosdb' do
+  action :delete
+  only_if { node['platform_version'].to_i == 7 }
+end
+
+systemd_unit 'kairosdb.service' do
+  content <<-EOU.gsub(/^\s+/, '')
+	[Unit]
+	Description=KairosDB is a fast distributed scalable time series database written on top of Cassandra.
+	Requires=cassandra.service
+	After=cassandra.service
+
+	[Service]
+	Type=forking
+	User=root
+	PIDFile=/var/run/kairosdb.pid
+	ExecStart=/opt/kairosdb/bin/kairosdb.sh start
+	ExecStop=/opt/kairosdb/bin/kairosdb.sh stop
+
+	[Install]
+	WantedBy=multi-user.target
+  EOU
+  action [:create, :enable]
+  notifies :restart, 'service[kairosdb]'
+  only_if { node['platform_version'].to_i == 7 }
+end
 
 include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
 

@@ -18,12 +18,7 @@ describe 'abiquo::setup_monitoring' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['cassandra']['config']['cluster_name'] = 'abiquo'
-    end.converge('cassandra-dse', described_recipe)
-  end
-
-  it 'declares the kairosdb service' do
-    resource = chef_run.service('kairosdb')
-    expect(resource).to do_nothing
+    end.converge('cassandra-dse', 'abiquo::service', 'abiquo::install_monitoring', described_recipe)
   end
 
   it 'renders the kairosdb configuration file' do

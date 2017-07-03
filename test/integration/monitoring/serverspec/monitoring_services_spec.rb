@@ -27,6 +27,7 @@ describe 'Monitoring services' do
   it 'has the cassandra service running' do
     expect(service('cassandra')).to be_enabled
     expect(service('cassandra')).to be_running
+    expect(service('cassandra')).to be_running.under('systemd') if os[:release].to_i >= 7
     expect(port(9160)).to be_listening
     expect(port(7000)).to be_listening
   end
@@ -34,6 +35,7 @@ describe 'Monitoring services' do
   it 'has the kairosdb service running' do
     expect(service('kairosdb')).to be_enabled
     expect(service('kairosdb')).to be_running
+    expect(service('kairosdb')).to be_running.under('systemd') if os[:release].to_i >= 7
     expect(port(8080)).to be_listening
   end
 

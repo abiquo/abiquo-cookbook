@@ -24,7 +24,7 @@ describe 'Monitoring configuration' do
   end
 
   it 'java 8 is the default one' do
-    expect(command('java -version').stderr).to contain('java version "1.8')
+    expect(command('java -version').stderr).to contain('version "1.8')
   end
 
   it 'has delorean properly configured' do

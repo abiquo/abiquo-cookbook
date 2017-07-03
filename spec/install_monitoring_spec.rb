@@ -22,13 +22,14 @@ describe 'abiquo::install_monitoring' do
       node.set['abiquo']['profile'] = 'monitoring'
     end.converge(described_recipe)
   end
+  let(:c6_run) do
+    ChefSpec::SoloRunner.new(platform: 'centos', version: '6.5') do |node|
+      node.set['abiquo']['profile'] = 'monitoring'
+    end.converge(described_recipe)
+  end
 
   before do
     stub_queries
-  end
-
-  it 'installs the kairosdb package' do
-    expect(chef_run).to install_package('kairosdb')
   end
 
   it 'installs the jdk package' do
@@ -48,6 +49,38 @@ describe 'abiquo::install_monitoring' do
 
   it 'includes the install_ext_services recipe by default' do
     expect(chef_run).to include_recipe('abiquo::install_ext_services')
+  end
+
+  it 'declares the kairosdb service' do
+    resource = chef_run.service('kairosdb')
+    expect(resource).to do_nothing
+  end
+
+  it 'installs the kairosdb package' do
+    expect(chef_run).to install_package('kairosdb')
+    resource = chef_run.package('kairosdb')
+    expect(resource).to notify('service[kairosdb]').to(:stop).immediately
+  end
+
+  it 'does not stop the kairos service after installing in CentOS 6' do
+    c6_run.converge(described_recipe)
+    resource = c6_run.package('kairosdb')
+    expect(resource).to_not notify('service[kairosdb]').to(:stop)
+  end
+
+  it 'installs the systemd service unit in CentOS 7' do
+    expect(chef_run).to delete_file('/etc/init.d/kairosdb')
+    expect(chef_run).to create_systemd_unit('kairosdb.service')
+    expect(chef_run).to create_systemd_unit('kairosdb.service')
+    resource = chef_run.systemd_unit('kairosdb.service')
+    expect(resource).to notify('service[kairosdb]').to(:restart).delayed
+  end
+
+  it 'does not install the systemd service unit in CentOS 6' do
+    c6_run.converge(described_recipe)
+    expect(c6_run).to_not delete_file('/etc/init.d/kairosdb')
+    expect(c6_run).to_not create_systemd_unit('kairosdb.service')
+    expect(c6_run).to_not enable_systemd_unit('kairosdb.service')
   end
 
   it 'does not include install_ext_services recipe if not configured' do

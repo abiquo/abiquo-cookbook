@@ -126,8 +126,6 @@ default['abiquo']['aim']['neutron']['admin_password'] = 'xabiquo'
 
 # Configure monitoring node
 default['abiquo']['monitoring']['cassandra']['cluster_name'] = 'abiquo'
-default['abiquo']['monitoring']['kairosdb']['version'] = '0.9.4'
-default['abiquo']['monitoring']['kairosdb']['release'] = '6'
 default['abiquo']['monitoring']['kairosdb']['host'] = 'localhost'
 default['abiquo']['monitoring']['kairosdb']['port'] = 8080
 default['abiquo']['monitoring']['rabbitmq']['addresses'] = ['localhost:5672']
@@ -150,6 +148,7 @@ default['java']['jdk_version'] = 8
 
 # Override Cassandra default configuration to make sure it is always running properly
 default['cassandra']['notify_restart'] = true
+default['cassandra']['use_systemd'] = true if node['platform_version'].to_i >= 7
 
 # Default properties
 default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']

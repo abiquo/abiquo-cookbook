@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+## 0.11.2
+
+* Configure the RabbitMQ node name so it is possible to change the hostname without
+  causing issues in the RabbitMQ configuration.
+* Replaced the RabbitMQ 'host' and 'port' propertues by the 'addresses' property to
+  allow configuring access to a cluster of brokers.
+* Upgraded cassandra-dse cookbook to version 4.4.0 to support systemd.
+* Configure the KairosDB service as a systemd unit in CentOS 7.
+
 ## 0.11.1
 
 * Updated metadata and added files to meet the Chef Supermarket quality metrics.
