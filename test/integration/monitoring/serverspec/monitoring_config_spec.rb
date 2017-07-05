@@ -43,3 +43,16 @@ describe 'Monitoring configuration' do
     expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('addresses = ["localhost:5672"]')
   end
 end
+
+describe 'Monitoring configuration for CentOS 7', if: os[:release].to_i >= 7 do
+  it 'has the kairosdb user configured' do
+    expect(group('kairosdb')).to exist
+    expect(user('kairosdb')).to belong_to_group('kairosdb')
+  end
+
+  it 'has the kairosdb permissions configured' do
+    expect(file('/var/run/kairosdb')).to be_directory
+    expect(file('/var/run/kairosdb')).to be_owned_by('kairosdb')
+    expect(file('/opt/kairosdb')).to be_owned_by('kairosdb')
+  end
+end

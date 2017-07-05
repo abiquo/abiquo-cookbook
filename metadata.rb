@@ -34,6 +34,7 @@ recipe 'abiquo::kvm_neutron', 'Configures a KVM hypervisor to use OpenStack Neut
 recipe 'abiquo::upgrade', 'Upgrades an Abiquo platform'
 recipe 'abiquo::install_database', 'Creates the Abiquo database'
 recipe 'abiquo::install_ext_services', 'Installs Abiquo supporting services (MariaDB, RabbitMQ, Redis)'
+recipe 'abiquo::install_kairosdb', 'Installs KairosDB'
 recipe 'abiquo::certificate', 'Installs a custom SSL certificate in the Apache'
 recipe 'abiquo::service', 'Manages Abiquo tomcat service'
 

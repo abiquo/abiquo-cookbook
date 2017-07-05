@@ -51,3 +51,9 @@ describe 'Monitoring services' do
     expect(port(36638)).to be_listening
   end
 end
+
+describe 'Monitoring services for CentOS 7', if: os[:release].to_i >= 7 do
+  it 'has the kairosdb service running as the kairosdb user' do
+    expect(command('ps h -u kairosdb -o cmd').stdout).to match(/.*org\.kairosdb\.core\.Main.*/)
+  end
+end
