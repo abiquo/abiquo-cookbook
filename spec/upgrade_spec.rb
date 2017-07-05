@@ -29,7 +29,7 @@ describe 'abiquo::upgrade' do
     stub_command('service abiquo-tomcat stop').and_return(true)
     allow(::File).to receive(:executable?).with('/usr/bin/repoquery').and_return(true)
     allow(::File).to receive(:executable?).with('/sbin/initctl').and_return(false)
-    stub_package_commands(['abiquo-api', 'abiquo-server'])
+    stub_package_commands(['abiquo-api', 'abiquo-server', 'ec2-api-tools'])
     stub_check_db_pass_command('root', '')
     stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
   end
@@ -48,13 +48,13 @@ describe 'abiquo::upgrade' do
   end
 
   it 'logs a message if there are no upgrades' do
-    stub_available_packages(['abiquo-api', 'abiquo-server'], '-0:3.6.1-85.el6.noarch')
+    stub_available_packages(['abiquo-api', 'abiquo-server', 'ec2-api-tools'], '-0:3.6.1-85.el6.noarch')
     chef_run.converge('apache2::default', described_recipe)
     expect(chef_run).to write_log('No Abiquo updates found.')
   end
 
   it 'does nothing if no updates available' do
-    stub_available_packages(['abiquo-api', 'abiquo-server'], '-0:3.6.1-85.el6.noarch')
+    stub_available_packages(['abiquo-api', 'abiquo-server', 'ec2-api-tools'], '-0:3.6.1-85.el6.noarch')
     chef_run.converge('apache2::default', described_recipe)
     expect(chef_run.find_resource(:service, 'abiquo-tomcat')).to be_nil
     expect(chef_run.find_resource(:service, 'abiquo-aim')).to be_nil
@@ -147,44 +147,9 @@ describe 'abiquo::upgrade' do
     expect(chef_run).to include_recipe('abiquo::repository')
   end
 
-  it 'upgrades the abiquo packages on monolithic' do
+  it 'upgrades the packages marked for upgrade' do
     chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
-    %w(abiquo-api abiquo-server).each do |pkg|
-      expect(chef_run).to upgrade_package(pkg)
-    end
-  end
-
-  it 'upgrades the abiquo packages on server' do
-    chef_run.node.set['abiquo']['profile'] = 'server'
-    chef_run.converge('apache2::default', 'abiquo::install_server', described_recipe)
-    %w(abiquo-api abiquo-server).each do |pkg|
-      expect(chef_run).to upgrade_package(pkg)
-    end
-  end
-
-  it 'upgrades the abiquo packages on remoteservices' do
-    stub_package_commands(['abiquo-virtualfactory', 'abiquo-remote-services'])
-    chef_run.node.set['abiquo']['profile'] = 'remoteservices'
-    chef_run.converge('apache2::default', described_recipe)
-    %w(abiquo-virtualfactory abiquo-remote-services).each do |pkg|
-      expect(chef_run).to upgrade_package(pkg)
-    end
-  end
-
-  it 'upgrades the abiquo packages on kvm' do
-    stub_package_commands(['abiquo-aim', 'abiquo-cloud-node'])
-    chef_run.node.set['abiquo']['profile'] = 'kvm'
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    %w(abiquo-aim abiquo-cloud-node).each do |pkg|
-      expect(chef_run).to upgrade_package(pkg)
-    end
-  end
-
-  it 'upgrades the abiquo packages on monitoring' do
-    stub_package_commands(['abiquo-delorean', 'abiquo-emmett'])
-    chef_run.node.set['abiquo']['profile'] = 'monitoring'
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
-    %w(abiquo-delorean abiquo-emmett).each do |pkg|
+    %w(abiquo-api abiquo-server ec2-api-tools).each do |pkg|
       expect(chef_run).to upgrade_package(pkg)
     end
   end

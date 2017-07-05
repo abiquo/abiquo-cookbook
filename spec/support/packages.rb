@@ -19,9 +19,9 @@ def stub_package_commands(packages)
   lang = { 'LC_ALL' => Chef::Config[:internal_locale], 'LANGUAGE' => Chef::Config[:internal_locale], 'LANG' => Chef::Config[:internal_locale] }
   stub_const('ENV', lang)
 
-  names_result = packages.join("\n")
+  names_result = packages.map { |p| p + '@Abiquo Inc.' }.join("\n")
   names_result << "\n"
-  allow(Mixlib::ShellOut).to receive(:new).with('repoquery --installed \'abiquo-*\' --qf \'%{name}\'', environment: lang).and_return(abiquo)
+  allow(Mixlib::ShellOut).to receive(:new).with('repoquery --installed -a --qf \'%{name}@%{vendor}\'', environment: lang).and_return(abiquo)
   allow(abiquo).to receive(:run_command).and_return(nil)
   allow(abiquo).to receive(:live_stream).and_return(nil)
   allow(abiquo).to receive(:live_stream=).and_return(nil)

@@ -46,8 +46,8 @@ module Abiquo
     include Chef::Mixin::ShellOut
 
     def abiquo_packages
-      pkgs_cmd = shell_out!('repoquery --installed \'abiquo-*\' --qf \'%{name}\'')
-      pkgs_cmd.stdout.split
+      pkgs_cmd = shell_out!('repoquery --installed -a --qf \'%{name}@%{vendor}\'')
+      pkgs_cmd.stdout.split(/\n/).select { |n| n.split(/@/)[1] =~ /^Abiquo/ }.map { |n| n.split(/@/)[0] }
     end
 
     def abiquo_update_available
