@@ -20,6 +20,11 @@ def whyrun_supported?
   true
 end
 
+def sha1_fingerprint(cert)
+  x509 = OpenSSL::X509::Certificate.new(cert)
+  OpenSSL::Digest::SHA1.new(x509.to_der).to_s
+end
+
 use_inline_resources
 
 action :download do
@@ -33,18 +38,9 @@ action :download do
       return
     end
 
-    # parse host
     uri = URI.parse(new_resource.host)
     ssl_host = uri.host.nil? ? uri.path : uri.host
-    # SNI
     ssl_servername = new_resource.server_name.nil? ? ssl_host : new_resource.server_name
-
-    cert_full_filename = "#{new_resource.file_path}/#{ssl_host}.crt"
-    if ::File.exist? cert_full_filename
-      Chef::Log.debug "abiquo_download_cert :: Certificate for #{ssl_host} has already been downloaded. Skipping."
-      new_resource.updated_by_last_action(false)
-      return
-    end
 
     # Get OpenSSL context
     ctx = OpenSSL::SSL::SSLContext.new
@@ -53,11 +49,11 @@ action :download do
       # Get remote TCP socket
       sock = TCPSocket.new(ssl_host, 443)
 
-      # pass that socket to OpenSSL
+      # Pass that socket to OpenSSL
       ssl = OpenSSL::SSL::SSLSocket.new(sock, ctx)
       ssl.hostname = ssl_servername
 
-      # establish connection, if possible
+      # Establish connection, if possible
       ssl.connect
     rescue => e
       Chef::Log.debug "abiquo_download_cert :: Could not connect to #{ssl_host}!"
@@ -66,13 +62,24 @@ action :download do
       return
     end
 
-    # get peer certificate
-    cert = ssl.peer_cert
+    # Get peer certificate and compute the fingerprint
+    cert_sha1 = sha1_fingerprint(ssl.peer_cert)
+
+    # Check if the certificate is already downloaded and is the same one
+    cert_full_filename = "#{new_resource.file_path}/#{ssl_host}.crt"
+    if ::File.exist? cert_full_filename
+      cached_sha1 = sha1_fingerprint(File.read(cert_full_filename))
+      if cert_sha1 == cached_sha1
+        Chef::Log.debug "abiquo_download_cert :: Certificate for #{ssl_host} has already been downloaded. Skipping."
+        new_resource.updated_by_last_action(false)
+        return
+      end
+    end
 
     # Save the cert to disk
     ::FileUtils.mkdir_p(new_resource.file_path)
     ::File.open(cert_full_filename, 'w') do |f|
-      f.write(cert.to_s)
+      f.write(ssl.peer_cert.to_s)
     end
 
     Chef::Log.debug 'abiquo_download_cert :: Importing the certificate into Java truststore...'
