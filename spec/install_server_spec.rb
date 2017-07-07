@@ -34,7 +34,7 @@ describe 'abiquo::install_server' do
   end
 
   it 'installs the Apache recipes' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to include_recipe('apache2')
     expect(chef_run).to include_recipe('apache2::mod_proxy_ajp')
     expect(chef_run).to include_recipe('apache2::mod_ssl')
@@ -42,41 +42,41 @@ describe 'abiquo::install_server' do
 
   %w(liquibase jdk).each do |pkg|
     it "installs the #{pkg} package" do
-      chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+      chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
       expect(chef_run).to install_package(pkg)
     end
   end
 
   %w(server sosreport-plugins).each do |pkg|
     it "installs the abiquo-#{pkg} abiquo package" do
-      chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+      chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
       expect(chef_run).to install_package("abiquo-#{pkg}")
     end
   end
 
   it 'includes the java oracle jce recipe' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to include_recipe('java::oracle_jce')
   end
 
   it 'includes the install_ext_services recipe by default' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to include_recipe('abiquo::install_ext_services')
   end
 
   it 'does not include install_ext_services recipe if not configured' do
     chef_run.node.set['abiquo']['install_ext_services'] = false
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to_not include_recipe('abiquo::install_ext_services')
   end
 
   it 'includes the install-database recipe' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to include_recipe('abiquo::install_database')
   end
 
   it 'includes the install frontend recipe' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to include_recipe('abiquo::install_frontend')
   end
 

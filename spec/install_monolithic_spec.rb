@@ -20,7 +20,7 @@ describe 'abiquo::install_monolithic' do
   let(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-    end.converge('apache2::default', described_recipe, 'abiquo::service')
+    end.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
   end
   let(:cn) { 'fauxhai.local' }
 

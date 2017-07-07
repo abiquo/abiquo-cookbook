@@ -64,7 +64,6 @@ web_app 'abiquo' do
 end
 
 include_recipe 'haproxy-ng::install'
-include_recipe 'haproxy-ng::service'
 
 if node['abiquo']['haproxy']['use_default_path']
 

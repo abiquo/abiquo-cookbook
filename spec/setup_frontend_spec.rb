@@ -41,4 +41,9 @@ describe 'abiquo::setup_frontend' do
     chef_run.converge('abiquo::install_frontend', described_recipe, 'abiquo::service')
     expect(chef_run).to create_haproxy_instance('haproxy')
   end
+
+  it 'enables haproxy service' do
+    chef_run.converge('apache2::default', 'abiquo::install_frontend', described_recipe, 'abiquo::service')
+    expect(chef_run).to include_recipe('haproxy-ng::service')
+  end
 end

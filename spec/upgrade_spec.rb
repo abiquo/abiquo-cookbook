@@ -207,7 +207,7 @@ describe 'abiquo::upgrade' do
 
   it 'runs abiquo watchtower liquibase update when upgrading monitoring' do
     chef_run.node.set['abiquo']['profile'] = 'monitoring'
-    chef_run.converge('apache2::default', 'abiquo::install_server', 'abiquo::service', described_recipe)
+    chef_run.converge('apache2::default', 'abiquo::install_server', 'abiquo::service', described_recipe, 'abiquo::setup_frontend')
     resource = chef_run.find_resource(:execute, 'watchtower-liquibase-update')
     expect(resource).to do_nothing
     expect(resource.command).to eq('watchtower-db -h localhost -P 3306 -u root update')

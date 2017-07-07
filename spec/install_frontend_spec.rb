@@ -30,7 +30,7 @@ describe 'abiquo::install_frontend' do
   end
 
   it 'installs the Apache recipes' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to include_recipe('apache2')
     expect(chef_run).to include_recipe('apache2::mod_proxy_ajp')
     expect(chef_run).to include_recipe('apache2::mod_ssl')
@@ -38,13 +38,13 @@ describe 'abiquo::install_frontend' do
 
   %w(ui tutorials).each do |pkg|
     it "installs the abiquo-#{pkg} abiquo package" do
-      chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+      chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
       expect(chef_run).to install_package("abiquo-#{pkg}")
     end
   end
 
   it 'includes the certificate recipe' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to include_recipe('abiquo::certificate')
   end
 
@@ -52,14 +52,13 @@ describe 'abiquo::install_frontend' do
   # but a definition and does not exist in the resource list
 
   it 'installs haproxy' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to include_recipe('haproxy-ng::install')
-    expect(chef_run).to include_recipe('haproxy-ng::service')
   end
 
   it 'sets up the haproxy frontend' do
     chef_run.node.set['abiquo']['haproxy']['ws_paths'] = { '/somePath' => ['10.10.10.10:41338'], '/someOtherPath' => ['20.20.20.20:41338'] }
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     expect(chef_run).to create_haproxy_frontend('public').with(
       bind: "#{chef_run.node['abiquo']['haproxy']['address']}:#{chef_run.node['abiquo']['haproxy']['port']} ssl crt #{chef_run.node['abiquo']['haproxy']['certificate']}",
       acls: [
@@ -76,7 +75,7 @@ describe 'abiquo::install_frontend' do
 
   it 'sets up the haproxy backends' do
     chef_run.node.set['abiquo']['haproxy']['ws_paths'] = { '/somePath' => ['10.10.10.10:41338'], '/someOtherPath' => ['20.20.20.20:41338'] }
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
+    chef_run.converge('apache2::default', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
 
     expect(chef_run).to create_haproxy_backend('_somepath').with(
       balance: 'source',
