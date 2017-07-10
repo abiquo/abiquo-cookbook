@@ -40,7 +40,7 @@ end
 conn_info = {
   host: '127.0.0.1',
   username: 'root',
-  password: node['mariadb']['server_root_password']
+  password: node['mariadb']['server_root_password'],
 }
 
 # Need to grant for localhost to run the scripts

@@ -36,13 +36,13 @@ when 'monolithic'
     '/api' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/api" },
     '/legal' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/legal" },
     '/am' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/am" },
-    '/m' => { 'url' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m" }
+    '/m' => { 'url' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m" },
   }.merge(node['abiquo']['ui_proxies'])
 when 'server'
   node.set['abiquo']['ui_proxies'] = {
     '/api' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/api" },
     '/legal' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/legal" },
-    '/m' => { 'url' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m" }
+    '/m' => { 'url' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m" },
   }.merge(node['abiquo']['ui_proxies'])
 end
 
@@ -77,13 +77,13 @@ if node['abiquo']['haproxy']['use_default_path']
       { 'name' => 'websockify0',
         'address' => ip,
         'port' => port,
-        'config' => 'weight 1 maxconn 1024 check' }
+        'config' => 'weight 1 maxconn 1024 check' },
     ]
     config [
       'log global',
       'timeout queue 3600s',
       'timeout server 3600s',
-      'timeout connect 3600s'
+      'timeout connect 3600s',
     ]
   end
 
@@ -93,7 +93,7 @@ if node['abiquo']['haproxy']['use_default_path']
     mode 'http'
     config [
       'timeout client 3600s',
-      'log global'
+      'log global',
     ]
   end
 else
@@ -121,14 +121,14 @@ else
           { 'name' => "websockify#{i}",
             'address' => ip,
             'port' => port,
-            'config' => 'weight 1 maxconn 1024 check' }
+            'config' => 'weight 1 maxconn 1024 check' },
         ]
       end
       config [
         'log global',
         'timeout queue 3600s',
         'timeout server 3600s',
-        'timeout connect 3600s'
+        'timeout connect 3600s',
       ]
     end
 
@@ -146,7 +146,7 @@ else
     mode 'http'
     config [
       'timeout client 3600s',
-      'log global'
+      'log global',
     ]
   end
 end

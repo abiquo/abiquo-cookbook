@@ -63,11 +63,11 @@ describe 'abiquo::install_frontend' do
       bind: "#{chef_run.node['abiquo']['haproxy']['address']}:#{chef_run.node['abiquo']['haproxy']['port']} ssl crt #{chef_run.node['abiquo']['haproxy']['certificate']}",
       acls: [
         { 'name' => '_somepath', 'criterion' => 'path /somePath' },
-        { 'name' => '_someotherpath', 'criterion' => 'path /someOtherPath' }
+        { 'name' => '_someotherpath', 'criterion' => 'path /someOtherPath' },
       ],
       use_backends: [
         { 'backend' => '_somepath', 'condition' => 'if _somepath' },
-        { 'backend' => '_someotherpath', 'condition' => 'if _someotherpath' }
+        { 'backend' => '_someotherpath', 'condition' => 'if _someotherpath' },
       ],
       config: ['timeout client 3600s', 'log global']
     )
@@ -84,13 +84,13 @@ describe 'abiquo::install_frontend' do
         { 'name' => 'websockify0',
           'address' => '10.10.10.10',
           'port' => '41338',
-          'config' => 'weight 1 maxconn 1024 check' }
+          'config' => 'weight 1 maxconn 1024 check' },
       ],
       config: [
         'log global',
         'timeout queue 3600s',
         'timeout server 3600s',
-        'timeout connect 3600s'
+        'timeout connect 3600s',
       ]
     )
 
@@ -101,13 +101,13 @@ describe 'abiquo::install_frontend' do
         { 'name' => 'websockify0',
           'address' => '20.20.20.20',
           'port' => '41338',
-          'config' => 'weight 1 maxconn 1024 check' }
+          'config' => 'weight 1 maxconn 1024 check' },
       ],
       config: [
         'log global',
         'timeout queue 3600s',
         'timeout server 3600s',
-        'timeout connect 3600s'
+        'timeout connect 3600s',
       ]
     )
   end

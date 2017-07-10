@@ -55,7 +55,7 @@ if node['abiquo']['monitoring']['db']['install']
     host: node['abiquo']['monitoring']['db']['host'],
     username: node['abiquo']['monitoring']['db']['user'],
     password: node['abiquo']['monitoring']['db']['password'],
-    port: node['abiquo']['monitoring']['db']['port']
+    port: node['abiquo']['monitoring']['db']['port'],
   }
 
   # Create DB

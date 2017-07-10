@@ -1,15 +1,24 @@
 require 'rspec/core/rake_task'
-require 'foodcritic'
 
-desc 'Run Chef style checks'
-FoodCritic::Rake::LintTask.new(:style) do |t|
-  t.options = {
-    fail_tags: ['any']
-  }
+desc 'Run Foodcritic style checks'
+task :foodcritic do
+  require 'foodcritic'
+  FoodCritic::Rake::LintTask.new(:foodcritic) do |t|
+    t.options = { fail_tags: ['any'] }
+  end
 end
 
 desc 'Run ChefSpec tests'
-RSpec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:chefspec)
+
+desc 'Run Cookbook style checks'
+task :cookstyle do
+  require 'cookstyle'
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new(:cookstyle) do |config|
+    config.options = %w(-DSE)
+  end
+end
 
 desc 'Run Test Kitchen basic integration tests'
 task 'kitchen-basic' do
@@ -32,12 +41,4 @@ task :kitchen do
   end
 end
 
-desc 'Run Ruby style checks'
-task :rubocop do
-  require 'rubocop/rake_task'
-  RuboCop::RakeTask.new do |config|
-    config.options = %w(-DSE)
-  end
-end
-
-task default: %w(spec style rubocop)
+task default: %w(chefspec foodcritic cookstyle)

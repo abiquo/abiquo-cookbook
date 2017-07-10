@@ -28,7 +28,7 @@ conn_info = {
   host: node['abiquo']['db']['host'],
   username: node['abiquo']['db']['user'],
   password: node['abiquo']['db']['password'],
-  port: node['abiquo']['db']['port']
+  port: node['abiquo']['db']['port'],
 }
 
 # Create DB

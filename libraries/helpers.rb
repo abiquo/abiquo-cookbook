@@ -21,7 +21,7 @@ module Abiquo
       paths = {}
       Chef::Log.info("Looking for nodes using query: #{query_str}")
       nodes = Chef::Search::Query.new.search(:node, query_str).first || []
-      Chef::Log.info('No nodes returned by the search query') if nodes.count.zero?
+      Chef::Log.info('No nodes returned by the search query') if nodes.count == 0
       nodes.each do |rnode|
         Chef::Log.info("Found node: #{rnode['hostname']}")
         begin

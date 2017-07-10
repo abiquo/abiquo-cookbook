@@ -50,7 +50,7 @@ default['abiquo']['db']['enable-master'] = false
 default['redisio']['servers'] = [{
   'name' => 'master',
   'port' => 6379,
-  'address' => '0.0.0.0'
+  'address' => '0.0.0.0',
 }]
 default['redisio']['package_install'] = true
 default['redisio']['version'] = nil

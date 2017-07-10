@@ -37,7 +37,7 @@ services = {
   'monitoring'     => %w(abiquo-delorean abiquo-emmett),
   'frontend'       => %w(apache2 haproxy),
   'v2v'            => %w(abiquo-tomcat),
-  'websockify'     => %w(websockify)
+  'websockify'     => %w(websockify),
 }
 
 services[node['abiquo']['profile']].each do |svc|

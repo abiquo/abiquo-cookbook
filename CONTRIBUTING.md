@@ -33,7 +33,7 @@ Please, include tests that cover your changes.
 
 We use [ChefSpec](http://sethvargo.github.io/chefspec/) for unit tests and 
 [Test Kitchen](http://kitchen.ci/) for integration tests. Make sure all tests are
-passing before submitting your patch. We also use [RuboCop](http://rubocop.readthedocs.io/en/latest/) 
+passing before submitting your patch. We also use [Cookstyle](https://github.com/chef/cookstyle)
 for static code analysis and [Foodcritic](http://www.foodcritic.io/) to check for 
 common problems. All checks should be passing too.
 

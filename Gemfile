@@ -4,7 +4,7 @@ gem 'chef', '~> 12.16.42'
 gem 'berkshelf', '~> 5.4.0'
 
 gem 'foodcritic', '~> 10.3.1', group: :lint
-gem 'rubocop', '~> 0.47.1', group: :lint
+gem 'cookstyle', '~> 2.0.0', group: :lint
 gem 'chefspec', '~> 5.3.0', group: :unit
 gem 'mysql2', '~> 0.4.4', group: :unit
 gem 'hashie', '<= 3.4.4', group: :unit
