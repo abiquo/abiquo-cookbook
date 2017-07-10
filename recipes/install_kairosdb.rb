@@ -45,7 +45,7 @@ if node['platform_version'].to_i == 7
     action :create
   end
 
-  directory '/var/run/kairosdb' do
+  directory '/opt/kairosdb/run' do
     owner 'kairosdb'
     group 'kairosdb'
     mode '0755'
@@ -57,6 +57,12 @@ if node['platform_version'].to_i == 7
     action :run
   end
 
+  # Workaround for: https://github.com/kairosdb/kairosdb/issues/152
+  execute 'chown-kairosdb-cache' do
+    command 'chown -R kairosdb:kairosdb /tmp/kairos_cache'
+    action :run
+  end
+
   systemd_unit 'kairosdb.service' do
     content <<-EOU.gsub(/^\s+/, '')
     [Unit]
@@ -65,8 +71,8 @@ if node['platform_version'].to_i == 7
     [Service]
     Type=forking
     User=kairosdb
-    Environment=KAIROS_PID_FILE=/var/run/kairosdb/kairosdb.pid
-    PIDFile=/var/run/kairosdb/kairosdb.pid
+    Environment=KAIROS_PID_FILE=/opt/kairosdb/run/kairosdb.pid
+    PIDFile=/opt/kairosdb/run/kairosdb.pid
     ExecStart=/opt/kairosdb/bin/kairosdb.sh start
     ExecStop=/opt/kairosdb/bin/kairosdb.sh stop
 

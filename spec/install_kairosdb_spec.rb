@@ -48,7 +48,7 @@ describe 'abiquo::install_kairosdb' do
   end
 
   it 'configures the kairos permissions in CentOS 7' do
-    expect(chef_run).to create_directory('/var/run/kairosdb').with(
+    expect(chef_run).to create_directory('/opt/kairosdb/run').with(
       owner: 'kairosdb',
       group: 'kairosdb',
       mode: '0755'
@@ -56,13 +56,17 @@ describe 'abiquo::install_kairosdb' do
     expect(chef_run).to run_execute('chown-kairosdb').with(
       command: 'chown -R kairosdb:kairosdb /opt/kairosdb'
     )
+    expect(chef_run).to run_execute('chown-kairosdb-cache').with(
+      command: 'chown -R kairosdb:kairosdb /tmp/kairos_cache'
+    )
   end
 
   it 'does not configure the kairos user and permissions in CentOS 6' do
     expect(c6_run).to_not create_user('kairosdb')
     expect(c6_run).to_not create_group('kairosdb')
-    expect(c6_run).to_not create_directory('/var/run/kairosdb')
+    expect(c6_run).to_not create_directory('/opt/kairosdb/run')
     expect(c6_run).to_not run_execute('chown-kairosdb')
+    expect(c6_run).to_not run_execute('chown-kairosdb-cache')
   end
 
   it 'installs the systemd service unit in CentOS 7' do

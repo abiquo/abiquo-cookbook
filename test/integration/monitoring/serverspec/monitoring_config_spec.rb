@@ -51,8 +51,7 @@ describe 'Monitoring configuration for CentOS 7', if: os[:release].to_i >= 7 do
   end
 
   it 'has the kairosdb permissions configured' do
-    expect(file('/var/run/kairosdb')).to be_directory
-    expect(file('/var/run/kairosdb')).to be_owned_by('kairosdb')
     expect(file('/opt/kairosdb')).to be_owned_by('kairosdb')
+    expect(file('/tmp/kairos_cache')).to be_owned_by('kairosdb')
   end
 end
