@@ -68,7 +68,7 @@ action :download do
     # Check if the certificate is already downloaded and is the same one
     cert_full_filename = "#{new_resource.file_path}/#{ssl_host}.crt"
     if ::File.exist? cert_full_filename
-      cached_sha1 = sha1_fingerprint(File.read(cert_full_filename))
+      cached_sha1 = sha1_fingerprint(::File.read(cert_full_filename))
       if cert_sha1 == cached_sha1
         Chef::Log.debug "abiquo_download_cert :: Certificate for #{ssl_host} has already been downloaded. Skipping."
         new_resource.updated_by_last_action(false)
