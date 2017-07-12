@@ -33,11 +33,11 @@ The available profiles are:
 
 When installing the Abiquo Monolithic profile, you may also want to set the `node['abiquo']['certificate']`
 properties so the right certificate is used or a self-signed one is generated. You can also use it together
-with the [hostnames](http://community.opscode.com/cookbooks/hostnames) cookbook to make sure the node will have it properly configured.
+with the [hostnames](https://supermarket.chef.io/cookbooks/hostnames) cookbook to make sure the node will have it properly configured.
 
 # Testing
 
-Detailed instructions to run the different test suites in the supported platforms can be found in the [TESTING.md](TESTING.md) file.
+Detailed instructions to run the different test suites in the supported platforms can be found in the [TESTING.md](https://github.com/abiquo/abiquo-cookbook/blob/master/TESTING.md) file.
 
 # License and Authors
 
