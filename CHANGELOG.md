@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+## 0.11.4
+
+* Aligment with the Chef Sueprmarket quality metrics.
+
 ## 0.11.3
 
 * Configure the RabbitMQ node name so it is possible to change the hostname without
