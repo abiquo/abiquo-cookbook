@@ -3,6 +3,11 @@ CHANGELOG
 
 ## 0.12.0
 
+## 0.11.5
+
+* Do not depend on a custom Cassandra cookbook now that the systemd issue has been merged upstream:
+  https://github.com/michaelklishin/cassandra-chef-cookbook/pull/353
+
 ## 0.11.4
 
 * Aligment with the Chef Sueprmarket quality metrics.
