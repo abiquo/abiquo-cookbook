@@ -1,8 +1,12 @@
 source 'https://rubygems.org'
 
 gem 'chef', '~> 12.16.42'
+# Lock chef-zero to a version that supports Ruby 2.2 
 gem 'chef-zero', '~> 5.3.2'
+
 gem 'berkshelf', '~> 5.4.0'
+# Required by Berkshelf to resolve dependenxies
+gem 'dep_selector', '~> 1.0.5'
 
 gem 'foodcritic', '~> 10.3.1', group: :lint
 gem 'cookstyle', '~> 2.0.0', group: :lint
