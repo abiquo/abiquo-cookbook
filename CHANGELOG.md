@@ -1,7 +1,11 @@
 CHANGELOG
 =========
 
+## 0.11.6
+
 ## 0.11.5
+
+* Do not depend on a custom Cassandra cookbook.
 
 ## 0.11.4
 
