@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'chef', '~> 12.16.42'
-# Lock chef-zero to a version that supports Ruby 2.2 
+# Lock chef-zero to a version that supports Ruby 2.2
 gem 'chef-zero', '~> 5.3.2'
 
 gem 'berkshelf', '~> 5.4.0'
