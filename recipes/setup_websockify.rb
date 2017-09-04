@@ -35,11 +35,17 @@ else
   end
 end
 
+default_config = { token_expiration: 10000,
+                   ssl_verify: 'false',
+                   api_user: 'admin',
+                   api_pass: 'xabiquo' }
+ws_config = node['abiquo']['websockify']['conf'].nil? ? default_config : node['abiquo']['websockify']['conf']
+
 template '/opt/websockify/abiquo.cfg' do
   source 'ws_abiquo.cfg.erb'
   owner 'root'
   group 'root'
-  variables(wsvars: node['abiquo']['websockify']['conf'])
+  variables(wsvars: ws_config)
   action :create
   notifies :restart, 'service[websockify]'
 end
