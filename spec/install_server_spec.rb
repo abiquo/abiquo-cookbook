@@ -26,11 +26,7 @@ describe 'abiquo::install_server' do
 
   before do
     stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
-    stub_check_db_pass_command('root', '')
     stub_command('/usr/sbin/httpd -t').and_return(true)
-    stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
-    stub_command("rabbitmqctl list_users | egrep -q '^abiquo.*'").and_return(false)
-    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
   end
 
   it 'installs the Apache recipes' do
