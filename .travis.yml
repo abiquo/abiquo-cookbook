@@ -18,7 +18,7 @@ install: chef exec bundle install
 bundler_args: --without integration
 before_script:
   - sudo iptables -L DOCKER || sudo iptables -N DOCKER
-  - bundle exec berks
+  - chef exec bundle exec berks
 script:
-  - bundle exec rake
+  - chef exec bundle exec rake
   - KITCHEN_LOCAL_YAML=.kitchen.docker.yml chef exec bundle exec rake kitchen-basic ${INSTANCE}
