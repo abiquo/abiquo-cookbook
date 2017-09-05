@@ -1,0 +1,154 @@
+driver:
+  name: docker
+  # customize:
+  #   memory: 1024
+
+provisioner:
+  name: chef_zero
+  chef_zero_port: 8899
+  require_chef_omnibus: 12.16.42
+  data_path: test/fixtures
+  nodes_path: test/nodes
+
+transport:
+  compression: none
+
+platforms:
+  - name: centos-6.8
+  - name: centos-7.3
+
+suites:
+  - name: monolithic
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        db:
+          enable-master: true
+        ui_apache_opts:
+          KeepAlive: "On"
+          MaxKeepAliveRequests: 100
+          KeepAliveTimeout: 60
+        ui_proxies:
+          /am2: 
+            url: http://some_am:8009/am
+            options:
+              Header: add "Access-Control-Allow-Origin" "*"
+        certificate:
+          common_name: frontend.bcn.abiquo.com
+        haproxy:
+          use_default_path: true
+          ws_paths:
+            /somePath: 
+              - 10.10.10.10:41338
+            /someOtherPath: 
+              - 20.20.20.20:41338
+  - name: server
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: server
+        db:
+          user: abiquo
+          password: abiquo
+        ui_apache_opts:
+          KeepAlive: "On"
+          MaxKeepAliveRequests: 100
+          KeepAliveTimeout: 60
+        ui_proxies:
+          /am2:
+            url: http://some_am:8009/am
+            options:
+              Header: add "Access-Control-Allow-Origin" "*"
+        certificate:
+          common_name: frontend.bcn.abiquo.com
+  - name: frontend
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: frontend
+        ui_config:
+          config.endpoint: "https://server.abiquo.com/api"
+          client.backto.url: "http://google.com"
+          client.google.maps.key: "trocotro"
+          client.test.timeout: 600
+          client.themes:
+            - abicloudDefault
+            - someothertheme
+        ui_apache_opts:
+          KeepAlive: "On"
+          MaxKeepAliveRequests: 100
+          KeepAliveTimeout: 60
+        ui_proxies:
+          /api:
+            url: ajp://serverhost:8010/api
+          /legal:
+            url: ajp://serverhost:8010/legal
+          /cms:
+            url: https://some_cms/blah
+            options:
+              Header: add "Access-Control-Allow-Origin" "*"
+        certificate:
+          common_name: frontend.bcn.abiquo.com
+        haproxy:
+          node_search_query: role:remoteservices
+          ws_paths:
+            /somePath: 
+              - 10.10.10.10:41338
+            /someOtherPath: 
+              - 20.20.20.20:41338
+  - name: websockify
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: websockify
+        certificate:
+          common_name: ws.abiquo.com
+  - name: remoteservices
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: remoteservices
+  - name: v2v
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: v2v
+  - name: kvm
+    excludes:
+      - centos-6.8
+    run_list:
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: kvm
+        aim:
+         include_neutron: true
+  - name: monitoring
+    run_list:
+      # The Delorean service needs a running RabbitMQ instance
+      - recipe[abiquo::repository]
+      - recipe[rabbitmq]
+      - recipe[abiquo::default]
+      - recipe[abiquo::upgrade]
+    attributes:
+      abiquo:
+        profile: monitoring
+        monitoring:
+          rabbitmq:
+            username: guest
+            password: guest
+      rabbitmq:
+        version: 3.5.4

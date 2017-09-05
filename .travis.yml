@@ -2,8 +2,23 @@ language: ruby
 cache: bundler
 rvm:
   - 2.2.5
+
+services: docker
+sudo: required
+
+env:
+  matrix:
+    - INSTANCE=centos-68
+    - INSTANCE=centos-73
+
+before_install: curl -L https://www.getchef.com/chef/install.sh | sudo bash -s -- -P chefdk -v 2.0.28
+install: chef exec bundle install
+
+
 bundler_args: --without integration
 before_script:
+  - sudo iptables -L DOCKER || sudo iptables -N DOCKER
   - bundle exec berks
 script:
   - bundle exec rake
+  - KITCHEN_LOCAL_YAML=.kitchen.docker.yml chef exec bundle exec rake kitchen-basic ${INSTANCE}
