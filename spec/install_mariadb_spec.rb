@@ -16,7 +16,7 @@ require 'spec_helper'
 require_relative 'support/queries'
 
 describe 'abiquo::install_mariadb' do
-  let(:chef_run) do
+  cached(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['abiquo']['db']['enable-master'] = true
       node.set['abiquo']['db']['from'] = '%'

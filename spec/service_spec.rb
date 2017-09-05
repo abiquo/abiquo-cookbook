@@ -16,96 +16,129 @@ require 'spec_helper'
 require_relative 'support/commands'
 
 describe 'abiquo::service' do
-  let(:chef_run) { ChefSpec::SoloRunner.new }
+  context 'without ext services' do
+    cached(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
-  it 'defines the abiquo-tomcat service' do
-    chef_run.converge(described_recipe)
-    expect(chef_run).to enable_service('abiquo-tomcat')
-    expect(chef_run).to start_service('abiquo-tomcat')
+    it 'defines the abiquo-tomcat service' do
+      expect(chef_run).to enable_service('abiquo-tomcat')
+      expect(chef_run).to start_service('abiquo-tomcat')
 
-    resource = chef_run.find_resource(:service, 'abiquo-tomcat')
-    expect(resource).to_not subscribe_to("rabbitmq_user[#{chef_run.node['abiquo']['rabbitmq']['username']}]")
+      resource = chef_run.find_resource(:service, 'abiquo-tomcat')
+      expect(resource).to_not subscribe_to("rabbitmq_user[#{chef_run.node['abiquo']['rabbitmq']['username']}]")
+    end
   end
 
-  it 'subscribes to restart if rabbit configuration changed' do
-    stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
-    chef_run.converge('abiquo::install_ext_services', described_recipe)
+  context 'with default properties' do
+    before do
+      stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
+    end
 
-    resource = chef_run.find_resource(:service, 'abiquo-tomcat')
-    expect(resource).to subscribe_to("rabbitmq_user[#{chef_run.node['abiquo']['rabbitmq']['username']}]").on(:restart)
+    cached(:chef_run) { ChefSpec::SoloRunner.new.converge('abiquo::install_ext_services', described_recipe) }
+
+    it 'subscribes to restart if rabbit configuration changed' do
+      resource = chef_run.find_resource(:service, 'abiquo-tomcat')
+      expect(resource).to subscribe_to("rabbitmq_user[#{chef_run.node['abiquo']['rabbitmq']['username']}]").on(:restart)
+    end
+
+    it 'renders tomcat configuration file' do
+      expect(chef_run).to create_template('/opt/abiquo/tomcat/conf/server.xml').with(
+        source: 'server.xml.erb',
+        owner: 'tomcat',
+        group: 'root'
+      )
+
+      resource = chef_run.template('/opt/abiquo/tomcat/conf/server.xml')
+      expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+    end
+
+    it 'renders abiquo default properties file' do
+      expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
+        source: 'abiquo.properties.erb',
+        owner: 'root',
+        group: 'root'
+      )
+      resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
+      expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+      expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.rabbitmq.addresses\ =\ localhost:5672$/)
+    end
   end
 
-  it 'renders tomcat configuration file' do
-    chef_run.converge(described_recipe)
-    expect(chef_run).to create_template('/opt/abiquo/tomcat/conf/server.xml').with(
-      source: 'server.xml.erb',
-      owner: 'tomcat',
-      group: 'root'
-    )
+  context 'with custom properties' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['properties']['abiquo.docker.registry'] = 'http://localhost:5000'
+        node.set['abiquo']['properties']['foo'] = 'bar'
+      end.converge(described_recipe)
+    end
 
-    resource = chef_run.template('/opt/abiquo/tomcat/conf/server.xml')
-    expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+    it 'renders abiquo properties file with custom properties' do
+      expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
+        source: 'abiquo.properties.erb',
+        owner: 'root',
+        group: 'root'
+      )
+      resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
+      expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
+      expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(%r{^abiquo.docker.registry\ =\ http:\/\/localhost:5000})
+    end
   end
 
-  it 'renders abiquo default properties file' do
-    chef_run.converge(described_recipe)
-    expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
-      source: 'abiquo.properties.erb',
-      owner: 'root',
-      group: 'root'
-    )
-    resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
-    expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
-    expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(/^abiquo.rabbitmq.addresses\ =\ localhost:5672$/)
+  context 'with wait for webapps in monolithic' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['tomcat']['wait-for-webapps'] = true
+      end.converge(described_recipe)
+    end
+
+    it 'waits for API on monolithic' do
+      resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'api')
+      expect(resource).to do_nothing
+      expect(resource).to subscribe_to('service[abiquo-tomcat]').on(:wait).delayed
+    end
   end
 
-  it 'renders abiquo properties file with custom properties' do
-    chef_run.node.set['abiquo']['properties']['abiquo.docker.registry'] = 'http://localhost:5000'
-    chef_run.node.set['abiquo']['properties']['foo'] = 'bar'
+  context 'with wait for webapps in API' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['tomcat']['wait-for-webapps'] = true
+        node.set['abiquo']['profile'] = 'server'
+      end.converge(described_recipe)
+    end
 
-    chef_run.converge(described_recipe)
-    expect(chef_run).to create_template('/opt/abiquo/config/abiquo.properties').with(
-      source: 'abiquo.properties.erb',
-      owner: 'root',
-      group: 'root'
-    )
-    resource = chef_run.template('/opt/abiquo/config/abiquo.properties')
-    expect(resource).to notify('service[abiquo-tomcat]').to(:restart).delayed
-    expect(chef_run).to render_file('/opt/abiquo/config/abiquo.properties').with_content(%r{^abiquo.docker.registry\ =\ http:\/\/localhost:5000})
+    it 'waits for API on server' do
+      resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'api')
+      expect(resource).to do_nothing
+      expect(resource).to subscribe_to('service[abiquo-tomcat]').on(:wait).delayed
+    end
   end
 
-  it 'waits for API on monolithic' do
-    chef_run.node.set['abiquo']['tomcat']['wait-for-webapps'] = true
-    chef_run.converge(described_recipe)
-    resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'api')
-    expect(resource).to do_nothing
-    expect(resource).to subscribe_to('service[abiquo-tomcat]').on(:wait).delayed
+  context 'with wait for webapps in RS' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['tomcat']['wait-for-webapps'] = true
+        node.set['abiquo']['profile'] = 'remoteservices'
+      end.converge(described_recipe)
+    end
+
+    it 'waits for virtualfactory on remoteservices' do
+      resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'virtualfactory')
+      expect(resource).to do_nothing
+      expect(resource).to subscribe_to('service[abiquo-tomcat]').on(:wait).delayed
+    end
   end
 
-  it 'waits for API on server' do
-    chef_run.node.set['abiquo']['tomcat']['wait-for-webapps'] = true
-    chef_run.node.set['abiquo']['profile'] = 'server'
-    chef_run.converge(described_recipe)
-    resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'api')
-    expect(resource).to do_nothing
-    expect(resource).to subscribe_to('service[abiquo-tomcat]').on(:wait).delayed
-  end
+  context 'with wait for webapps in V2V' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['tomcat']['wait-for-webapps'] = true
+        node.set['abiquo']['profile'] = 'v2v'
+      end.converge(described_recipe)
+    end
 
-  it 'waits for virtualfactory on remoteservices' do
-    chef_run.node.set['abiquo']['tomcat']['wait-for-webapps'] = true
-    chef_run.node.set['abiquo']['profile'] = 'remoteservices'
-    chef_run.converge(described_recipe)
-    resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'virtualfactory')
-    expect(resource).to do_nothing
-    expect(resource).to subscribe_to('service[abiquo-tomcat]').on(:wait).delayed
-  end
-
-  it 'waits for bpm-async on v2v' do
-    chef_run.node.set['abiquo']['tomcat']['wait-for-webapps'] = true
-    chef_run.node.set['abiquo']['profile'] = 'v2v'
-    chef_run.converge(described_recipe)
-    resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'bpm-async')
-    expect(resource).to do_nothing
-    expect(resource).to subscribe_to('service[abiquo-tomcat]').on(:wait).delayed
+    it 'waits for bpm-async on v2v' do
+      resource = chef_run.find_resource(:abiquo_wait_for_webapp, 'bpm-async')
+      expect(resource).to do_nothing
+      expect(resource).to subscribe_to('service[abiquo-tomcat]').on(:wait).delayed
+    end
   end
 end

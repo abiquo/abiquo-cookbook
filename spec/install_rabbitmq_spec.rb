@@ -15,7 +15,7 @@
 require 'spec_helper'
 
 describe 'abiquo::install_rabbitmq' do
-  let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe, 'abiquo::service') }
+  cached(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe, 'abiquo::service') }
 
   it 'includes the rabbitmq recipe' do
     expect(chef_run).to include_recipe('rabbitmq')

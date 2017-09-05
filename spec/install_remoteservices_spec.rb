@@ -16,7 +16,7 @@ require 'spec_helper'
 require_relative 'support/commands'
 
 describe 'abiquo::install_remoteservices' do
-  let(:chef_run) do
+  cached(:chef_run) do
     ChefSpec::SoloRunner.new(internal_locale: 'en_US.UTF-8') do |node|
       node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     end.converge(described_recipe, 'abiquo::service')

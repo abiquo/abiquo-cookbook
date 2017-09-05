@@ -16,39 +16,34 @@ require 'spec_helper'
 require_relative 'support/stubs'
 
 describe 'abiquo::install_websockify' do
-  let(:chef_run) do
+  cached(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-    end
+    end.converge(described_recipe, 'abiquo::service')
   end
-  let(:cn) { 'fauxhai.local' }
 
   before do
     stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
     stub_command('/usr/sbin/httpd -t').and_return(true)
-    stub_command("/usr/bin/test -f /etc/pki/abiquo/#{cn}.crt").and_return(false)
+    stub_command('/usr/bin/test -f /etc/pki/abiquo/fauxhai.local.crt').and_return(false)
   end
 
   %w(libxml2 libxslt).each do |pkg|
     it "installs the #{pkg} package" do
-      chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
       expect(chef_run).to install_package(pkg)
     end
   end
 
   it 'installs the abiquo-websockify abiquo package' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
     expect(chef_run).to install_package('abiquo-websockify')
   end
 
   it 'enables the websockify service' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
     expect(chef_run).to enable_service('websockify')
     expect(chef_run).to start_service('websockify')
   end
 
   it 'includes the certificate recipe' do
-    chef_run.converge('apache2::default', described_recipe, 'abiquo::service')
     expect(chef_run).to include_recipe('abiquo::certificate')
   end
 end

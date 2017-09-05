@@ -14,29 +14,41 @@
 
 require 'spec_helper'
 
-describe 'abiquo::setup_v2v' do
-  let(:chef_run) { ChefSpec::SoloRunner.new }
-
-  it 'does not mount the nfs repository by default' do
-    chef_run.converge(described_recipe)
-    expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])
-  end
-
-  it 'enables and mounts the nfs repository if configured' do
-    chef_run.node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
-    chef_run.converge(described_recipe)
-    expect(chef_run).to mount_mount('/opt/vm_repository').with(
-      fstype: 'nfs',
-      device: '10.60.1.222:/opt/nfs-devel'
-    )
-    expect(chef_run).to enable_mount('/opt/vm_repository').with(
-      fstype: 'nfs',
-      device: '10.60.1.222:/opt/nfs-devel'
-    )
-  end
-
+shared_examples 'setup-v2v' do
   it 'includes the service recipe' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to include_recipe('abiquo::service')
+  end
+end
+
+describe 'abiquo::setup_v2v' do
+  context 'without nfs config' do
+    cached(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+
+    include_examples 'setup-v2v'
+
+    it 'does not mount the nfs repository by default' do
+      expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])
+    end
+  end
+
+  context 'with nfs config' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
+      end.converge(described_recipe)
+    end
+
+    include_examples 'setup-v2v'
+
+    it 'enables and mounts the nfs repository if configured' do
+      expect(chef_run).to mount_mount('/opt/vm_repository').with(
+        fstype: 'nfs',
+        device: '10.60.1.222:/opt/nfs-devel'
+      )
+      expect(chef_run).to enable_mount('/opt/vm_repository').with(
+        fstype: 'nfs',
+        device: '10.60.1.222:/opt/nfs-devel'
+      )
+    end
   end
 end

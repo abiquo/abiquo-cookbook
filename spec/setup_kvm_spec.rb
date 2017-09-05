@@ -14,37 +14,15 @@
 
 require 'spec_helper'
 
-describe 'abiquo::setup_kvm' do
-  let(:chef_run) { ChefSpec::SoloRunner.new }
-
+shared_examples 'setup-kvm' do
   it 'creates the /opt/vm_repository directory' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to create_directory('/opt/vm_repository').with(
       owner: 'root',
       group: 'root'
     )
   end
 
-  it 'does not mount the nfs repository by default' do
-    chef_run.converge(described_recipe)
-    expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])
-  end
-
-  it 'enables and mounts the nfs repository if configured' do
-    chef_run.node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
-    chef_run.converge(described_recipe)
-    expect(chef_run).to mount_mount('/opt/vm_repository').with(
-      fstype: 'nfs',
-      device: '10.60.1.222:/opt/nfs-devel'
-    )
-    expect(chef_run).to enable_mount('/opt/vm_repository').with(
-      fstype: 'nfs',
-      device: '10.60.1.222:/opt/nfs-devel'
-    )
-  end
-
   it 'renders the libvirt guests file' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to create_template('/etc/sysconfig/libvirt-guests').with(
       source: 'libvirt-guests.erb',
       owner: 'root',
@@ -55,7 +33,6 @@ describe 'abiquo::setup_kvm' do
   end
 
   it 'renders the abiquo-aim file' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to create_template('/etc/abiquo-aim.ini').with(
       source: 'abiquo-aim.ini.erb',
       owner: 'root',
@@ -66,13 +43,44 @@ describe 'abiquo::setup_kvm' do
   end
 
   it 'enables and restarts the libvirtd service' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to enable_service('libvirtd')
   end
 
   it 'enables and restarts the abiquo-aim service' do
-    chef_run.converge(described_recipe)
     expect(chef_run).to enable_service('abiquo-aim')
     expect(chef_run).to enable_service('abiquo-aim')
+  end
+end
+
+describe 'abiquo::setup_kvm' do
+  context 'without repo config' do
+    cached(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+
+    include_examples 'setup-kvm'
+
+    it 'does not mount the nfs repository by default' do
+      expect(chef_run).to_not mount_mount(chef_run.node['abiquo']['nfs']['mountpoint'])
+    end
+  end
+
+  context 'with repo config' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
+      end.converge(described_recipe)
+    end
+
+    include_examples 'setup-kvm'
+
+    it 'enables and mounts the nfs repository if configured' do
+      expect(chef_run).to mount_mount('/opt/vm_repository').with(
+        fstype: 'nfs',
+        device: '10.60.1.222:/opt/nfs-devel'
+      )
+      expect(chef_run).to enable_mount('/opt/vm_repository').with(
+        fstype: 'nfs',
+        device: '10.60.1.222:/opt/nfs-devel'
+      )
+    end
   end
 end

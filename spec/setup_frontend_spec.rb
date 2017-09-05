@@ -16,10 +16,10 @@ require 'spec_helper'
 require_relative 'support/stubs'
 
 describe 'abiquo::setup_frontend' do
-  let(:chef_run) do
+  cached(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-    end
+    end.converge('abiquo::install_frontend', described_recipe, 'abiquo::service')
   end
 
   before do
@@ -28,7 +28,6 @@ describe 'abiquo::setup_frontend' do
   end
 
   it 'renders ui configuration file' do
-    chef_run.converge('apache2::default', 'abiquo::install_frontend', described_recipe, 'abiquo::service')
     json_settings = Chef::JSONCompat.to_json_pretty(chef_run.node['abiquo']['ui_config'])
     expect(chef_run).to create_file('/var/www/html/ui/config/client-config-custom.json').with(
       content: json_settings,
@@ -38,12 +37,10 @@ describe 'abiquo::setup_frontend' do
   end
 
   it 'creates the haproxy instance' do
-    chef_run.converge('abiquo::install_frontend', described_recipe, 'abiquo::service')
     expect(chef_run).to create_haproxy_instance('haproxy')
   end
 
   it 'enables haproxy service' do
-    chef_run.converge('apache2::default', 'abiquo::install_frontend', described_recipe, 'abiquo::service')
     expect(chef_run).to include_recipe('haproxy-ng::service')
   end
 end

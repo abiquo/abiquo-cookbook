@@ -15,42 +15,57 @@
 require 'spec_helper'
 require_relative 'support/stubs'
 
-describe 'abiquo::setup_websockify' do
-  let(:chef_run) do
-    ChefSpec::SoloRunner.new do |node|
-      node.set['abiquo']['profile'] = 'websockify'
-      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-    end
-  end
-  let(:c6_run) { ChefSpec::SoloRunner.new(platform: 'centos', version: '6.5') }
-
-  before do
-    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
-    stub_command('/usr/sbin/httpd -t').and_return(true)
-  end
-
-  it 'renders websockify service script' do
-    chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
-    expect(chef_run).to create_template('/etc/sysconfig/websockify').with(
-      source: 'rhel/7/conf-websockify.erb',
-      owner: 'root',
-      group: 'root'
-    )
-
-    c6_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
-    expect(c6_run).to create_template('/etc/init.d/websockify').with(
-      source: 'websockify.erb',
-      owner: 'root',
-      group: 'root'
-    )
-  end
-
+shared_examples 'setup-websockify' do
   it 'renders websockify plugin credential files' do
-    chef_run.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
     expect(chef_run).to create_template('/opt/websockify/abiquo.cfg').with(
       source: 'ws_abiquo.cfg.erb',
       owner: 'root',
       group: 'root'
     )
+  end
+end
+
+describe 'abiquo::setup_websockify' do
+  before do
+    stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
+    stub_command('/usr/sbin/httpd -t').and_return(true)
+  end
+
+  context 'with CentOS 7' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['profile'] = 'websockify'
+        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+      end.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
+    end
+
+    include_examples 'setup-websockify'
+
+    it 'renders websockify service script' do
+      expect(chef_run).to create_template('/etc/sysconfig/websockify').with(
+        source: 'rhel/7/conf-websockify.erb',
+        owner: 'root',
+        group: 'root'
+      )
+    end
+  end
+
+  context 'with CentOS 6' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new(platform: 'centos', version: '6.5') do |node|
+        node.set['abiquo']['profile'] = 'websockify'
+        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+      end.converge('apache2::default', 'abiquo::install_websockify', described_recipe, 'abiquo::service')
+    end
+
+    include_examples 'setup-websockify'
+
+    it 'renders websockify service script' do
+      expect(chef_run).to create_template('/etc/init.d/websockify').with(
+        source: 'websockify.erb',
+        owner: 'root',
+        group: 'root'
+      )
+    end
   end
 end

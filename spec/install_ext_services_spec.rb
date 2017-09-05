@@ -16,31 +16,49 @@ require 'spec_helper'
 require_relative 'support/commands'
 
 describe 'abiquo::install_ext_services' do
-  let(:chef_run) { ChefSpec::SoloRunner.new }
+  cached(:chef_run) { ChefSpec::SoloRunner.new }
 
   before do
     stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
   end
 
   %w(monolithic server ext_services).each do |profile|
-    it "includes the necessary recipes for #{profile}" do
-      chef_run.node.set['abiquo']['profile'] = profile
-      chef_run.converge(described_recipe, 'abiquo::service')
-      %w(mariadb redis rabbitmq).each do |recipe|
-        expect(chef_run).to include_recipe("abiquo::install_#{recipe}")
+    context "when #{profile}" do
+      cached(:chef_run) do
+        ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+          node.set['abiquo']['profile'] = profile
+        end.converge(described_recipe, 'abiquo::service')
+      end
+
+      it "includes the necessary recipes for #{profile}" do
+        %w(mariadb redis rabbitmq).each do |recipe|
+          expect(chef_run).to include_recipe("abiquo::install_#{recipe}")
+        end
       end
     end
   end
 
-  it 'includes the necessary recipes for remoteservices' do
-    chef_run.node.set['abiquo']['profile'] = 'remoteservices'
-    chef_run.converge(described_recipe)
-    expect(chef_run).to include_recipe('abiquo::install_redis')
+  context 'when remoteservices' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+        node.set['abiquo']['profile'] = 'remoteservices'
+      end.converge(described_recipe)
+    end
+
+    it 'includes the necessary recipes for remoteservices' do
+      expect(chef_run).to include_recipe('abiquo::install_redis')
+    end
   end
 
-  it 'includes the necessary recipes for monitoring' do
-    chef_run.node.set['abiquo']['profile'] = 'monitoring'
-    chef_run.converge(described_recipe)
-    expect(chef_run).to include_recipe('abiquo::install_mariadb')
+  context 'when monitoring' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
+        node.set['abiquo']['profile'] = 'monitoring'
+      end.converge(described_recipe)
+    end
+
+    it 'includes the necessary recipes for monitoring' do
+      expect(chef_run).to include_recipe('abiquo::install_mariadb')
+    end
   end
 end
