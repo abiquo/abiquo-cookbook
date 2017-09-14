@@ -37,8 +37,40 @@ describe 'abiquo::install_mariadb' do
     expect(resource).to subscribe_to('mariadb_configuration[30-replication]').on(:restart).immediately
   end
 
-  it 'installs the mysql2 gem' do
-    expect(chef_run).to install_mysql2_chef_gem('default')
+  # it 'installs the mysql2 gem' do
+  #   expect(chef_run).to install_mysql2_chef_gem('server')
+  # end
+
+  # Due to https://github.com/brianmario/mysql2/issues/878
+  # mysql2 gem will not build with MariaDB 10.2 so we need
+  # to install from git including the fix
+  # TODO: Revert back to gem once the fix is merged and released.
+  it 'installs the packages needed for build' do
+    chef_run.converge(described_recipe)
+    %w(git make gcc).each do |pkg|
+      expect(chef_run).to install_package(pkg)
+    end
+  end
+
+  it 'clones the mysql2 gem git repo' do
+    expect(chef_run).to sync_git('/usr/local/src/mysql2-gem').with(
+      repository: 'https://github.com/actsasflinn/mysql2',
+      revision: 'f60600dae11d3cf629c1b895a4051e5572c13978'
+    )
+  end
+
+  it 'builds the mysql2 gem from git' do
+    expect(chef_run).to run_execute("#{RbConfig::CONFIG['bindir']}/gem build mysql2.gemspec").with(
+      cwd: '/usr/local/src/mysql2-gem',
+      creates: '/usr/local/src/mysql2-gem/mysql2-0.4.9.gem'
+    )
+  end
+
+  it 'installs the mysql2 gem from git' do
+    expect(chef_run).to install_chef_gem('mysql2').with(
+      source: '/usr/local/src/mysql2-gem/mysql2-0.4.9.gem',
+      compile_time: false
+    )
   end
 
   it 'creates the Abiquo DB kinton user' do
