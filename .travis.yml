@@ -5,5 +5,7 @@ rvm:
 bundler_args: --without integration
 before_script:
   - bundle exec berks
+install:
+  - travis_wait bundle install
 script:
   - bundle exec rake
