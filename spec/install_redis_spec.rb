@@ -16,16 +16,45 @@ require 'spec_helper'
 
 describe 'abiquo::install_redis' do
   let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
+  let(:c6_run) { ChefSpec::SoloRunner.new(file_cache_path: '/tmp', platform: 'centos', version: '6.5').converge(described_recipe) }
+
+  it 'creates the redis user' do
+    expect(chef_run).to create_user('redis').with(
+      comment: 'Redis Server',
+      home: '/var/lib/redis',
+      shell: '/bin/sh',
+      system: true
+    )
+
+    expect(c6_run).to create_user('redis').with(
+      comment: 'Redis Server',
+      home: '/var/lib/redis',
+      shell: '/bin/sh',
+      system: true
+    )
+  end
+
+  it 'creates selinux module in CentOS 6' do
+    semodule_filename_base = 'redis_sentinel'
+    semodule_filepath_base = "#{Chef::Config[:file_cache_path]}/#{semodule_filename_base}"
+    semodule_filepath = "#{semodule_filepath_base}.te"
+    expect(c6_run).to create_file(semodule_filepath)
+
+    resource = c6_run.find_resource(:file, semodule_filepath)
+    expect(resource).to notify("execute[semodule-install-#{semodule_filename_base}]").to(:run).immediately
+
+    resource = c6_run.find_resource(:execute, "semodule-install-#{semodule_filename_base}")
+    expect(resource).to do_nothing
+  end
 
   it 'includes the redisio recipe' do
     expect(chef_run).to include_recipe('redisio')
+    expect(c6_run).to include_recipe('redisio')
   end
 
-  it 'creates the redis user' do
-    expect(chef_run).to create_user('redis').with(shell: '/bin/sh')
-  end
 
   it 'includes the redisio::enable recipe' do
     expect(chef_run).to include_recipe('redisio::enable')
+    expect(c6_run).to include_recipe('redisio')
   end
 end
