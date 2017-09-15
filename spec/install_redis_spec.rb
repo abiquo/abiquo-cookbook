@@ -52,7 +52,6 @@ describe 'abiquo::install_redis' do
     expect(c6_run).to include_recipe('redisio')
   end
 
-
   it 'includes the redisio::enable recipe' do
     expect(chef_run).to include_recipe('redisio::enable')
     expect(c6_run).to include_recipe('redisio')
