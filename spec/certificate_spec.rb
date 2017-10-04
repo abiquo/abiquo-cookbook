@@ -36,15 +36,7 @@ describe 'abiquo::certificate' do
       expect(chef_run).to create_ssl_certificate(chef_run.node['abiquo']['certificate']['common_name'])
       resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
       expect(resource).to notify('service[apache2]').to(:restart).delayed
-      expect(resource).to notify('service[haproxy]').to(:restart).delayed
-      expect(resource).to notify("template[#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt]").to(:create).immediately
       expect(resource).to notify("java_management_truststore_certificate[#{chef_run.node['abiquo']['certificate']['common_name']}]").to(:import).immediately
-    end
-
-    it 'creates a cert for haproxy' do
-      expect(chef_run).to_not create_template("#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt")
-      resource = chef_run.find_resource(:template, "#{chef_run.node['abiquo']['certificate']['file']}.haproxy.crt")
-      expect(resource).to do_nothing
     end
 
     it 'installs the certificate in the java trust store' do
@@ -68,25 +60,6 @@ describe 'abiquo::certificate' do
     end
 
     it 'does not install the certificate in the java trust store if only UI is installed' do
-      resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
-      expect(resource).to do_nothing
-    end
-  end
-
-  context 'when websockify' do
-    before do
-      stub_command('/usr/sbin/httpd -t').and_return(true)
-      stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
-    end
-
-    cached(:chef_run) do
-      ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['profile'] = 'websockify'
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-      end.converge('apache2::default', 'abiquo::install_frontend', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
-    end
-
-    it 'does not install the certificate in the java trust store if only websockify is installed' do
       resource = chef_run.find_resource(:java_management_truststore_certificate, chef_run.node['abiquo']['certificate']['common_name'])
       expect(resource).to do_nothing
     end

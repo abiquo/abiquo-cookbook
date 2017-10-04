@@ -19,7 +19,7 @@ describe 'Front-end packages' do
   include_examples 'frontend::packages'
 
   it 'does not have other abiquo installed' do
-    %w(websockify server remote-services monolithic v2v).each do |pkg|
+    %w(server remote-services monolithic v2v).each do |pkg|
       expect(package("abiquo-#{pkg}")).to_not be_installed
     end
   end

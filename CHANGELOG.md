@@ -3,6 +3,8 @@ CHANGELOG
 
 ## 0.12.0
 
+* Removed the WebSockify and HAProxy recipes. The remote access is now configured using Apache Guacamole.
+
 ## 0.11.5
 
 * Do not depend on a custom Cassandra cookbook now that the systemd issue has been merged upstream:

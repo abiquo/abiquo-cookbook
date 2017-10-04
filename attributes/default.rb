@@ -32,8 +32,8 @@ default['abiquo']['nfs']['location'] = nil # Change to something like: "127.0.0.
 
 # Yum repository configuration
 default['abiquo']['yum']['install-repo'] = true
-default['abiquo']['yum']['base-repo'] = 'http://mirror.abiquo.com/el$releasever/4.0/os/x86_64'
-default['abiquo']['yum']['updates-repo'] = 'http://mirror.abiquo.com/el$releasever/4.0/updates/x86_64'
+default['abiquo']['yum']['base-repo'] = 'http://mirror.abiquo.com/el$releasever/4.2/os/x86_64'
+default['abiquo']['yum']['updates-repo'] = 'http://mirror.abiquo.com/el$releasever/4.2/updates/x86_64'
 default['abiquo']['yum']['gpg-check'] = true
 default['abiquo']['yum']['proxy'] = nil
 
@@ -78,7 +78,6 @@ default['apache']['proxy']['deny_from']  = 'none'
 default['apache']['proxy']['allow_from'] = 'all'
 
 # Determine if the server should include the frontend components
-# UI + websockify
 default['abiquo']['server']['install_frontend'] = true
 
 # UI Apache configuration
@@ -175,20 +174,3 @@ when 'remoteservices'
   default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
   default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
 end
-
-# Configure Abiquo websockify
-default['abiquo']['websockify']['port'] = 41338
-default['abiquo']['websockify']['address'] = '0.0.0.0'
-default['abiquo']['websockify']['conf'] = nil
-default['abiquo']['websockify']['crt'] = node['abiquo']['certificate']['file']
-default['abiquo']['websockify']['key'] = node['abiquo']['certificate']['key_file']
-default['haproxy']['enable_default_http'] = false
-default['abiquo']['haproxy']['address'] = '*'
-default['abiquo']['haproxy']['port'] = 41337
-default['abiquo']['haproxy']['certificate'] = "#{node['abiquo']['certificate']['file']}.haproxy.crt"
-
-# Define WS paths as attributes or using a search query
-# eg. { '/path' => <websockify_ip>:<websockify_port> }
-default['abiquo']['haproxy']['ws_paths'] = {}
-default['abiquo']['haproxy']['node_search_query'] = nil
-default['abiquo']['haproxy']['use_default_path'] = false

@@ -50,7 +50,7 @@ describe 'abiquo::default' do
     stub_command('rabbitmqctl list_users | egrep -q \'^abiquo.*\'').and_return(false)
   end
 
-  %w(monolithic server v2v remoteservices kvm monitoring frontend websockify).each do |profile|
+  %w(monolithic server v2v remoteservices kvm monitoring frontend).each do |profile|
     context "when #{profile}" do
       cached(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
@@ -61,7 +61,6 @@ describe 'abiquo::default' do
       end
 
       include_examples 'packages'
-
       include_examples 'includes', profile
     end
   end

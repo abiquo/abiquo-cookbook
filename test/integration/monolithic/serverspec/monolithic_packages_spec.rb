@@ -20,9 +20,12 @@ describe 'Monolithic packages' do
   include_examples 'frontend::packages'
   include_examples 'server::packages'
   include_examples 'v2v::packages'
-  include_examples 'websockify::packages'
 
   it 'has the monolithic packages installed' do
     expect(package('abiquo-remote-services')).to be_installed
+  end
+
+  it 'has the Guacamole packages installed' do
+    expect(package('abiquo-guacamole')).to be_installed
   end
 end

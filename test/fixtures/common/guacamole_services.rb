@@ -14,7 +14,14 @@
 
 require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
-describe 'Websockify services' do
-  include_examples 'common::services'
-  include_examples 'websockify::services'
+shared_examples 'guacamole::services' do
+  it 'has Guacamole running' do
+    expect(service('guacd')).to be_enabled
+    expect(service('guacd')).to be_running
+    expect(port(4822)).to be_listening
+  end
+
+  it 'has the Guacamole firewall rules configured' do
+    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 4822 -j ACCEPT')
+  end
 end

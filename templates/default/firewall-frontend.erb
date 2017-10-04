@@ -2,5 +2,3 @@
 <% node['apache']['listen_ports'].each do |port| %>
 -A INPUT -p tcp -m tcp --dport <%= port %> -j ACCEPT
 <% end %>
-# HAProxy for Websockify
--A INPUT -p tcp -m tcp --dport <%= node['abiquo']['haproxy']['port'] %> -j ACCEPT

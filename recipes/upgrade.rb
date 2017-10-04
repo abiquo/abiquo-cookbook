@@ -30,14 +30,13 @@ end
 log 'Abiquo updates available.'
 
 services = {
-  'monolithic'     => node['abiquo']['server']['install_frontend'] ? %w(abiquo-tomcat apache2 haproxy websockify) : %w(abiquo-tomcat websockify),
-  'remoteservices' => %w(abiquo-tomcat websockify),
-  'server'         => node['abiquo']['server']['install_frontend'] ? %w(abiquo-tomcat apache2 haproxy) : %w(abiquo-tomcat),
+  'monolithic'     => node['abiquo']['server']['install_frontend'] ? %w(abiquo-tomcat apache2 guacd) : %w(abiquo-tomcat guacd),
+  'remoteservices' => %w(abiquo-tomcat guacd),
+  'server'         => node['abiquo']['server']['install_frontend'] ? %w(abiquo-tomcat apache2) : %w(abiquo-tomcat),
   'kvm'            => %w(abiquo-aim),
   'monitoring'     => %w(abiquo-delorean abiquo-emmett),
-  'frontend'       => %w(apache2 haproxy),
+  'frontend'       => %w(apache2),
   'v2v'            => %w(abiquo-tomcat),
-  'websockify'     => %w(websockify),
 }
 
 services[node['abiquo']['profile']].each do |svc|

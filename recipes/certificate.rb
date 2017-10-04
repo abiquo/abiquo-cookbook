@@ -27,9 +27,7 @@ ssl_certificate node['abiquo']['certificate']['common_name'] do
   not_if { ::File.exist? node['abiquo']['certificate']['file'] }
   only_if { node['abiquo']['certificate']['source'] == 'self-signed' }
   notifies :restart, 'service[apache2]' if node.recipe?('abiquo::install_frontend')
-  notifies :restart, 'service[haproxy]' if node.recipe?('abiquo::install_frontend')
   notifies :import, "java_management_truststore_certificate[#{node['abiquo']['certificate']['common_name']}]", :immediately
-  notifies :create, "template[#{node['abiquo']['certificate']['file']}.haproxy.crt]", :immediately
 end
 
 # Collect additional certs
@@ -39,15 +37,6 @@ node['abiquo']['certificate']['additional_certs'].each do |cert_alias, cert|
     notifies :restart, 'service[abiquo-tomcat]' if node.recipe?('abiquo::service')
     action :download
   end
-end
-
-template "#{node['abiquo']['certificate']['file']}.haproxy.crt" do
-  source 'haproxy-cert.erb'
-  owner 'root'
-  group 'root'
-  variables(cert: node['abiquo']['certificate']['file'],
-            key: node['abiquo']['certificate']['key_file'])
-  action :nothing
 end
 
 java_management_truststore_certificate node['abiquo']['certificate']['common_name'] do

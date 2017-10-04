@@ -22,15 +22,8 @@ shared_examples 'frontend::services' do
     expect(port(443)).to be_listening
   end
 
-  it 'has haproxy running' do
-    expect(service('haproxy')).to be_enabled
-    expect(service('haproxy')).to be_running
-    expect(port(41337)).to be_listening
-  end
-
   it 'has the frontend firewall rules configured' do
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT')
     expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT')
-    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 41337 -j ACCEPT')
   end
 end

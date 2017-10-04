@@ -35,12 +35,4 @@ describe 'abiquo::setup_frontend' do
       group: 'root'
     )
   end
-
-  it 'creates the haproxy instance' do
-    expect(chef_run).to create_haproxy_instance('haproxy')
-  end
-
-  it 'enables haproxy service' do
-    expect(chef_run).to include_recipe('haproxy-ng::service')
-  end
 end

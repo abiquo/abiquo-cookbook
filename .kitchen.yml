@@ -41,13 +41,6 @@ suites:
               Header: add "Access-Control-Allow-Origin" "*"
         certificate:
           common_name: frontend.bcn.abiquo.com
-        haproxy:
-          use_default_path: true
-          ws_paths:
-            /somePath: 
-              - 10.10.10.10:41338
-            /someOtherPath: 
-              - 20.20.20.20:41338
   - name: server
     run_list:
       - recipe[abiquo::default]
@@ -99,22 +92,6 @@ suites:
               Header: add "Access-Control-Allow-Origin" "*"
         certificate:
           common_name: frontend.bcn.abiquo.com
-        haproxy:
-          node_search_query: role:remoteservices
-          ws_paths:
-            /somePath: 
-              - 10.10.10.10:41338
-            /someOtherPath: 
-              - 20.20.20.20:41338
-  - name: websockify
-    run_list:
-      - recipe[abiquo::default]
-      - recipe[abiquo::upgrade]
-    attributes:
-      abiquo:
-        profile: websockify
-        certificate:
-          common_name: ws.abiquo.com
   - name: remoteservices
     run_list:
       - recipe[abiquo::default]

@@ -18,7 +18,6 @@ describe 'Remote Services configuration' do
   include_examples 'common::config'
   include_examples 'common::redis'
   include_examples 'abiquo::config'
-  include_examples 'websockify::config'
 
   it 'has a redis user with a proper login shell' do
     expect(user('redis')).to exist

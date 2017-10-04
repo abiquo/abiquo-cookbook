@@ -17,7 +17,7 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 describe 'Remote Services services' do
   include_examples 'common::services'
   include_examples 'abiquo::services'
-  include_examples 'websockify::services'
+  include_examples 'guacamole::services'
 
   it 'has rpcbind running' do
     expect(service('rpcbind')).to be_enabled

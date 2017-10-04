@@ -20,8 +20,4 @@ shared_examples 'frontend::packages' do
       expect(package("abiquo-#{pkg}")).to be_installed
     end
   end
-
-  it 'has the haproxy package installed' do
-    expect(package('haproxy')).to be_installed
-  end
 end

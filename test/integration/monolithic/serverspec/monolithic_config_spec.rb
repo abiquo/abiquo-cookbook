@@ -21,7 +21,6 @@ describe 'Monolithic configuration' do
   include_examples 'frontend::config'
   include_examples 'server::config'
   include_examples 'v2v::config'
-  include_examples 'websockify::config'
 
   it 'has mariadb configured as master' do
     expect(command('mysql -e "show master status"').stdout).to contain('mariadb-bin.000')
@@ -34,11 +33,6 @@ describe 'Monolithic configuration' do
   it 'has DB properly configured' do
     expect(file('/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml')).to contain('username="root" password=""')
     expect(file('/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml')).to contain('username="root" password=""')
-  end
-
-  it 'has the default backend bound to the first one' do
-    expect(file('/etc/haproxy/haproxy.cfg')).to contain('default_backend ws')
-    expect(file('/etc/haproxy/haproxy.cfg')).to contain('server websockify0 10.10.10.10:41338 weight 1 maxconn 1024 check')
   end
 
   it 'has the sudoers file for the nfs plugin' do

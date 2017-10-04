@@ -20,5 +20,5 @@ describe 'Monolithic services' do
   include_examples 'frontend::services'
   include_examples 'server::services'
   include_examples 'v2v::services'
-  include_examples 'websockify::services'
+  include_examples 'guacamole::services'
 end

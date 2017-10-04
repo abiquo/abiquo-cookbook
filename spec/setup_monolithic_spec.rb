@@ -20,7 +20,7 @@ describe 'abiquo::setup_monolithic' do
   cached(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
       node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-    end.converge('apache2::default', 'abiquo::install_server', 'abiquo::install_websockify', described_recipe)
+    end.converge('apache2::default', 'abiquo::install_server', described_recipe)
   end
 
   before do

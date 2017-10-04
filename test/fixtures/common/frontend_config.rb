@@ -33,8 +33,4 @@ shared_examples 'frontend::config' do
     expect(file('/var/www/html/ui/config/client-config-custom.json')).to exist
     expect(file('/var/www/html/ui/config/client-config-custom.json')).to contain('"config.endpoint": "https://')
   end
-
-  it 'has the right backends for the attributes' do
-    expect(file('/etc/haproxy/haproxy.cfg')).to exist
-  end
 end

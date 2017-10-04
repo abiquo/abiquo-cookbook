@@ -40,7 +40,4 @@ end
 include_recipe 'abiquo::certificate'
 
 include_recipe 'abiquo::install_database'
-
-if node['abiquo']['server']['install_frontend']
-  include_recipe 'abiquo::install_frontend'
-end
+include_recipe 'abiquo::install_frontend' if node['abiquo']['server']['install_frontend']

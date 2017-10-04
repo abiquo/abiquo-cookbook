@@ -19,10 +19,6 @@ shared_examples 'setup-rs' do
   it 'includes the service recipe' do
     expect(chef_run).to include_recipe('abiquo::service')
   end
-
-  it 'includes the setup_websockify recipe' do
-    expect(chef_run).to include_recipe('abiquo::setup_websockify')
-  end
 end
 
 describe 'abiquo::setup_remoteservices' do
@@ -30,7 +26,7 @@ describe 'abiquo::setup_remoteservices' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
         node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-      end.converge('abiquo::install_websockify', described_recipe)
+      end.converge(described_recipe)
     end
 
     include_examples 'setup-rs'
@@ -45,7 +41,7 @@ describe 'abiquo::setup_remoteservices' do
       ChefSpec::SoloRunner.new do |node|
         node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
         node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
-      end.converge('abiquo::install_websockify', described_recipe)
+      end.converge(described_recipe)
     end
 
     include_examples 'setup-rs'

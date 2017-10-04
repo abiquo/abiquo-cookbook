@@ -15,9 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-if node['abiquo']['server']['install_frontend']
-  include_recipe 'abiquo::setup_frontend'
-end
+include_recipe 'abiquo::setup_frontend' if node['abiquo']['server']['install_frontend']
 
 template '/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml' do
   source 'api-m.xml.erb'

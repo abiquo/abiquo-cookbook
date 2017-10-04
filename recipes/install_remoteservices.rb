@@ -40,4 +40,6 @@ service 'rpcbind' do
   action [:enable, :start]
 end
 
-include_recipe 'abiquo::install_websockify'
+service 'guacd' do
+  action [:enable, :start]
+end

@@ -17,7 +17,6 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 describe 'Remote Services packages' do
   include_examples 'common::packages'
   include_examples 'abiquo::packages'
-  include_examples 'websockify::packages'
 
   it 'has the remote services system packages installed' do
     expect(package('redis')).to be_installed
@@ -25,6 +24,10 @@ describe 'Remote Services packages' do
 
   it 'has the remote services packages installed' do
     expect(package('abiquo-remote-services')).to be_installed
+  end
+
+  it 'has the Guacamole packages installed' do
+    expect(package('abiquo-guacamole')).to be_installed
   end
 
   it 'does not have other abiquo installed' do

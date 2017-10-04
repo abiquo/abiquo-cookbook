@@ -103,20 +103,6 @@ suites:
           client.test.timeout: 600
         certificate:
           common_name: server.abiquo.com
-  - name: websockify
-    run_list:
-      - recipe[rhn_register::register]
-      - recipe[abiquo::default]
-      - recipe[abiquo::upgrade]
-      - recipe[rhn_register::unregister]
-    attributes:
-      rhn_register:
-        username: <%= ENV['RHN_USERNAME'] %>
-        password: <%= ENV['RHN_PASSWORD'] %>
-      abiquo:
-        profile: websockify
-        certificate:
-          common_name: ws.abiquo.com
   - name: remoteservices
     run_list:
       - recipe[rhn_register::register]
