@@ -28,30 +28,20 @@ describe 'Monitoring configuration' do
   end
 
   it 'has delorean properly configured' do
+    expect(file('/etc/abiquo/watchtower/delorean.properties')).to exist
     expect(file('/etc/abiquo/watchtower/delorean-base.conf')).to exist
     expect(file('/etc/abiquo/watchtower/delorean.conf')).to exist
     expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('delorean {')
     # RabbitMQ configuration
-    expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('addresses = ["localhost:5672"]')
+    expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.addresses = 127.0.0.1:5672')
   end
 
   it 'has emmett properly configured' do
+    expect(file('/etc/abiquo/watchtower/emmett.properties')).to exist
     expect(file('/etc/abiquo/watchtower/emmett-base.conf')).to exist
     expect(file('/etc/abiquo/watchtower/emmett.conf')).to exist
     expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('emmett {')
     # RabbitMQ configuration
-    expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('addresses = ["localhost:5672"]')
-  end
-end
-
-describe 'Monitoring configuration for CentOS 7', if: os[:release].to_i >= 7 do
-  it 'has the kairosdb user configured' do
-    expect(group('kairosdb')).to exist
-    expect(user('kairosdb')).to belong_to_group('kairosdb')
-  end
-
-  it 'has the kairosdb permissions configured' do
-    expect(file('/opt/kairosdb')).to be_owned_by('kairosdb')
-    expect(file('/tmp/kairos_cache')).to be_owned_by('kairosdb')
+    expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.addresses = 127.0.0.1:5672')
   end
 end

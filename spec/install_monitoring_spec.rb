@@ -43,8 +43,12 @@ describe 'abiquo::install_monitoring' do
       expect(chef_run).to include_recipe('cassandra-dse')
     end
 
-    it 'includes the kairosdb recipe' do
-      expect(chef_run).to include_recipe('abiquo::install_kairosdb')
+    it 'enables the kairosdb service' do
+      expect(chef_run).to enable_service('kairosdb')
+    end
+
+    it 'installs the kairosdb package' do
+      expect(chef_run).to install_package('kairosdb')
     end
 
     it 'includes the install_ext_services recipe by default' do

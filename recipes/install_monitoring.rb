@@ -33,7 +33,14 @@ node.set['cassandra']['config']['cluster_name'] = node['abiquo']['monitoring']['
 node.set['cassandra']['install_java'] = false # The Abiquo jdk package is installed instead
 include_recipe 'cassandra-dse'
 
-include_recipe 'abiquo::install_kairosdb'
+package 'kairosdb' do
+  action :install
+end
+
+service 'kairosdb' do
+  action :enable
+end
+
 include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
 
 %w(delorean emmett).each do |pkg|

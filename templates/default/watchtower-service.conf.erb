@@ -18,9 +18,3 @@ include file("/etc/abiquo/watchtower/<%= @watchtower_service %>-base.conf")
         }
     <% end %>
 }
-
-amqp.rabbitmq {
-    addresses = <%= node['abiquo']['monitoring']['rabbitmq']['addresses'] %>
-    username = "<%= node['abiquo']['monitoring']['rabbitmq']['username'] %>"
-    password = "<%= node['abiquo']['monitoring']['rabbitmq']['password'] %>"
-}
