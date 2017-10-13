@@ -61,7 +61,7 @@ describe 'abiquo::install_monitoring' do
       expect(chef_run).to include_recipe('mariadb::client')
       expect(chef_run).to create_mysql_database('watchtower')
 
-      expect(chef_run).to install_mysql2_chef_gem('default')
+      expect(chef_run).to install_mysql2_chef_gem_mariadb('default')
 
       expect(chef_run).to_not run_execute('install-watchtower-database')
       resource = chef_run.find_resource(:mysql_database, 'watchtower')
@@ -92,7 +92,7 @@ describe 'abiquo::install_monitoring' do
       expect(chef_run).to include_recipe('mariadb::client')
       expect(chef_run).to create_mysql_database('watchtower')
 
-      expect(chef_run).to install_mysql2_chef_gem('default')
+      expect(chef_run).to install_mysql2_chef_gem_mariadb('default')
 
       expect(chef_run).to_not run_execute('install-watchtower-database')
       resource = chef_run.find_resource(:mysql_database, 'watchtower')

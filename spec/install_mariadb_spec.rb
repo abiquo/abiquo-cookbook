@@ -13,20 +13,10 @@
 # limitations under the License.
 
 require 'spec_helper'
+require_relative 'support/matchers'
 require_relative 'support/queries'
 
-describe 'abiquo::install_mariadb' do
-  cached(:chef_run) do
-    ChefSpec::SoloRunner.new do |node|
-      node.set['abiquo']['db']['enable-master'] = true
-      node.set['abiquo']['db']['from'] = '%'
-    end.converge(described_recipe)
-  end
-
-  before do
-    stub_queries
-  end
-
+shared_examples 'mariadb' do
   it 'includes the mariadb recipe' do
     expect(chef_run).to include_recipe('mariadb')
   end
@@ -37,40 +27,8 @@ describe 'abiquo::install_mariadb' do
     expect(resource).to subscribe_to('mariadb_configuration[30-replication]').on(:restart).immediately
   end
 
-  # it 'installs the mysql2 gem' do
-  #   expect(chef_run).to install_mysql2_chef_gem('server')
-  # end
-
-  # Due to https://github.com/brianmario/mysql2/issues/878
-  # mysql2 gem will not build with MariaDB 10.2 so we need
-  # to install from git including the fix
-  # TODO: Revert back to gem once the fix is merged and released.
-  it 'installs the packages needed for build' do
-    chef_run.converge(described_recipe)
-    %w(git make gcc).each do |pkg|
-      expect(chef_run).to install_package(pkg)
-    end
-  end
-
-  it 'clones the mysql2 gem git repo' do
-    expect(chef_run).to sync_git('/usr/local/src/mysql2-gem').with(
-      repository: 'https://github.com/actsasflinn/mysql2',
-      revision: 'f60600dae11d3cf629c1b895a4051e5572c13978'
-    )
-  end
-
-  it 'builds the mysql2 gem from git' do
-    expect(chef_run).to run_execute("#{RbConfig::CONFIG['bindir']}/gem build mysql2.gemspec").with(
-      cwd: '/usr/local/src/mysql2-gem',
-      creates: '/usr/local/src/mysql2-gem/mysql2-0.4.9.gem'
-    )
-  end
-
-  it 'installs the mysql2 gem from git' do
-    expect(chef_run).to install_chef_gem('mysql2').with(
-      source: '/usr/local/src/mysql2-gem/mysql2-0.4.9.gem',
-      compile_time: false
-    )
+  it 'installs the mysql2 gem' do
+    expect(chef_run).to install_mysql2_chef_gem_mariadb('default')
   end
 
   it 'creates the Abiquo DB kinton user' do
@@ -125,5 +83,58 @@ describe 'abiquo::install_mariadb' do
     expect(resource.username).to eq(chef_run.node['abiquo']['monitoring']['db']['user'])
     expect(resource.host).to eq('localhost')
     expect(resource.privileges).to eq([:all])
+  end
+end
+
+describe 'abiquo::install_mariadb' do
+  before do
+    stub_queries
+  end
+
+  context 'with binary logging' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['db']['enable-master'] = true
+        node.set['abiquo']['db']['from'] = '%'
+      end.converge(described_recipe)
+    end
+
+    include_examples 'mariadb'
+
+    it 'grants the SUPER privilege' do
+      expect(chef_run).to grant_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}-super")
+      resource = chef_run.find_resource(:mysql_database_user, "#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}-super")
+      expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
+      expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
+      expect(resource.host).to eq('%')
+      expect(resource.privileges).to eq([:SUPER])
+    end
+
+    it 'grants the SUPER privilege in localhost' do
+      expect(chef_run).to grant_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-localhost-super")
+      resource = chef_run.find_resource(:mysql_database_user, "#{chef_run.node['abiquo']['db']['user']}-localhost-super")
+      expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
+      expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
+      expect(resource.host).to eq('localhost')
+      expect(resource.privileges).to eq([:SUPER])
+    end
+  end
+
+  context 'without binary logging' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['db']['from'] = '%'
+      end.converge(described_recipe)
+    end
+
+    include_examples 'mariadb'
+
+    it 'does not grant the SUPER privilege' do
+      expect(chef_run).to_not grant_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['monitoring']['db']['from']}-super")
+    end
+
+    it 'does not grant the SUPER privilege in localhost' do
+      expect(chef_run).to_not grant_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-localhost-super")
+    end
   end
 end

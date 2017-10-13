@@ -23,3 +23,7 @@ end
 def lock_yum_package(resource_name)
   ChefSpec::Matchers::ResourceMatcher.new(:yum_package, :lock, resource_name)
 end
+
+def install_mysql2_chef_gem_mariadb(resource_name)
+  ChefSpec::Matchers::ResourceMatcher.new(:mysql2_chef_gem_mariadb, :install, resource_name)
+end

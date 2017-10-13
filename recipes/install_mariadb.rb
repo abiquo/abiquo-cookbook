@@ -32,32 +32,8 @@ service 'mysql' do
   not_if { node['abiquo']['db']['enable-master'].nil? }
 end
 
-# mysql2_chef_gem 'default' do
-#   provider Chef::Provider::Mysql2ChefGem::Mariadb
-#   action :install
-# end
-
-# Due to https://github.com/brianmario/mysql2/issues/878
-# mysql2 gem will not build with MariaDB 10.2 so we need
-# to install from git including the fix
-# TODO: Revert back to gem once the fix is merged and released.
-%w(git make gcc).each do |pkg|
-  package pkg
-end
-
-git '/usr/local/src/mysql2-gem' do
-  repository 'https://github.com/actsasflinn/mysql2'
-  revision 'f60600dae11d3cf629c1b895a4051e5572c13978'
-end
-
-execute "#{RbConfig::CONFIG['bindir']}/gem build mysql2.gemspec" do
-  cwd '/usr/local/src/mysql2-gem'
-  creates '/usr/local/src/mysql2-gem/mysql2-0.4.9.gem'
-end
-
-chef_gem 'mysql2' do
-  source '/usr/local/src/mysql2-gem/mysql2-0.4.9.gem'
-  compile_time false
+mysql2_chef_gem_mariadb 'default' do
+  action :install
 end
 
 conn_info = {
@@ -73,8 +49,8 @@ kinton_grants_from = if node['abiquo']['db']['from'] != 'localhost'
                      else
                        ['localhost']
                      end
-schemas.each do |schema|
-  kinton_grants_from.each do |from_host|
+kinton_grants_from.each do |from_host|
+  schemas.each do |schema|
     mysql_database_user "#{schema}-#{node['abiquo']['db']['user']}-#{from_host}" do
       connection    conn_info
       database_name schema
@@ -84,6 +60,19 @@ schemas.each do |schema|
       privileges    [:all]
       action        :grant
     end
+  end
+
+  # If binary logging is enabled
+  # SUPER priv is required to run the accounting
+  # schema upgrade
+  mysql_database_user "#{node['abiquo']['db']['user']}-#{from_host}-super" do
+    connection    conn_info
+    username      node['abiquo']['db']['user']
+    password      node['abiquo']['db']['password']
+    host          from_host
+    privileges    [:SUPER]
+    action        :grant
+    only_if       { node['abiquo']['db']['enable-master'] }
   end
 end
 
