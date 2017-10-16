@@ -46,6 +46,14 @@ end
     action :create
     notifies :restart, "service[abiquo-#{wts}]"
   end
+
+  template "/etc/abiquo/watchtower/#{wts}.properties" do
+    source 'watchtower-service.properties.erb'
+    owner 'root'
+    group 'root'
+    action :create
+    notifies :restart, "service[abiquo-#{wts}]"
+  end
 end
 
 # KairosDB might fail to start as C* takes some time until it is started

@@ -58,6 +58,14 @@ describe 'abiquo::setup_monitoring' do
           group: 'root'
         )
       end
+
+      it "renders the #{wts} properties file" do
+        expect(chef_run).to create_template("/etc/abiquo/watchtower/#{wts}.properties").with(
+          source: 'watchtower-service.properties.erb',
+          owner: 'root',
+          group: 'root'
+        )
+      end
     end
   end
 

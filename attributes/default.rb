@@ -60,6 +60,7 @@ default['redisio']['bin_path'] = '/usr/bin'
 # RabbitMQ configuration
 default['abiquo']['rabbitmq']['username'] = 'abiquo'
 default['abiquo']['rabbitmq']['password'] = 'abiquo'
+default['abiquo']['rabbitmq']['addresses'] = 'localhost:5672'
 default['abiquo']['rabbitmq']['tags'] = 'administrator'
 default['abiquo']['rabbitmq']['vhost'] = '/'
 default['rabbitmq']['use_distro_version'] = true
@@ -127,9 +128,6 @@ default['abiquo']['aim']['neutron']['admin_password'] = 'xabiquo'
 default['abiquo']['monitoring']['cassandra']['cluster_name'] = 'abiquo'
 default['abiquo']['monitoring']['kairosdb']['host'] = 'localhost'
 default['abiquo']['monitoring']['kairosdb']['port'] = 8080
-default['abiquo']['monitoring']['rabbitmq']['addresses'] = ['localhost:5672']
-default['abiquo']['monitoring']['rabbitmq']['username'] = node['abiquo']['rabbitmq']['username']
-default['abiquo']['monitoring']['rabbitmq']['password'] = node['abiquo']['rabbitmq']['password']
 default['abiquo']['monitoring']['db']['host'] = 'localhost'
 default['abiquo']['monitoring']['db']['port'] = 3306
 default['abiquo']['monitoring']['db']['user'] = 'root'
@@ -153,7 +151,7 @@ default['cassandra']['use_systemd'] = true if node['platform_version'].to_i >= 7
 default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
 default['abiquo']['properties']['abiquo.rabbitmq.username'] = node['abiquo']['rabbitmq']['username']
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = node['abiquo']['rabbitmq']['password']
-default['abiquo']['properties']['abiquo.rabbitmq.addresses'] = 'localhost:5672'
+default['abiquo']['properties']['abiquo.rabbitmq.addresses'] = node['abiquo']['rabbitmq']['addresses']
 default['abiquo']['properties']['abiquo.vncport.min'] = 5900
 default['abiquo']['properties']['abiquo.vncport.max'] = 5999
 
