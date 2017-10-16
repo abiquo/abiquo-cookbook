@@ -4,6 +4,7 @@ CHANGELOG
 ## 0.12.0
 
 * Removed the WebSockify and HAProxy recipes. The remote access is now configured using Apache Guacamole.
+* Configure the "buidlogs" CentOS repository to provide OpenStack Kilo packages for KVM nodes.
 
 ## 0.11.5
 
