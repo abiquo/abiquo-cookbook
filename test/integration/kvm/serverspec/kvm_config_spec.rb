@@ -30,6 +30,12 @@ describe 'KVM configuration' do
     expect(file('/etc/sysconfig/libvirt-guests')).to exist
   end
 
+  it 'has the openstack-kilo repos installed' do
+    expect(yumrepo('openstack-kilo')).to exist
+    expect(yumrepo('openstack-kilo')).to be_enabled
+    expect(file('/etc/yum.repos.d/openstack-kilo.repo')).to contain('baseurl=https://buildlogs.centos.org/centos/7/cloud/x86_64/openstack-kilo')
+  end
+
   it 'has the neutron configuration files' do
     expect(file('/etc/neutron/neutron.conf')).to be_grouped_into('neutron')
     expect(file('/etc/neutron/neutron.conf')).to contain('admin_password = xabiquo')

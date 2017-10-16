@@ -15,8 +15,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-package 'centos-release-openstack-kilo' do
-  action :install
+# Kilo packages are no longer available in the standard CentOS repos
+yum_repository 'openstack-kilo' do
+  description 'OpenStack Kilo repository'
+  baseurl 'https://buildlogs.centos.org/centos/7/cloud/x86_64/openstack-kilo'
+  gpgcheck false # Packages in this repo are not signed
+  action :create
 end
 
 package 'openstack-neutron' do

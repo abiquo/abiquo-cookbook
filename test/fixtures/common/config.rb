@@ -16,8 +16,8 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 shared_examples 'common::config' do
   it 'has the epel repos installed' do
-    expect(file('/etc/yum.repos.d/epel.repo')).to be_file
-    expect(file('/etc/yum.repos.d/epel.repo')).to contain('enabled=1')
+    expect(yumrepo('epel')).to exist
+    expect(yumrepo('epel')).to be_enabled
   end
 
   it 'has the yum repositories configured' do

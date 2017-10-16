@@ -18,8 +18,12 @@ describe 'abiquo::kvm_neutron' do
   context 'when default' do
     cached(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
-    it 'installs the centos-release-openstack-kilo package' do
-      expect(chef_run).to install_package('centos-release-openstack-kilo')
+    it 'creates the openstack-kilo repository' do
+      expect(chef_run).to create_yum_repository('openstack-kilo').with(
+        description: 'OpenStack Kilo repository',
+        baseurl: 'https://buildlogs.centos.org/centos/7/cloud/x86_64/openstack-kilo',
+        gpgcheck: false
+      )
     end
 
     it 'installs the right version of the openstack-neutron package' do
