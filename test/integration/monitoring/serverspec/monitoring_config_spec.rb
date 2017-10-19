@@ -33,7 +33,7 @@ describe 'Monitoring configuration' do
     expect(file('/etc/abiquo/watchtower/delorean.conf')).to exist
     expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('delorean {')
     # RabbitMQ configuration
-    expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.username = abiquo')
+    expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.username = guest')
     expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
   end
 
@@ -43,7 +43,13 @@ describe 'Monitoring configuration' do
     expect(file('/etc/abiquo/watchtower/emmett.conf')).to exist
     expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('emmett {')
     # RabbitMQ configuration
-    expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.username = abiquo')
+    expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.username = guest')
     expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
+  end
+
+  it 'has executed liquibase' do
+    expect(command('mysql -N -B -e "select count(*) from information_schema.tables '\
+                                   'where table_schema=\'watchtower\' '\
+                                     'and table_name=\'DATABASECHANGELOG\'"').stdout).to eq "1\n"
   end
 end

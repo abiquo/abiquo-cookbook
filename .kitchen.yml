@@ -127,9 +127,8 @@ suites:
     attributes:
       abiquo:
         profile: monitoring
-        monitoring:
-          rabbitmq:
-            username: guest
-            password: guest
+        rabbitmq:
+          username: guest
+          password: guest
       rabbitmq:
         version: 3.5.4
