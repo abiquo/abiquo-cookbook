@@ -33,3 +33,24 @@ rabbitmq_user node['abiquo']['rabbitmq']['username'] do
   action :set_permissions
   notifies :restart, 'service[abiquo-tomcat]' unless node['abiquo']['profile'] == 'ext_services'
 end
+
+# Generate a certificate if the node is configured to use SSL and no
+# certificate has bene provided
+if node['abiquo']['rabbitmq']['generate_cert']
+  ssl_certificate 'rabbitmq-certificate' do
+    namespace node['abiquo']['certificate']
+    cert_path node['rabbitmq']['ssl_cert']
+    key_path node['rabbitmq']['ssl_key']
+    owner 'rabbitmq'
+    group 'rabbitmq'
+    not_if { ::File.exist? node['rabbitmq']['ssl_cert'] }
+    notifies :import, 'java_management_truststore_certificate[rabbitmq-certificate]', :immediately
+    notifies :restart, "service[#{node['rabbitmq']['service_name']}]"
+  end
+
+  java_management_truststore_certificate 'rabbitmq-certificate' do
+    file node['rabbitmq']['ssl_cert']
+    action :nothing
+    notifies :restart, 'service[abiquo-tomcat]'
+  end
+end

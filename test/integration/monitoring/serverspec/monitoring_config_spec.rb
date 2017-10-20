@@ -35,6 +35,7 @@ describe 'Monitoring configuration' do
     # RabbitMQ configuration
     expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.username = guest')
     expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
+    expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.tls = false')
   end
 
   it 'has emmett properly configured' do
@@ -45,6 +46,12 @@ describe 'Monitoring configuration' do
     # RabbitMQ configuration
     expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.username = guest')
     expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
+    expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.tls = false')
+  end
+
+  it 'has the ssl certificates installed' do
+    expect(file("/etc/pki/abiquo/#{host_inventory[:hostname]}.crt")).to exist
+    expect(file("/etc/pki/abiquo/#{host_inventory[:hostname]}.key")).to exist
   end
 
   it 'has executed liquibase' do

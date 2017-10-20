@@ -21,4 +21,12 @@ describe 'Monolithic services' do
   include_examples 'server::services'
   include_examples 'v2v::services'
   include_examples 'guacamole::services'
+
+  it 'has rabbitmq running listening to the ssl port' do
+    expect(port(5671)).to be_listening
+  end
+
+  it 'has the rabbit ssl firewall rules configured' do
+    expect(iptables).to have_rule('-A INPUT -p tcp -m tcp --dport 5671 -j ACCEPT')
+  end
 end

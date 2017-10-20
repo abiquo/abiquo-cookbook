@@ -1,5 +1,8 @@
 # RabbitMQ
 -A INPUT -p tcp -m tcp --dport <%= node['rabbitmq']['port'] %> -j ACCEPT
+<% if node['rabbitmq']['ssl'] %>
+-A INPUT -p tcp -m tcp --dport <%= node['rabbitmq']['ssl_port'] %> -j ACCEPT
+<% end %>
 
 # MySQL
 -A INPUT -p tcp -m tcp --dport <%= node['mariadb']['mysqld']['port'] %> -j ACCEPT

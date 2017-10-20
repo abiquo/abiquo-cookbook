@@ -30,7 +30,7 @@ shared_examples 'server::config' do
   it 'has rabbit properly configured' do
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.username = abiquo')
     expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.password = abiquo')
-    expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
+    expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.tls.trustallcertificates = false')
     expect(file('/etc/rabbitmq/rabbitmq-env.conf')).to contain("NODENAME=rabbit@#{host_inventory[:hostname]}")
   end
 

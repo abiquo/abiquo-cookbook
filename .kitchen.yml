@@ -41,6 +41,12 @@ suites:
               Header: add "Access-Control-Allow-Origin" "*"
         certificate:
           common_name: frontend.bcn.abiquo.com
+        rabbitmq:
+          generate_cert: true
+      rabbitmq:
+        ssl: true
+        ssl_cert: /etc/rabbitmq/frontend.bcn.abiquo.com.crt
+        ssl_key: /etc/rabbitmq/frontend.bcn.abiquo.com.key
   - name: server
     run_list:
       - recipe[abiquo::default]
@@ -130,5 +136,8 @@ suites:
         rabbitmq:
           username: guest
           password: guest
+        monitoring:
+          emmett:
+            ssl: true
       rabbitmq:
         version: 3.5.4

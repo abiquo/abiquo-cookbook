@@ -42,6 +42,7 @@ service 'kairosdb' do
 end
 
 include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
+include_recipe 'abiquo::certificate' if node['abiquo']['monitoring']['emmett']['ssl']
 
 %w(delorean emmett).each do |pkg|
   package "abiquo-#{pkg}" do

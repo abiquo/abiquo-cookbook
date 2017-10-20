@@ -15,6 +15,11 @@ include file("/etc/abiquo/watchtower/<%= @watchtower_service %>-base.conf")
     <% if @watchtower_service == "emmett" %>
         service {
             port = <%= node['abiquo']['monitoring']['emmett']['port'] %>
+            <% if node['abiquo']['monitoring']['emmett']['ssl'] %>
+                ssl = true
+                certfile = "<%= node['abiquo']['certificate']['file'] %>"
+                keyfile = "<%= node['abiquo']['certificate']['key_file'] %>.pkcs8"
+            <% end %>
         }
     <% end %>
 }

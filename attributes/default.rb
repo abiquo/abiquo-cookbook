@@ -58,14 +58,17 @@ default['redisio']['package_name'] = 'redis'
 default['redisio']['bin_path'] = '/usr/bin'
 
 # RabbitMQ configuration
-default['abiquo']['rabbitmq']['username'] = 'abiquo'
-default['abiquo']['rabbitmq']['password'] = 'abiquo'
-default['abiquo']['rabbitmq']['addresses'] = 'localhost:5672'
-default['abiquo']['rabbitmq']['tags'] = 'administrator'
-default['abiquo']['rabbitmq']['vhost'] = '/'
 default['rabbitmq']['use_distro_version'] = true
 default['rabbitmq']['port'] = 5672
 default['rabbitmq']['nodename'] = "rabbit@#{node['hostname']}"
+default['abiquo']['rabbitmq']['username'] = 'abiquo'
+default['abiquo']['rabbitmq']['password'] = 'abiquo'
+default['abiquo']['rabbitmq']['addresses'] = "localhost:#{node['rabbitmq'][node['rabbitmq']['ssl'] ? 'ssl_port' : 'port']}"
+default['abiquo']['rabbitmq']['tags'] = 'administrator'
+default['abiquo']['rabbitmq']['vhost'] = '/'
+default['abiquo']['rabbitmq']['tls'] = node['rabbitmq']['ssl']
+default['abiquo']['rabbitmq']['tlstrustall'] = false
+default['abiquo']['rabbitmq']['generate_cert'] = false
 
 # Tomcat configuration
 default['abiquo']['tomcat']['http-port'] = 8009
@@ -135,6 +138,7 @@ default['abiquo']['monitoring']['db']['password'] = nil
 default['abiquo']['monitoring']['db']['from'] = 'localhost'
 default['abiquo']['monitoring']['db']['install'] = true
 default['abiquo']['monitoring']['emmett']['port'] = 36638
+default['abiquo']['monitoring']['emmett']['ssl'] = false
 
 # Override the default java configuration
 default['java']['oracle']['accept_oracle_download_terms'] = true
@@ -152,6 +156,8 @@ default['abiquo']['properties']['abiquo.datacenter.id'] = node['hostname']
 default['abiquo']['properties']['abiquo.rabbitmq.username'] = node['abiquo']['rabbitmq']['username']
 default['abiquo']['properties']['abiquo.rabbitmq.password'] = node['abiquo']['rabbitmq']['password']
 default['abiquo']['properties']['abiquo.rabbitmq.addresses'] = node['abiquo']['rabbitmq']['addresses']
+default['abiquo']['properties']['abiquo.rabbitmq.tls'] = node['abiquo']['rabbitmq']['tls']
+default['abiquo']['properties']['abiquo.rabbitmq.tls.trustallcertificates'] = node['abiquo']['rabbitmq']['tlstrustall']
 default['abiquo']['properties']['abiquo.vncport.min'] = 5900
 default['abiquo']['properties']['abiquo.vncport.max'] = 5999
 

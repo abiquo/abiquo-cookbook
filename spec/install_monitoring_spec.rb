@@ -124,4 +124,17 @@ describe 'abiquo::install_monitoring' do
       expect(chef_run).to_not query_mysql_database('watchtower')
     end
   end
+
+  context 'when monitoring with ssl' do
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['profile'] = 'monitoring'
+        node.set['abiquo']['monitoring']['emmett']['ssl'] = true
+      end.converge(described_recipe)
+
+      it 'includes the certificate recipe' do
+        expect(chef_run).to include_recipe('abiquo::certificate')
+      end
+    end
+  end
 end

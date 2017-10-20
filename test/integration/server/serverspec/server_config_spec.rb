@@ -21,6 +21,10 @@ describe 'Server configuration' do
   include_examples 'frontend::config'
   include_examples 'server::config'
 
+  it 'has rabbit properly configured' do
+    expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
+  end
+
   it 'has DB properly configured' do
     expect(file('/opt/abiquo/tomcat/conf/Catalina/localhost/api.xml')).to contain('username="abiquo" password="abiquo"')
     expect(file('/opt/abiquo/tomcat/conf/Catalina/localhost/m.xml')).to contain('username="abiquo" password="abiquo"')

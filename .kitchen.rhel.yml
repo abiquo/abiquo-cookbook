@@ -37,6 +37,12 @@ suites:
           /am2: http://some_am:8009/am
         certificate:
           common_name: monolithic.abiquo.com
+        rabbitmq:
+          generate_cert: true
+      rabbitmq:
+        ssl: true
+        ssl_cert: /etc/rabbitmq/frontend.bcn.abiquo.com.crt
+        ssl_key: /etc/rabbitmq/frontend.bcn.abiquo.com.key
   - name: server
     run_list:
       - recipe[rhn_register::register]
@@ -154,5 +160,11 @@ suites:
         password: <%= ENV['RHN_PASSWORD'] %>
       abiquo:
         profile: monitoring
+        rabbitmq:
+          username: guest
+          password: guest
+        monitoring:
+          emmett:
+            ssl: true
       rabbitmq:
         version: 3.5.4

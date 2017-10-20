@@ -65,6 +65,26 @@ describe 'abiquo::certificate' do
     end
   end
 
+  context 'when monitoring' do
+    before do
+      stub_command('/usr/sbin/httpd -t').and_return(true)
+      stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
+    end
+
+    cached(:chef_run) do
+      ChefSpec::SoloRunner.new do |node|
+        node.set['abiquo']['profile'] = 'monitoring'
+        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+      end.converge('apache2::default', described_recipe)
+    end
+
+    it 'executes the key conversion to pkcs8' do
+      expect(chef_run).to_not run_execute('convert-key-pkcs8')
+      resource = chef_run.find_resource(:ssl_certificate, chef_run.node['abiquo']['certificate']['common_name'])
+      expect(resource).to notify('execute[convert-key-pkcs8]').to(:run).immediately
+    end
+  end
+
   context 'when cert already exists' do
     before do
       allow(::File).to receive(:exist?).with(anything).and_call_original

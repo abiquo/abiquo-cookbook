@@ -22,6 +22,16 @@ describe 'Monolithic configuration' do
   include_examples 'server::config'
   include_examples 'v2v::config'
 
+  it 'has rabbit configured with ssl' do
+    expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.tls = true')
+    expect(file('/opt/abiquo/config/abiquo.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5671')
+  end
+
+  it 'has the rabbit ssl certificates installed' do
+    expect(file("/etc/rabbitmq/frontend.bcn.abiquo.com.crt")).to be_owned_by('rabbitmq')
+    expect(file("/etc/rabbitmq/frontend.bcn.abiquo.com.key")).to be_owned_by('rabbitmq')
+  end
+
   it 'has mariadb configured as master' do
     expect(command('mysql -e "show master status"').stdout).to contain('mariadb-bin.000')
   end
