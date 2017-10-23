@@ -28,8 +28,8 @@ describe 'Monolithic configuration' do
   end
 
   it 'has the rabbit ssl certificates installed' do
-    expect(file("/etc/rabbitmq/frontend.bcn.abiquo.com.crt")).to be_owned_by('rabbitmq')
-    expect(file("/etc/rabbitmq/frontend.bcn.abiquo.com.key")).to be_owned_by('rabbitmq')
+    expect(file('/etc/rabbitmq/frontend.bcn.abiquo.com.crt')).to be_owned_by('rabbitmq')
+    expect(file('/etc/rabbitmq/frontend.bcn.abiquo.com.key')).to be_owned_by('rabbitmq')
   end
 
   it 'has mariadb configured as master' do
