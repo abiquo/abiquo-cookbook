@@ -3,6 +3,8 @@ CHANGELOG
 
 ## 0.12.0
 
+* Add support to enable TLS in Emmett.
+* Added support for SSL configuration in RabbitMQ.
 * Removed the WebSockify and HAProxy recipes. The remote access is now configured using Apache Guacamole.
 * Configure the "buidlogs" CentOS repository to provide OpenStack Kilo packages for KVM nodes.
 
