@@ -34,8 +34,8 @@ describe 'Monitoring configuration' do
     expect(file('/etc/abiquo/watchtower/delorean.conf')).to contain('delorean {')
     # RabbitMQ configuration
     expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.username = guest')
-    expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
-    expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.tls = false')
+    expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5671')
+    expect(file('/etc/abiquo/watchtower/delorean.properties')).to contain('abiquo.rabbitmq.tls = true')
   end
 
   it 'has emmett properly configured' do
@@ -45,8 +45,8 @@ describe 'Monitoring configuration' do
     expect(file('/etc/abiquo/watchtower/emmett.conf')).to contain('emmett {')
     # RabbitMQ configuration
     expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.username = guest')
-    expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5672')
-    expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.tls = false')
+    expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.addresses = localhost:5671')
+    expect(file('/etc/abiquo/watchtower/emmett.properties')).to contain('abiquo.rabbitmq.tls = true')
   end
 
   it 'has the ssl certificates installed' do

@@ -59,7 +59,9 @@ default['redisio']['bin_path'] = '/usr/bin'
 
 # RabbitMQ configuration
 default['rabbitmq']['use_distro_version'] = true
+default['rabbitmq']['ssl'] = false
 default['rabbitmq']['port'] = 5672
+default['rabbitmq']['ssl_port'] = 5671
 default['rabbitmq']['nodename'] = "rabbit@#{node['hostname']}"
 default['abiquo']['rabbitmq']['username'] = 'abiquo'
 default['abiquo']['rabbitmq']['password'] = 'abiquo'
