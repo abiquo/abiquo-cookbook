@@ -18,19 +18,11 @@ describe 'abiquo::kvm_neutron' do
   context 'when default' do
     cached(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
 
-    it 'creates the openstack-kilo repository' do
-      expect(chef_run).to create_yum_repository('openstack-kilo').with(
-        description: 'OpenStack Kilo repository',
-        baseurl: 'https://buildlogs.centos.org/centos/7/cloud/x86_64/openstack-kilo',
-        gpgcheck: false
-      )
+    it 'installs the SIG OpenStack repo' do
+      expect(chef_run).to install_package('centos-release-openstack-pike')
     end
 
-    it 'installs the right version of the openstack-neutron package' do
-      expect(chef_run).to install_package('openstack-neutron').with(version: '2015.1.4-1.el7')
-    end
-
-    %w(openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
+    %w(openstack-neutron openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
       it "installs the #{pkg} package" do
         expect(chef_run).to install_package(pkg)
       end
@@ -47,12 +39,12 @@ describe 'abiquo::kvm_neutron' do
     end
 
     it 'creates the config file for neutron linuxbridge plugin' do
-      expect(chef_run).to create_template('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini').with(
+      expect(chef_run).to create_template('/etc/neutron/plugins/ml2/linuxbridge_conf.ini').with(
         source: 'neutron-linuxbridge.conf.erb',
         owner: 'root',
         group: 'neutron'
       )
-      resource = chef_run.template('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')
+      resource = chef_run.template('/etc/neutron/plugins/ml2/linuxbridge_conf.ini')
       expect(resource).to notify('service[neutron-linuxbridge-agent]').to(:restart).delayed
     end
 
@@ -88,7 +80,7 @@ describe 'abiquo::kvm_neutron' do
 
     it 'does not create link if exists' do
       expect(chef_run).to create_link('/etc/neutron/plugin.ini').with(
-        to: '/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini'
+        to: '/etc/neutron/plugins/ml2/linuxbridge_conf.ini'
       )
     end
   end

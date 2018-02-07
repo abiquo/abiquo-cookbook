@@ -30,10 +30,10 @@ describe 'KVM configuration' do
     expect(file('/etc/sysconfig/libvirt-guests')).to exist
   end
 
-  it 'has the openstack-kilo repos installed' do
-    expect(yumrepo('openstack-kilo')).to exist
-    expect(yumrepo('openstack-kilo')).to be_enabled
-    expect(file('/etc/yum.repos.d/openstack-kilo.repo')).to contain('baseurl=https://buildlogs.centos.org/centos/7/cloud/x86_64/openstack-kilo')
+  it 'has the centos-openstack-pike repos installed' do
+    expect(yumrepo('centos-openstack-pike')).to exist
+    expect(yumrepo('centos-openstack-pike')).to be_enabled
+    expect(file('/etc/yum.repos.d/CentOS-OpenStack-pike.repo')).to contain('http://mirror.centos.org/centos/7/cloud/$basearch/openstack-pike/')
   end
 
   it 'has the neutron configuration files' do
@@ -43,7 +43,7 @@ describe 'KVM configuration' do
 
   it 'has the linuxbridge agent configuration files' do
     expect(file('/etc/neutron/plugin.ini')).to exist
-    expect(file('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')).to be_grouped_into('neutron')
-    expect(file('/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini')).to contain('network_vlan_ranges = abq-vlans:2:4094')
+    expect(file('/etc/neutron/plugins/ml2/linuxbridge_conf.ini')).to be_grouped_into('neutron')
+    expect(file('/etc/neutron/plugins/ml2/linuxbridge_conf.ini')).to contain('network_vlan_ranges = abq-vlans:2:4094')
   end
 end

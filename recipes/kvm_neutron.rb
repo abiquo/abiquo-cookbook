@@ -15,21 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Kilo packages are no longer available in the standard CentOS repos
-yum_repository 'openstack-kilo' do
-  description 'OpenStack Kilo repository'
-  baseurl 'https://buildlogs.centos.org/centos/7/cloud/x86_64/openstack-kilo'
-  gpgcheck false # Packages in this repo are not signed
-  action :create
-end
-
-package 'openstack-neutron' do
-  # There are several versions of the package in the CentOS repos, so we'd better be explicit
-  version '2015.1.4-1.el7'
+package 'centos-release-openstack-pike' do
   action :install
 end
 
-%w(openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
+%w(openstack-neutron openstack-neutron-ml2 openstack-neutron-linuxbridge).each do |pkg|
   package pkg do
     action :install
   end
@@ -43,7 +33,7 @@ template '/etc/neutron/neutron.conf' do
   notifies :restart, 'service[neutron-linuxbridge-agent]'
 end
 
-template '/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini' do
+template '/etc/neutron/plugins/ml2/linuxbridge_conf.ini' do
   source 'neutron-linuxbridge.conf.erb'
   owner 'root'
   group 'neutron'
@@ -57,7 +47,7 @@ file '/etc/neutron/plugin.ini' do
 end
 
 link '/etc/neutron/plugin.ini' do
-  to '/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini'
+  to '/etc/neutron/plugins/ml2/linuxbridge_conf.ini'
 end
 
 service 'neutron-linuxbridge-agent' do
