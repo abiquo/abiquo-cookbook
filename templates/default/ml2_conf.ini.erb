@@ -1,0 +1,17 @@
+[ml2]
+type_drivers = flat,vlan
+tenant_network_types = vlan
+mechanism_drivers = linuxbridge,l2population
+
+[ml2_type_flat]
+flat_networks = external
+
+[ml2_type_vlan]
+network_vlan_ranges = <%= node['abiquo']['aim']['neutron']['vlan_ranges'] %>
+
+[securitygroup]
+enable_security_group = true
+firewall_driver = neutron.agent.linux.iptables_firewall.IptablesFirewallDriver
+
+[agent]
+polling_interval = 2

@@ -39,12 +39,22 @@ describe 'abiquo::kvm_neutron' do
     end
 
     it 'creates the config file for neutron linuxbridge plugin' do
-      expect(chef_run).to create_template('/etc/neutron/plugins/ml2/linuxbridge_conf.ini').with(
-        source: 'neutron-linuxbridge.conf.erb',
+      expect(chef_run).to create_template('/etc/neutron/plugins/ml2/linuxbridge_agent.ini').with(
+        source: 'linuxbridge_agent.ini.erb',
         owner: 'root',
         group: 'neutron'
       )
-      resource = chef_run.template('/etc/neutron/plugins/ml2/linuxbridge_conf.ini')
+      resource = chef_run.template('/etc/neutron/plugins/ml2/linuxbridge_agent.ini')
+      expect(resource).to notify('service[neutron-linuxbridge-agent]').to(:restart).delayed
+    end
+
+    it 'creates the config file for neutron ml2 plugin' do
+      expect(chef_run).to create_template('/etc/neutron/plugins/ml2/ml2_conf.ini').with(
+        source: 'ml2_conf.ini.erb',
+        owner: 'root',
+        group: 'neutron'
+      )
+      resource = chef_run.template('/etc/neutron/plugins/ml2/ml2_conf.ini')
       expect(resource).to notify('service[neutron-linuxbridge-agent]').to(:restart).delayed
     end
 
@@ -80,7 +90,7 @@ describe 'abiquo::kvm_neutron' do
 
     it 'does not create link if exists' do
       expect(chef_run).to create_link('/etc/neutron/plugin.ini').with(
-        to: '/etc/neutron/plugins/ml2/linuxbridge_conf.ini'
+        to: '/etc/neutron/plugins/ml2/ml2_conf.ini'
       )
     end
   end

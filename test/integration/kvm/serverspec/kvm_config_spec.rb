@@ -38,12 +38,18 @@ describe 'KVM configuration' do
 
   it 'has the neutron configuration files' do
     expect(file('/etc/neutron/neutron.conf')).to be_grouped_into('neutron')
-    expect(file('/etc/neutron/neutron.conf')).to contain('admin_password = xabiquo')
+    expect(file('/etc/neutron/neutron.conf')).to contain('password = xabiquo')
   end
 
   it 'has the linuxbridge agent configuration files' do
     expect(file('/etc/neutron/plugin.ini')).to exist
-    expect(file('/etc/neutron/plugins/ml2/linuxbridge_conf.ini')).to be_grouped_into('neutron')
-    expect(file('/etc/neutron/plugins/ml2/linuxbridge_conf.ini')).to contain('network_vlan_ranges = abq-vlans:2:4094')
+    expect(file('/etc/neutron/plugins/ml2/linuxbridge_agent.ini')).to be_grouped_into('neutron')
+    expect(file('/etc/neutron/plugins/ml2/linuxbridge_agent.ini')).to contain('physical_interface_mappings = external:ens3,abq-vlans:ens4')
+  end
+
+  it 'has the ml2 agent configuration files' do
+    expect(file('/etc/neutron/plugin.ini')).to exist
+    expect(file('/etc/neutron/plugins/ml2/ml2_conf.ini')).to be_grouped_into('neutron')
+    expect(file('/etc/neutron/plugins/ml2/ml2_conf.ini')).to contain('network_vlan_ranges = abq-vlans:2:4094')
   end
 end

@@ -33,8 +33,16 @@ template '/etc/neutron/neutron.conf' do
   notifies :restart, 'service[neutron-linuxbridge-agent]'
 end
 
-template '/etc/neutron/plugins/ml2/linuxbridge_conf.ini' do
-  source 'neutron-linuxbridge.conf.erb'
+template '/etc/neutron/plugins/ml2/linuxbridge_agent.ini' do
+  source 'linuxbridge_agent.ini.erb'
+  owner 'root'
+  group 'neutron'
+  action :create
+  notifies :restart, 'service[neutron-linuxbridge-agent]'
+end
+
+template '/etc/neutron/plugins/ml2/ml2_conf.ini' do
+  source 'ml2_conf.ini.erb'
   owner 'root'
   group 'neutron'
   action :create
@@ -46,8 +54,8 @@ file '/etc/neutron/plugin.ini' do
   not_if { ::File.symlink? '/etc/neutron/plugin.ini' }
 end
 
-link '/etc/neutron/plugin.ini' do
-  to '/etc/neutron/plugins/ml2/linuxbridge_conf.ini'
+link '/etc/neutron/plugin.ini' dousername = admin
+  to '/etc/neutron/plugins/ml2/ml2_conf.ini'
 end
 
 service 'neutron-linuxbridge-agent' do
