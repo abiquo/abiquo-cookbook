@@ -54,7 +54,7 @@ file '/etc/neutron/plugin.ini' do
   not_if { ::File.symlink? '/etc/neutron/plugin.ini' }
 end
 
-link '/etc/neutron/plugin.ini' dousername = admin
+link '/etc/neutron/plugin.ini' do
   to '/etc/neutron/plugins/ml2/ml2_conf.ini'
 end
 
