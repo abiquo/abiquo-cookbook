@@ -121,12 +121,13 @@ default['abiquo']['aim']['include_neutron'] = false
 default['abiquo']['aim']['neutron']['vlan_ranges'] = 'abq-vlans:2:4094'
 default['abiquo']['aim']['neutron']['interface_mappings'] = 'external:ens3,abq-vlans:ens4'
 default['abiquo']['aim']['neutron']['rabbit_userid'] = 'abiquo'
-default['abiquo']['aim']['neutron']['rabbit_password'] = 'abiquo'
+default['abiquo']['aim']['neutron']['rabbit_password'] = 'xabiquo'
 default['abiquo']['aim']['neutron']['rabbit_host'] = 'localhost'
-default['abiquo']['aim']['neutron']['auth_uri'] = 'http://localhost:5000/v2.0'
-default['abiquo']['aim']['neutron']['identity_uri'] = 'http://localhost:35357'
-default['abiquo']['aim']['neutron']['admin_tenant_name'] = 'services'
-default['abiquo']['aim']['neutron']['admin_user'] = 'neutron'
+default['abiquo']['aim']['neutron']['rabbit_port'] = 5672
+default['abiquo']['aim']['neutron']['identity_uri'] = 'http://localhost:35357/v3'
+default['abiquo']['aim']['neutron']['domain'] = 'default'
+default['abiquo']['aim']['neutron']['project'] = 'service'
+default['abiquo']['aim']['neutron']['admin_user'] = 'admin'
 default['abiquo']['aim']['neutron']['admin_password'] = 'xabiquo'
 
 # Configure monitoring node

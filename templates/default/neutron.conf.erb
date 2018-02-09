@@ -6,14 +6,16 @@ allow_overlapping_ips = True
 transport_url = rabbit://<%= node['abiquo']['aim']['neutron']['rabbit_userid'] %>:<%= node['abiquo']['aim']['neutron']['rabbit_password'] %>@<%= node['abiquo']['aim']['neutron']['rabbit_host'] %>:<%= node['abiquo']['aim']['neutron']['rabbit_port'] %>/
 
 [keystone_authtoken]
-auth_type = v3password
-region_name = <%= node['abiquo']['aim']['neutron']['region'] %>
-username = <%= node['abiquo']['aim']['neutron']['admin_user'] %>
-user_domain_name = Default
-project_domain_name = Default
-project_name = service
 auth_version = v3
-auth_url = <%= node['abiquo']['aim']['neutron']['auth_uri'] %>
+auth_type = v3password
+auth_url = <%= node['abiquo']['aim']['neutron']['identity_uri'] %>
+
+region_name = <%= node['abiquo']['aim']['neutron']['region'] %>
+
+project_name = <%= node['abiquo']['aim']['neutron']['project'] =%>
+user_domain_name = <%= node['abiquo']['aim']['neutron']['domain'] %>
+project_domain_name = <%= node['abiquo']['aim']['neutron']['domain'] %>
+username = <%= node['abiquo']['aim']['neutron']['admin_user'] %>
 password = <%= node['abiquo']['aim']['neutron']['admin_password'] %>
 
 [oslo_concurrency]
