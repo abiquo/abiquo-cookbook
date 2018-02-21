@@ -16,8 +16,6 @@ require "#{ENV['BUSSER_ROOT']}/../kitchen/data/serverspec_helper"
 
 shared_examples 'frontend::packages' do
   it 'has the frontend packages installed' do
-    %w(ui tutorials).each do |pkg|
-      expect(package("abiquo-#{pkg}")).to be_installed
-    end
+    expect(package('abiquo-ui')).to be_installed
   end
 end
