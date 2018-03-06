@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+## 0.13.0
+
+* Upgrade OpenStack Neutron support to Pike.
+* Remove the deprecated abiquo-tutorials package.
+
 ## 0.12.0
 
 * Add support to enable TLS in Emmett.
