@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+## 0.12.1
+
+* Do not configure the SSL connector in Tomcat as Abiquo does SSL termination in Apache.
+
 ## 0.12.0
 
 * Add support to enable TLS in Emmett.
