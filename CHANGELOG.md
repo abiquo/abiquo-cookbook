@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+## 0.14.0
+
+* Update default attributes to point to Abiquo 4.4 repos.
+
 ## 0.13.0
 
 * Upgrade OpenStack Neutron support to Pike.
