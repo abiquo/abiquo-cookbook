@@ -7,7 +7,7 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 source_url       'https://github.com/abiquo/abiquo-cookbook'
 issues_url       'https://github.com/abiquo/abiquo-cookbook/issues'
 version          '0.14.0'
-chef_version     '~> 12.16'
+chef_version     '~> 12'
 
 recipe 'abiquo', 'Installs and configures an Abiquo platform'
 recipe 'abiquo::repository', 'Configures the Abiquo yum repositories'
