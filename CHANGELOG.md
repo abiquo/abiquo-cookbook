@@ -5,6 +5,7 @@ CHANGELOG
 
 * Upgrade OpenStack Neutron support to Pike.
 * Remove the deprecated abiquo-tutorials package.
+* Remove dependency from deprecated `database` cookbook.
 
 ## 0.12.1
 

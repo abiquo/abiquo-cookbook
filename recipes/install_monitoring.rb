@@ -66,7 +66,7 @@ if node['abiquo']['monitoring']['db']['install']
   }
 
   # Create DB
-  mysql_database 'watchtower' do
+  abiquo_mysql_database 'watchtower' do
     connection conn_info
     action :create
     notifies :run, 'execute[install-watchtower-database]', :immediately

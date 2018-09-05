@@ -32,8 +32,8 @@ shared_examples 'mariadb' do
   end
 
   it 'creates the Abiquo DB kinton user' do
-    expect(chef_run).to grant_mysql_database_user("kinton-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
-    resource = chef_run.find_resource(:mysql_database_user, "kinton-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
+    expect(chef_run).to grant_abiquo_mysql_database_user("kinton-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
+    resource = chef_run.find_resource(:abiquo_mysql_database_user, "kinton-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
     expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
     expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
     expect(resource.host).to eq(chef_run.node['abiquo']['db']['from'])
@@ -41,8 +41,8 @@ shared_examples 'mariadb' do
   end
 
   it 'creates the Abiquo DB kinton_accounting user' do
-    expect(chef_run).to grant_mysql_database_user("kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
-    resource = chef_run.find_resource(:mysql_database_user, "kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
+    expect(chef_run).to grant_abiquo_mysql_database_user("kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
+    resource = chef_run.find_resource(:abiquo_mysql_database_user, "kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}")
     expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
     expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
     expect(resource.host).to eq(chef_run.node['abiquo']['db']['from'])
@@ -50,8 +50,8 @@ shared_examples 'mariadb' do
   end
 
   it 'creates the Watchtower DB user' do
-    expect(chef_run).to grant_mysql_database_user("watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-#{chef_run.node['abiquo']['monitoring']['db']['from']}")
-    resource = chef_run.find_resource(:mysql_database_user, "watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-#{chef_run.node['abiquo']['monitoring']['db']['from']}")
+    expect(chef_run).to grant_abiquo_mysql_database_user("watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-#{chef_run.node['abiquo']['monitoring']['db']['from']}")
+    resource = chef_run.find_resource(:abiquo_mysql_database_user, "watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-#{chef_run.node['abiquo']['monitoring']['db']['from']}")
     expect(resource.password).to eq(chef_run.node['abiquo']['monitoring']['db']['password'])
     expect(resource.username).to eq(chef_run.node['abiquo']['monitoring']['db']['user'])
     expect(resource.host).to eq(chef_run.node['abiquo']['monitoring']['db']['from'])
@@ -59,8 +59,8 @@ shared_examples 'mariadb' do
   end
 
   it 'creates the Abiquo DB user in localhost' do
-    expect(chef_run).to grant_mysql_database_user("kinton-#{chef_run.node['abiquo']['db']['user']}-localhost")
-    resource = chef_run.find_resource(:mysql_database_user, "kinton-#{chef_run.node['abiquo']['db']['user']}-localhost")
+    expect(chef_run).to grant_abiquo_mysql_database_user("kinton-#{chef_run.node['abiquo']['db']['user']}-localhost")
+    resource = chef_run.find_resource(:abiquo_mysql_database_user, "kinton-#{chef_run.node['abiquo']['db']['user']}-localhost")
     expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
     expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
     expect(resource.host).to eq('localhost')
@@ -68,8 +68,8 @@ shared_examples 'mariadb' do
   end
 
   it 'creates the Abiquo DB kinton_accounting user in localhost' do
-    expect(chef_run).to grant_mysql_database_user("kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-localhost")
-    resource = chef_run.find_resource(:mysql_database_user, "kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-localhost")
+    expect(chef_run).to grant_abiquo_mysql_database_user("kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-localhost")
+    resource = chef_run.find_resource(:abiquo_mysql_database_user, "kinton_accounting-#{chef_run.node['abiquo']['db']['user']}-localhost")
     expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
     expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
     expect(resource.host).to eq('localhost')
@@ -77,8 +77,8 @@ shared_examples 'mariadb' do
   end
 
   it 'creates the Watchtower DB user in localhost' do
-    expect(chef_run).to grant_mysql_database_user("watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-localhost")
-    resource = chef_run.find_resource(:mysql_database_user, "watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-localhost")
+    expect(chef_run).to grant_abiquo_mysql_database_user("watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-localhost")
+    resource = chef_run.find_resource(:abiquo_mysql_database_user, "watchtower-#{chef_run.node['abiquo']['monitoring']['db']['user']}-localhost")
     expect(resource.password).to eq(chef_run.node['abiquo']['monitoring']['db']['password'])
     expect(resource.username).to eq(chef_run.node['abiquo']['monitoring']['db']['user'])
     expect(resource.host).to eq('localhost')
@@ -102,8 +102,8 @@ describe 'abiquo::install_mariadb' do
     include_examples 'mariadb'
 
     it 'grants the SUPER privilege' do
-      expect(chef_run).to grant_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}-super")
-      resource = chef_run.find_resource(:mysql_database_user, "#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}-super")
+      expect(chef_run).to grant_abiquo_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}-super")
+      resource = chef_run.find_resource(:abiquo_mysql_database_user, "#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['db']['from']}-super")
       expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
       expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
       expect(resource.host).to eq('%')
@@ -111,8 +111,8 @@ describe 'abiquo::install_mariadb' do
     end
 
     it 'grants the SUPER privilege in localhost' do
-      expect(chef_run).to grant_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-localhost-super")
-      resource = chef_run.find_resource(:mysql_database_user, "#{chef_run.node['abiquo']['db']['user']}-localhost-super")
+      expect(chef_run).to grant_abiquo_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-localhost-super")
+      resource = chef_run.find_resource(:abiquo_mysql_database_user, "#{chef_run.node['abiquo']['db']['user']}-localhost-super")
       expect(resource.password).to eq(chef_run.node['abiquo']['db']['password'])
       expect(resource.username).to eq(chef_run.node['abiquo']['db']['user'])
       expect(resource.host).to eq('localhost')
@@ -130,11 +130,11 @@ describe 'abiquo::install_mariadb' do
     include_examples 'mariadb'
 
     it 'does not grant the SUPER privilege' do
-      expect(chef_run).to_not grant_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['monitoring']['db']['from']}-super")
+      expect(chef_run).to_not grant_abiquo_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-#{chef_run.node['abiquo']['monitoring']['db']['from']}-super")
     end
 
     it 'does not grant the SUPER privilege in localhost' do
-      expect(chef_run).to_not grant_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-localhost-super")
+      expect(chef_run).to_not grant_abiquo_mysql_database_user("#{chef_run.node['abiquo']['db']['user']}-localhost-super")
     end
   end
 end

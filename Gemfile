@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'chef', '~> 12.16.42'
+gem 'chef', '~> 12.22.5'
 # Lock chef-zero to a version that supports Ruby 2.2
 gem 'chef-zero', '~> 5.3.2'
 

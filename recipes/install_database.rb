@@ -31,7 +31,7 @@ conn_info = {
 }
 
 # Create DB
-mysql_database 'kinton' do
+abiquo_mysql_database 'kinton' do
   connection conn_info
   action :create
   notifies :run, 'execute[install-database]', :immediately
@@ -41,11 +41,11 @@ execute 'install-database' do
   command "#{mysqlcmd} kinton </usr/share/doc/abiquo-model/database/kinton-schema.sql"
   action :nothing
   notifies :run, 'ruby_block[extract-m-user-password]', :immediately
-  notifies :query, 'mysql_database[install-license]', :immediately
+  notifies :query, 'abiquo_mysql_database[install-license]', :immediately
 end
 
 # Install license if present
-mysql_database 'install-license' do
+abiquo_mysql_database 'install-license' do
   connection conn_info
   database_name 'kinton'
   sql "INSERT INTO license (data) VALUES ('#{node['abiquo']['license']}')"

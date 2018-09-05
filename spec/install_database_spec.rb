@@ -35,12 +35,12 @@ describe 'abiquo::install_database' do
     end
 
     it 'creates the database' do
-      expect(chef_run).to create_mysql_database('kinton')
+      expect(chef_run).to create_abiquo_mysql_database('kinton')
     end
 
     it 'installs the database' do
       expect(chef_run).to_not run_execute('install-database')
-      resource = chef_run.find_resource(:mysql_database, 'kinton')
+      resource = chef_run.find_resource(:abiquo_mysql_database, 'kinton')
       expect(resource).to notify('execute[install-database]').to(:run).immediately
     end
 
@@ -71,7 +71,7 @@ describe 'abiquo::install_database' do
     end
 
     it 'does not install the license if it is empty' do
-      expect(chef_run).to_not query_mysql_database('install-license')
+      expect(chef_run).to_not query_abiquo_mysql_database('install-license')
     end
   end
 
@@ -83,9 +83,9 @@ describe 'abiquo::install_database' do
     end
 
     it 'installs the license if configured' do
-      expect(chef_run).to_not query_mysql_database('install-license')
+      expect(chef_run).to_not query_abiquo_mysql_database('install-license')
       resource = chef_run.find_resource(:execute, 'install-database')
-      expect(resource).to notify('mysql_database[install-license]').to(:query).immediately
+      expect(resource).to notify('abiquo_mysql_database[install-license]').to(:query).immediately
     end
   end
 end

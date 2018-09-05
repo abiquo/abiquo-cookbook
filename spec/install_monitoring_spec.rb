@@ -63,12 +63,12 @@ describe 'abiquo::install_monitoring' do
 
     it 'installs the database by default' do
       expect(chef_run).to include_recipe('mariadb::client')
-      expect(chef_run).to create_mysql_database('watchtower')
+      expect(chef_run).to create_abiquo_mysql_database('watchtower')
 
       expect(chef_run).to install_mysql2_chef_gem_mariadb('default')
 
       expect(chef_run).to_not run_execute('install-watchtower-database')
-      resource = chef_run.find_resource(:mysql_database, 'watchtower')
+      resource = chef_run.find_resource(:abiquo_mysql_database, 'watchtower')
       expect(resource).to notify('execute[install-watchtower-database]').to(:run).immediately
 
       expect(chef_run).to_not run_execute('watchtower-liquibase-update')
@@ -94,12 +94,12 @@ describe 'abiquo::install_monitoring' do
 
     it 'installs the database by default' do
       expect(chef_run).to include_recipe('mariadb::client')
-      expect(chef_run).to create_mysql_database('watchtower')
+      expect(chef_run).to create_abiquo_mysql_database('watchtower')
 
       expect(chef_run).to install_mysql2_chef_gem_mariadb('default')
 
       expect(chef_run).to_not run_execute('install-watchtower-database')
-      resource = chef_run.find_resource(:mysql_database, 'watchtower')
+      resource = chef_run.find_resource(:abiquo_mysql_database, 'watchtower')
       expect(resource).to notify('execute[install-watchtower-database]').to(:run).immediately
 
       expect(chef_run).to_not run_execute('watchtower-liquibase-update')
@@ -121,7 +121,7 @@ describe 'abiquo::install_monitoring' do
     end
 
     it 'does not install the database if not configured' do
-      expect(chef_run).to_not query_mysql_database('watchtower')
+      expect(chef_run).to_not query_abiquo_mysql_database('watchtower')
     end
   end
 

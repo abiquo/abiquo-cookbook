@@ -15,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+Chef::Recipe.send(:include, Abiquo::Commands)
+
 # Enable replication if specified
 if node['abiquo']['db']['enable-master']
   node.set['mariadb']['replication']['server_id'] = '1'
@@ -38,7 +40,8 @@ end
 
 conn_info = {
   host: '127.0.0.1',
-  username: 'root',
+  user: 'root',
+  port: 3306,
   password: node['mariadb']['server_root_password'],
 }
 
@@ -51,7 +54,7 @@ kinton_grants_from = if node['abiquo']['db']['from'] != 'localhost'
                      end
 kinton_grants_from.each do |from_host|
   schemas.each do |schema|
-    mysql_database_user "#{schema}-#{node['abiquo']['db']['user']}-#{from_host}" do
+    abiquo_mysql_database_user "#{schema}-#{node['abiquo']['db']['user']}-#{from_host}" do
       connection    conn_info
       database_name schema
       username      node['abiquo']['db']['user']
@@ -65,7 +68,7 @@ kinton_grants_from.each do |from_host|
   # If binary logging is enabled
   # SUPER priv is required to run the accounting
   # schema upgrade
-  mysql_database_user "#{node['abiquo']['db']['user']}-#{from_host}-super" do
+  abiquo_mysql_database_user "#{node['abiquo']['db']['user']}-#{from_host}-super" do
     connection    conn_info
     username      node['abiquo']['db']['user']
     password      node['abiquo']['db']['password']
@@ -82,7 +85,7 @@ watchtower_grants_from = if node['abiquo']['monitoring']['db']['from'] != 'local
                            ['localhost']
                          end
 watchtower_grants_from.each do |from_host|
-  mysql_database_user "watchtower-#{node['abiquo']['monitoring']['db']['user']}-#{from_host}" do
+  abiquo_mysql_database_user "watchtower-#{node['abiquo']['monitoring']['db']['user']}-#{from_host}" do
     connection    conn_info
     database_name 'watchtower'
     username      node['abiquo']['monitoring']['db']['user']
