@@ -1,0 +1,5 @@
+##
+# MySQL gem client does not implement empty?
+#
+Style/ZeroLengthPredicate:
+  Enabled: false

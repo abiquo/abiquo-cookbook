@@ -342,7 +342,7 @@ class Chef
                           "AND authentication_string=PASSWORD('#{new_resource.password}')"
                         end
           end
-          !test_client.query(test_sql).empty?
+          test_client.query(test_sql).size > 0
         end
 
         def update_user_password
@@ -373,7 +373,7 @@ class Chef
         end
 
         def database_has_password_column(client)
-          !client.query('SHOW COLUMNS FROM mysql.user WHERE Field="Password"').empty?
+          client.query('SHOW COLUMNS FROM mysql.user WHERE Field="Password"').size > 0
         end
 
         def redact_password(query, password)
