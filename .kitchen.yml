@@ -6,7 +6,7 @@ driver:
 provisioner:
   name: chef_zero
   chef_zero_port: 8899
-  require_chef_omnibus: 12.16.42
+  require_chef_omnibus: 12.22.5
   data_path: test/fixtures
   nodes_path: test/nodes
 
