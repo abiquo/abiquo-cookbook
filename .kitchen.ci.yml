@@ -2,7 +2,7 @@
 platforms:
   - name: c6
     driver:
-      box: bento/centos-6.8
+      box: bento/centos-6.10
     driver_config:
       customize:
         memory: 2048
@@ -15,7 +15,7 @@ platforms:
     <% end %>
   - name: c7
     driver:
-      box: bento/centos-7.3
+      box: bento/centos-7.5
     driver_config:
       customize:
         memory: 2048
