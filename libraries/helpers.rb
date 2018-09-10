@@ -26,11 +26,15 @@ module Abiquo
 
     def abiquo_update_available
       installed_pkgs = abiquo_packages.join(' ')
-      installed_cmd = shell_out!("repoquery --installed #{installed_pkgs}")
-      installed = installed_cmd.stdout
-      available_cmd = shell_out!("repoquery #{installed_pkgs}")
-      available = available_cmd.stdout
-      !available.eql? installed
+      unless installed_pkgs.empty?
+        installed_cmd = shell_out!("repoquery --installed #{installed_pkgs}")
+        installed = installed_cmd.stdout
+        available_cmd = shell_out!("repoquery #{installed_pkgs}")
+        available = available_cmd.stdout
+        !available.eql? installed
+      else
+        false
+      end
     end
   end
 
