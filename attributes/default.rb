@@ -32,8 +32,8 @@ default['abiquo']['nfs']['location'] = nil # Change to something like: "127.0.0.
 
 # Yum repository configuration
 default['abiquo']['yum']['install-repo'] = true
-default['abiquo']['yum']['base-repo'] = 'http://mirror.abiquo.com/el$releasever/4.4/os/x86_64'
-default['abiquo']['yum']['updates-repo'] = 'http://mirror.abiquo.com/el$releasever/4.4/updates/x86_64'
+default['abiquo']['yum']['base-repo'] = 'http://mirror.abiquo.com/el$releasever/4.5/os/x86_64'
+default['abiquo']['yum']['updates-repo'] = 'http://mirror.abiquo.com/el$releasever/4.5/updates/x86_64'
 default['abiquo']['yum']['gpg-check'] = true
 default['abiquo']['yum']['proxy'] = nil
 
