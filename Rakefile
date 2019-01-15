@@ -4,7 +4,10 @@ desc 'Run Foodcritic style checks'
 task :foodcritic do
   require 'foodcritic'
   FoodCritic::Rake::LintTask.new(:foodcritic) do |t|
-    t.options = { fail_tags: ['any'] }
+    t.options = {
+      tags: %w(~FC009 ~FC085),
+      fail_tags: ['any'],
+    }
   end
 end
 

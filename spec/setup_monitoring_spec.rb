@@ -18,8 +18,8 @@ describe 'abiquo::setup_monitoring' do
   context 'whithout existing files' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['cassandra']['config']['cluster_name'] = 'abiquo'
-        node.set['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.datapoint_ttl'] = 10
+        node.normal['cassandra']['config']['cluster_name'] = 'abiquo'
+        node.normal['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.datapoint_ttl'] = 10
       end.converge('abiquo::service', 'abiquo::install_monitoring', described_recipe)
     end
 
@@ -82,7 +82,7 @@ describe 'abiquo::setup_monitoring' do
 
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['cassandra']['config']['cluster_name'] = 'abiquo'
+        node.normal['cassandra']['config']['cluster_name'] = 'abiquo'
       end.converge('abiquo::service', 'abiquo::install_monitoring', described_recipe)
     end
 

@@ -25,7 +25,7 @@ describe 'abiquo::setup_remoteservices' do
   context 'without nfs config' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
       end.converge(described_recipe)
     end
 
@@ -39,8 +39,8 @@ describe 'abiquo::setup_remoteservices' do
   context 'with nfs config' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-        node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
       end.converge(described_recipe)
     end
 

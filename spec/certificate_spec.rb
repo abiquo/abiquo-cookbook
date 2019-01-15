@@ -24,7 +24,7 @@ describe 'abiquo::certificate' do
 
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
       end.converge('apache2::default', 'abiquo::install_server', 'abiquo::install_frontend', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     end
 
@@ -52,10 +52,10 @@ describe 'abiquo::certificate' do
       stub_certificate_files('/etc/pki/abiquo/fauxhai.local.crt', '/etc/pki/abiquo/fauxhai.local.key')
     end
 
-    cached(:chef_run) do
+    let(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['profile'] = 'ui'
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['profile'] = 'ui'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
       end.converge('apache2::default', 'abiquo::install_frontend', described_recipe, 'abiquo::setup_frontend', 'abiquo::service')
     end
 
@@ -73,9 +73,9 @@ describe 'abiquo::certificate' do
 
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['profile'] = 'monitoring'
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-      end.converge('apache2::default', described_recipe)
+        node.normal['abiquo']['profile'] = 'monitoring'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+      end.converge(described_recipe)
     end
 
     it 'executes the key conversion to pkcs8' do
@@ -93,7 +93,7 @@ describe 'abiquo::certificate' do
 
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
       end.converge(described_recipe, 'abiquo::service')
     end
 
@@ -110,11 +110,11 @@ describe 'abiquo::certificate' do
 
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['profile'] = 'remoteservices'
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-        node.set['abiquo']['certificate']['source'] = 'file'
-        node.set['abiquo']['properties']['abiquo.server.api.location'] = 'https://some.fqdn.org/api'
-        node.set['abiquo']['certificate']['additional_certs'] = { 'someservice' => 'https://some.fqdn.org' }
+        node.normal['abiquo']['profile'] = 'remoteservices'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['certificate']['source'] = 'file'
+        node.normal['abiquo']['properties']['abiquo.server.api.location'] = 'https://some.fqdn.org/api'
+        node.normal['abiquo']['certificate']['additional_certs'] = { 'someservice' => 'https://some.fqdn.org' }
       end.converge('apache2::default', 'abiquo::install_remoteservices', described_recipe, 'abiquo::service')
     end
 

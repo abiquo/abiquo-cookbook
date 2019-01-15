@@ -19,7 +19,7 @@ ChefSpec::Coverage.start!
 
 RSpec.configure do |config|
   config.platform = 'centos'
-  config.version = '7.2.1511'
+  config.version = '7.6.1804'
   # Avoid warnings caused by http://tickets.chef.io/browse/CHEF-3694
   config.log_level = :error
   config.color = true

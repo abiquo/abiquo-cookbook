@@ -73,7 +73,7 @@ describe 'abiquo::repository' do
 
     it 'installs the abiquo-release-ee package' do
       expect(chef_run).to install_package('abiquo-release-ee').with(
-        options: '--nogpgcheck'
+        options: [ '--nogpgcheck' ]
       )
     end
   end
@@ -81,7 +81,7 @@ describe 'abiquo::repository' do
   context 'without install repo' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['yum']['install-repo'] = false
+        node.normal['abiquo']['yum']['install-repo'] = false
       end.converge(described_recipe)
     end
 

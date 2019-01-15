@@ -34,7 +34,7 @@ describe 'abiquo::setup_v2v' do
   context 'with nfs config' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
+        node.normal['abiquo']['nfs']['location'] = '10.60.1.222:/opt/nfs-devel'
       end.converge(described_recipe)
     end
 

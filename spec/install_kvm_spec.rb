@@ -38,7 +38,7 @@ describe 'abiquo::install_kvm' do
 
       cached(:chef_run) do
         ChefSpec::SoloRunner.new do |node|
-          node.set['virtualization']['role'] = 'guest'
+          node.normal['virtualization']['role'] = 'guest'
         end.converge(described_recipe)
       end
 
@@ -63,7 +63,7 @@ describe 'abiquo::install_kvm' do
 
       cached(:chef_run) do
         ChefSpec::SoloRunner.new do |node|
-          node.set['virtualization']['role'] = 'guest'
+          node.normal['virtualization']['role'] = 'guest'
         end.converge(described_recipe)
       end
 
@@ -71,50 +71,6 @@ describe 'abiquo::install_kvm' do
         expect(chef_run).to install_package('centos-release-qemu-ev')
         expect(chef_run).to install_package('qemu-kvm-ev')
         expect(chef_run).to_not install_package('qemu-kvm')
-      end
-
-      it 'does not create link if exists' do
-        expect(chef_run).to_not create_link('/usr/bin/qemu-system-x86_64')
-      end
-
-      include_examples 'kvm'
-    end
-  end
-
-  context 'when CentOS 6' do
-    context 'without qemu link' do
-      before do
-        allow(File).to receive(:exist?).and_call_original
-        allow(File).to receive(:exist?).with('/usr/bin/qemu-system-x86_64').and_return(false)
-      end
-
-      cached(:chef_run) { ChefSpec::SoloRunner.new(platform: 'centos', version: '6.5').converge(described_recipe) }
-
-      it 'installs regular qemu packages on CentOS 6' do
-        expect(chef_run).to_not install_package('centos-release-qemu-ev')
-        expect(chef_run).to_not install_package('qemu-kvm-ev')
-        expect(chef_run).to install_package('qemu-kvm')
-      end
-
-      it 'creates link if missing' do
-        expect(chef_run).to create_link('/usr/bin/qemu-system-x86_64')
-      end
-
-      include_examples 'kvm'
-    end
-
-    context 'with qemu link' do
-      before do
-        allow(File).to receive(:exist?).and_call_original
-        allow(File).to receive(:exist?).with('/usr/bin/qemu-system-x86_64').and_return(true)
-      end
-
-      cached(:chef_run) { ChefSpec::SoloRunner.new(platform: 'centos', version: '6.5').converge(described_recipe) }
-
-      it 'installs regular qemu packages on CentOS 6' do
-        expect(chef_run).to_not install_package('centos-release-qemu-ev')
-        expect(chef_run).to_not install_package('qemu-kvm-ev')
-        expect(chef_run).to install_package('qemu-kvm')
       end
 
       it 'does not create link if exists' do

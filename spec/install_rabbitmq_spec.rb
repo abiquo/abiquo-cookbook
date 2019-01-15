@@ -35,7 +35,7 @@ describe 'abiquo::install_rabbitmq' do
     end
 
     it 'creates the Abiquo RabbitMQ user' do
-      expect(chef_run).to add_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
+      expect(chef_run).to set_permissions_rabbitmq_user(chef_run.node['abiquo']['rabbitmq']['username']).with(
         vhost: chef_run.node['abiquo']['rabbitmq']['vhost'],
         permissions: '.* .* .*'
       )
@@ -50,7 +50,7 @@ describe 'abiquo::install_rabbitmq' do
   context 'when generate certificate' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['rabbitmq']['generate_cert'] = true
+        node.normal['abiquo']['rabbitmq']['generate_cert'] = true
       end.converge(described_recipe, 'abiquo::service')
     end
 

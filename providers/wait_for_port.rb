@@ -19,8 +19,6 @@ def whyrun_supported?
   true
 end
 
-use_inline_resources
-
 action :wait do
   converge_by("Waiting for #{new_resource.name}") do
     available = false

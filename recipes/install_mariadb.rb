@@ -19,8 +19,8 @@ Chef::Recipe.send(:include, Abiquo::Commands)
 
 # Enable replication if specified
 if node['abiquo']['db']['enable-master']
-  node.set['mariadb']['replication']['server_id'] = '1'
-  node.set['mariadb']['replication']['options']['binlog_format'] = 'ROW'
+  node.default['mariadb']['replication']['server_id'] = '1'
+  node.default['mariadb']['replication']['options']['binlog_format'] = 'ROW'
 end
 
 include_recipe 'mariadb'

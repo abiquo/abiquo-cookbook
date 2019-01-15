@@ -29,8 +29,8 @@ java_alternatives 'set default jdk8' do
   action :set
 end
 
-node.set['cassandra']['config']['cluster_name'] = node['abiquo']['monitoring']['cassandra']['cluster_name']
-node.set['cassandra']['install_java'] = false # The Abiquo jdk package is installed instead
+node.default['cassandra']['config']['cluster_name'] = node['abiquo']['monitoring']['cassandra']['cluster_name']
+node.default['cassandra']['install_java'] = false # The Abiquo jdk package is installed instead
 include_recipe 'cassandra-dse'
 
 package 'kairosdb' do

@@ -66,8 +66,8 @@ describe 'abiquo::service' do
   context 'with custom properties' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['properties']['abiquo.docker.registry'] = 'http://localhost:5000'
-        node.set['abiquo']['properties']['foo'] = 'bar'
+        node.normal['abiquo']['properties']['abiquo.docker.registry'] = 'http://localhost:5000'
+        node.normal['abiquo']['properties']['foo'] = 'bar'
       end.converge(described_recipe)
     end
 
@@ -86,7 +86,7 @@ describe 'abiquo::service' do
   context 'with wait for webapps in monolithic' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['tomcat']['wait-for-webapps'] = true
+        node.normal['abiquo']['tomcat']['wait-for-webapps'] = true
       end.converge(described_recipe)
     end
 
@@ -100,8 +100,8 @@ describe 'abiquo::service' do
   context 'with wait for webapps in API' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['tomcat']['wait-for-webapps'] = true
-        node.set['abiquo']['profile'] = 'server'
+        node.normal['abiquo']['tomcat']['wait-for-webapps'] = true
+        node.normal['abiquo']['profile'] = 'server'
       end.converge(described_recipe)
     end
 
@@ -115,8 +115,8 @@ describe 'abiquo::service' do
   context 'with wait for webapps in RS' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['tomcat']['wait-for-webapps'] = true
-        node.set['abiquo']['profile'] = 'remoteservices'
+        node.normal['abiquo']['tomcat']['wait-for-webapps'] = true
+        node.normal['abiquo']['profile'] = 'remoteservices'
       end.converge(described_recipe)
     end
 
@@ -130,8 +130,8 @@ describe 'abiquo::service' do
   context 'with wait for webapps in V2V' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['tomcat']['wait-for-webapps'] = true
-        node.set['abiquo']['profile'] = 'v2v'
+        node.normal['abiquo']['tomcat']['wait-for-webapps'] = true
+        node.normal['abiquo']['profile'] = 'v2v'
       end.converge(described_recipe)
     end
 

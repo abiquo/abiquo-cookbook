@@ -25,7 +25,7 @@ describe 'abiquo::install_server' do
   context 'when default' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
       end.converge(described_recipe, 'abiquo::service')
     end
 
@@ -67,9 +67,9 @@ describe 'abiquo::install_server' do
   context 'without ext serv and FE' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
-        node.set['abiquo']['install_ext_services'] = false
-        node.set['abiquo']['server']['install_frontend'] = false
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['install_ext_services'] = false
+        node.normal['abiquo']['server']['install_frontend'] = false
       end.converge(described_recipe, 'abiquo::service')
     end
 

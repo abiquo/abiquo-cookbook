@@ -19,7 +19,7 @@ require_relative 'support/stubs'
 describe 'abiquo::install_monolithic' do
   cached(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
-      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+      node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     end.converge(described_recipe, 'abiquo::service')
   end
 

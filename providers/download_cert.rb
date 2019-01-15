@@ -25,8 +25,6 @@ def sha1_fingerprint(cert)
   OpenSSL::Digest::SHA1.new(x509.to_der).to_s
 end
 
-use_inline_resources
-
 action :download do
   converge_by("Downloading SSL certificate from #{new_resource.host}") do
     # Check the provided host is not nil.

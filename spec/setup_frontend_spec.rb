@@ -18,7 +18,7 @@ require_relative 'support/stubs'
 describe 'abiquo::setup_frontend' do
   cached(:chef_run) do
     ChefSpec::SoloRunner.new do |node|
-      node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+      node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
     end.converge('abiquo::install_frontend', described_recipe, 'abiquo::service')
   end
 

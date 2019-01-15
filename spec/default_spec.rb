@@ -54,9 +54,9 @@ describe 'abiquo::default' do
     context "when #{profile}" do
       cached(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-          node.set['abiquo']['profile'] = profile
-          node.set['cassandra']['config']['cluster_name'] = 'abiquo'
-          node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+          node.normal['abiquo']['profile'] = profile
+          node.normal['cassandra']['config']['cluster_name'] = 'abiquo'
+          node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
         end.converge(described_recipe)
       end
 

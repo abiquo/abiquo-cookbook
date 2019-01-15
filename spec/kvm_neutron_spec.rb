@@ -72,7 +72,7 @@ describe 'abiquo::kvm_neutron' do
 
     it 'configures the sysctl properties to filter traffic in bridged interfaces' do
       expect(chef_run).to include_recipe('sysctl')
-      expect(chef_run).to apply_sysctl_param('net.bridge.bridge-nf-call-iptables').with(value: 1)
+      expect(chef_run).to apply_sysctl_param('net.bridge.bridge-nf-call-iptables').with(value: '1')
     end
   end
 

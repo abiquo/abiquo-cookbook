@@ -6,7 +6,7 @@ driver:
 provisioner:
   name: chef_zero
   chef_zero_port: 8899
-  require_chef_omnibus: 12.22.5
+  require_chef_omnibus: 14.8
   data_path: test/fixtures
   nodes_path: test/nodes
 
@@ -14,9 +14,6 @@ transport:
   compression: none
 
 platforms:
-  - name: c6
-    driver:
-      box: bento/centos-6.10
   - name: c7
     driver:
       box: bento/centos-7.5

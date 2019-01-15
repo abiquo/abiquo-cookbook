@@ -24,7 +24,7 @@ describe 'abiquo::install_monitoring' do
   context 'when install_ext_services' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['profile'] = 'monitoring'
+        node.normal['abiquo']['profile'] = 'monitoring'
       end.converge(described_recipe)
     end
 
@@ -83,8 +83,8 @@ describe 'abiquo::install_monitoring' do
   context 'when not install_ext_services' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['profile'] = 'monitoring'
-        node.set['abiquo']['install_ext_services'] = false
+        node.normal['abiquo']['profile'] = 'monitoring'
+        node.normal['abiquo']['install_ext_services'] = false
       end.converge(described_recipe)
     end
 
@@ -114,9 +114,9 @@ describe 'abiquo::install_monitoring' do
   context 'when not install_ext_services and no db' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['profile'] = 'monitoring'
-        node.set['abiquo']['install_ext_services'] = false
-        node.set['abiquo']['monitoring']['db']['install'] = false
+        node.normal['abiquo']['profile'] = 'monitoring'
+        node.normal['abiquo']['install_ext_services'] = false
+        node.normal['abiquo']['monitoring']['db']['install'] = false
       end.converge(described_recipe)
     end
 
@@ -128,8 +128,8 @@ describe 'abiquo::install_monitoring' do
   context 'when monitoring with ssl' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['profile'] = 'monitoring'
-        node.set['abiquo']['monitoring']['emmett']['ssl'] = true
+        node.normal['abiquo']['profile'] = 'monitoring'
+        node.normal['abiquo']['monitoring']['emmett']['ssl'] = true
       end.converge(described_recipe)
 
       it 'includes the certificate recipe' do

@@ -68,8 +68,8 @@ describe 'abiquo::upgrade' do
 
       cached(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-          node.set['abiquo']['profile'] = profile
-          node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+          node.normal['abiquo']['profile'] = profile
+          node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
         end.converge(described_recipe)
       end
 
@@ -106,7 +106,7 @@ describe 'abiquo::upgrade' do
 
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
       end.converge(described_recipe)
     end
 
@@ -127,7 +127,7 @@ describe 'abiquo::upgrade' do
 
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-        node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+        node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
       end.converge(described_recipe)
     end
 
@@ -142,7 +142,7 @@ describe 'abiquo::upgrade' do
 
       cached(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-          node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+          node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
         end.converge(described_recipe)
       end
 
@@ -160,7 +160,7 @@ describe 'abiquo::upgrade' do
     context 'with updates available' do
       cached(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-          node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+          node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
         end.converge(described_recipe)
       end
 
@@ -195,8 +195,8 @@ describe 'abiquo::upgrade' do
 
         cached(:chef_run) do
           ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-            node.set['abiquo']['profile'] = profile
-            node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+            node.normal['abiquo']['profile'] = profile
+            node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
           end.converge(described_recipe)
         end
 
@@ -239,9 +239,9 @@ describe 'abiquo::upgrade' do
 
         cached(:chef_run) do
           ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-            node.set['abiquo']['profile'] = profile
-            node.set['abiquo']['db']['upgrade'] = false
-            node.set['abiquo']['certificate']['common_name'] = 'fauxhai.local'
+            node.normal['abiquo']['profile'] = profile
+            node.normal['abiquo']['db']['upgrade'] = false
+            node.normal['abiquo']['certificate']['common_name'] = 'fauxhai.local'
           end.converge(described_recipe)
         end
 

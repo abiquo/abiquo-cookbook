@@ -23,9 +23,9 @@ describe 'abiquo::install_database' do
   context 'when default' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-        node.set['abiquo']['license'] = ''
-        node.set['abiquo']['properties']['abiquo.m.credential'] = 'blah'
-        node.set['abiquo']['properties']['abiquo.m.accessToken'] = 'blah'
+        node.normal['abiquo']['license'] = ''
+        node.normal['abiquo']['properties']['abiquo.m.credential'] = 'blah'
+        node.normal['abiquo']['properties']['abiquo.m.accessToken'] = 'blah'
       end.converge(described_recipe)
     end
 
@@ -66,7 +66,7 @@ describe 'abiquo::install_database' do
   context 'when license is empty' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-        node.set['abiquo']['license'] = ''
+        node.normal['abiquo']['license'] = ''
       end.converge(described_recipe)
     end
 
@@ -78,7 +78,7 @@ describe 'abiquo::install_database' do
   context 'when license exists' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-        node.set['abiquo']['license'] = 'foo'
+        node.normal['abiquo']['license'] = 'foo'
       end.converge(described_recipe)
     end
 

@@ -30,14 +30,14 @@ include_recipe 'abiquo::certificate'
 
 case node['abiquo']['profile']
 when 'monolithic'
-  node.set['abiquo']['ui_proxies'] = {
+  node.normal['abiquo']['ui_proxies'] = {
     '/api' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/api" },
     '/legal' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/legal" },
     '/am' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/am" },
     '/m' => { 'url' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m" },
   }.merge(node['abiquo']['ui_proxies'])
 when 'server'
-  node.set['abiquo']['ui_proxies'] = {
+  node.normal['abiquo']['ui_proxies'] = {
     '/api' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/api" },
     '/legal' => { 'url' => "ajp://localhost:#{node['abiquo']['tomcat']['ajp-port']}/legal" },
     '/m' => { 'url' => "http://localhost:#{node['abiquo']['tomcat']['http-port']}/m" },
@@ -49,8 +49,8 @@ end
 require_hash = node['platform_version'].to_i == 6 ? {} : { 'Require' => 'all granted' }
 
 node['abiquo']['ui_proxies'].each_key do |k|
-  node.set['abiquo']['ui_proxies'][k]['options'] ||= {}
-  node.set['abiquo']['ui_proxies'][k]['options'] = require_hash.merge(node['abiquo']['ui_proxies'][k]['options'])
+  node.normal['abiquo']['ui_proxies'][k]['options'] ||= {}
+  node.normal['abiquo']['ui_proxies'][k]['options'] = require_hash.merge(node['abiquo']['ui_proxies'][k]['options'])
 end
 
 web_app 'abiquo' do

@@ -26,7 +26,7 @@ describe 'abiquo::install_ext_services' do
     context "when #{profile}" do
       cached(:chef_run) do
         ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-          node.set['abiquo']['profile'] = profile
+          node.normal['abiquo']['profile'] = profile
         end.converge(described_recipe, 'abiquo::service')
       end
 
@@ -41,7 +41,7 @@ describe 'abiquo::install_ext_services' do
   context 'when remoteservices' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-        node.set['abiquo']['profile'] = 'remoteservices'
+        node.normal['abiquo']['profile'] = 'remoteservices'
       end.converge(described_recipe)
     end
 
@@ -53,7 +53,7 @@ describe 'abiquo::install_ext_services' do
   context 'when monitoring' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new(file_cache_path: '/tmp') do |node|
-        node.set['abiquo']['profile'] = 'monitoring'
+        node.normal['abiquo']['profile'] = 'monitoring'
       end.converge(described_recipe)
     end
 

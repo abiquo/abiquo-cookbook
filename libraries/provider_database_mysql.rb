@@ -24,8 +24,6 @@ class Chef
   class Provider
     class AbiquoDatabase
       class Mysql < Chef::Provider::LWRPBase
-        use_inline_resources
-
         def whyrun_supported?
           true
         end

@@ -94,8 +94,8 @@ describe 'abiquo::install_mariadb' do
   context 'with binary logging' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['db']['enable-master'] = true
-        node.set['abiquo']['db']['from'] = '%'
+        node.normal['abiquo']['db']['enable-master'] = true
+        node.normal['abiquo']['db']['from'] = '%'
       end.converge(described_recipe)
     end
 
@@ -123,7 +123,7 @@ describe 'abiquo::install_mariadb' do
   context 'without binary logging' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
-        node.set['abiquo']['db']['from'] = '%'
+        node.normal['abiquo']['db']['from'] = '%'
       end.converge(described_recipe)
     end
 

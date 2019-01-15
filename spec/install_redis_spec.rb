@@ -48,23 +48,4 @@ describe 'abiquo::install_redis' do
 
     include_examples 'redis'
   end
-
-  context 'when CentOS 6' do
-    let(:chef_run) { ChefSpec::SoloRunner.new(file_cache_path: '/tmp', platform: 'centos', version: '6.5').converge(described_recipe) }
-
-    include_examples 'redis'
-
-    it 'creates selinux module in CentOS 6' do
-      semodule_filename_base = 'redis_sentinel'
-      semodule_filepath_base = "#{Chef::Config[:file_cache_path]}/#{semodule_filename_base}"
-      semodule_filepath = "#{semodule_filepath_base}.te"
-      expect(chef_run).to create_file(semodule_filepath)
-
-      resource = chef_run.find_resource(:file, semodule_filepath)
-      expect(resource).to notify("execute[semodule-install-#{semodule_filename_base}]").to(:run).immediately
-
-      resource = chef_run.find_resource(:execute, "semodule-install-#{semodule_filename_base}")
-      expect(resource).to do_nothing
-    end
-  end
 end

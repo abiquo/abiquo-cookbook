@@ -33,7 +33,7 @@ end
 
 # Add API cert as additional SSL cert if defined
 if node['abiquo']['properties']['abiquo.server.api.location']
-  node.set['abiquo']['certificate']['additional_certs'] = {
+  node.default['abiquo']['certificate']['additional_certs'] = {
     'api' => node['abiquo']['properties']['abiquo.server.api.location'],
   }.merge(node['abiquo']['certificate']['additional_certs'])
 end
