@@ -16,9 +16,10 @@
 # limitations under the License.
 
 template '/opt/kairosdb/conf/kairosdb.properties' do
-  source 'kairosdb.properties.erb'
+  source 'abiquo.properties.erb'
   owner 'root'
   group 'root'
+  variables(lazy { { properties: node['abiquo']['kairosdb_config'] } })
   action :create
   notifies :restart, 'service[kairosdb]'
 end

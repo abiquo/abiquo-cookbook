@@ -139,6 +139,9 @@ suites:
         monitoring:
           emmett:
             ssl: true
+        kairosdb_config:
+          kairosdb.datastore.cassandra.datapoint_ttl: 600
+          kairosdb.datastore.cassandra.keyspace: kitchen
       rabbitmq:
         version: 3.5.4
         ssl: true

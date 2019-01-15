@@ -181,3 +181,42 @@ when 'remoteservices'
   default['abiquo']['properties']['abiquo.appliancemanager.checkMountedRepository'] = !node['abiquo']['nfs']['location'].nil?
   default['abiquo']['properties']['abiquo.monitoring.enabled'] = false
 end
+
+# KairosDB config
+default['abiquo']['kairosdb_config']['kairosdb.telnetserver.port'] = 4242
+default['abiquo']['kairosdb_config']['kairosdb.service.telnet'] = 'org.kairosdb.core.telnet.TelnetServerModule'
+default['abiquo']['kairosdb_config']['kairosdb.service.http'] = 'org.kairosdb.core.http.WebServletModule'
+default['abiquo']['kairosdb_config']['kairosdb.service.reporter'] = 'org.kairosdb.core.reporting.MetricReportingModule'
+default['abiquo']['kairosdb_config']['kairosdb.datapoints.factory.long'] = 'org.kairosdb.core.datapoints.LongDataPointFactoryImpl'
+default['abiquo']['kairosdb_config']['kairosdb.datapoints.factory.double'] = 'org.kairosdb.core.datapoints.DoubleDataPointFactoryImpl'
+default['abiquo']['kairosdb_config']['kairosdb.datapoints.factory.string'] = 'org.kairosdb.core.datapoints.StringDataPointFactory'
+default['abiquo']['kairosdb_config']['kairosdb.reporter.schedule'] = '0 */1 * * * ?'
+default['abiquo']['kairosdb_config']['kairosdb.jetty.port'] = node['abiquo']['monitoring']['kairosdb']['port']
+default['abiquo']['kairosdb_config']['kairosdb.jetty.static_web_root'] = 'webroot'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.concurrentQueryThreads'] = 5
+default['abiquo']['kairosdb_config']['kairosdb.service.datastore'] = 'org.kairosdb.datastore.cassandra.CassandraModule'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.h2.database_path'] = 'build/h2db'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.host_list'] = "localhost:#{node['cassandra']['config']['rpc_port']}"
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.keyspace'] = 'kairosdb'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.replication_factor'] = 1
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.write_delay'] = 1000
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.write_buffer_max_size'] = 500000
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.single_row_read_size'] = 10240
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.multi_row_size'] = 1000
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.multi_row_read_size'] = 1024
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.row_key_cache_size'] = 10240
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.string_cache_size'] = 5000
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.increase_buffer_size_schedule'] = '0 */5 * * * ?'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.read_consistency_level'] = 'ONE'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.write_consistency_level'] = 'QUORUM'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.datapoint_ttl'] = 31536000
+default['abiquo']['kairosdb_config']['kairosdb.datastore.hbase.timeseries_table'] = 'tsdb'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.hbase.uinqueids_table'] = 'tsdb-uid'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.hbase.zoo_keeper_quorum'] = 'localhost'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.hbase.zoo_keeper_base_dir'] = ''
+default['abiquo']['kairosdb_config']['kairosdb.datastore.hbase.auto_create_metrics'] = true
+default['abiquo']['kairosdb_config']['kairosdb.datastore.remote.data_dir'] = '.'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.remote.remote_url'] = ''
+default['abiquo']['kairosdb_config']['kairosdb.datastore.remote.schedule'] = '0 */30 * * * ?'
+default['abiquo']['kairosdb_config']['kairosdb.datastore.remote.random_delay'] = 0
+default['abiquo']['kairosdb_config']['kairosdb.query_cache.cache_file_cleaner_schedule'] = '0 0 12 ? * SUN *'

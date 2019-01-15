@@ -19,15 +19,18 @@ describe 'abiquo::setup_monitoring' do
     cached(:chef_run) do
       ChefSpec::SoloRunner.new do |node|
         node.set['cassandra']['config']['cluster_name'] = 'abiquo'
+        node.set['abiquo']['kairosdb_config']['kairosdb.datastore.cassandra.datapoint_ttl'] = 10
       end.converge('abiquo::service', 'abiquo::install_monitoring', described_recipe)
     end
 
     it 'renders the kairosdb configuration file' do
       expect(chef_run).to create_template('/opt/kairosdb/conf/kairosdb.properties').with(
-        source: 'kairosdb.properties.erb',
+        source: 'abiquo.properties.erb',
         owner: 'root',
         group: 'root'
       )
+
+      expect(chef_run).to render_file('/opt/kairosdb/conf/kairosdb.properties').with_content(/^kairosdb.datastore.cassandra.datapoint_ttl\ =\ 10$/)
     end
 
     it 'reboots kairosdb when cassandra is started' do

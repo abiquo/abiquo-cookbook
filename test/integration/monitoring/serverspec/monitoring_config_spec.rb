@@ -18,9 +18,14 @@ describe 'Monitoring configuration' do
   include_examples 'common::config'
 
   it 'kairosdb is configured to use cassandra' do
-    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.jetty.port=8080')
-    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.service.datastore=org.kairosdb.datastore.cassandra.CassandraModule')
-    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.host_list=localhost:9160')
+    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.jetty.port = 8080')
+    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.service.datastore = org.kairosdb.datastore.cassandra.CassandraModule')
+    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.host_list = localhost:9160')
+  end
+
+  it 'kairosdb config is rendered correctly' do
+    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.keyspace = kitchen')
+    expect(file('/opt/kairosdb/conf/kairosdb.properties')).to contain('^kairosdb.datastore.cassandra.datapoint_ttl = 600')
   end
 
   it 'java 8 is the default one' do
