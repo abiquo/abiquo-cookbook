@@ -19,7 +19,13 @@ Chef::Recipe.send(:include, Abiquo::Commands)
 
 mysqlcmd = mysql_cmd(node['abiquo']['db'])
 
+## Package MariaDB-shared is required to be able to build the mysql2 gem
+package 'MariaDB-shared' do
+  action :install
+end
+
 mysql2_chef_gem_mariadb 'server' do
+  gem_version '0.5.2'
   action :install
 end
 

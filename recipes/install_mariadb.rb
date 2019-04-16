@@ -34,7 +34,13 @@ service 'mysql' do
   not_if { node['abiquo']['db']['enable-master'].nil? }
 end
 
+## Package MariaDB-shared is required to be able to build the mysql2 gem
+package 'MariaDB-shared' do
+  action :install
+end
+
 mysql2_chef_gem_mariadb 'default' do
+  gem_version '0.5.2'
   action :install
 end
 
