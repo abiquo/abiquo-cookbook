@@ -82,6 +82,7 @@ default['abiquo']['tomcat']['alias'] = node['fqdn']
 default['apache']['proxy']['order'] = 'allow,deny'
 default['apache']['proxy']['deny_from']  = 'none'
 default['apache']['proxy']['allow_from'] = 'all'
+default['apache']['listen_ports'] = [80, 443]
 
 # Determine if the server should include the frontend components
 default['abiquo']['server']['install_frontend'] = true
