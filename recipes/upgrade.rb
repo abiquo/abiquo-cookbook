@@ -30,12 +30,12 @@ end
 log 'Abiquo updates available.'
 
 services = {
-  'monolithic'     => node['abiquo']['server']['install_frontend'] ? %w(abiquo-tomcat apache2 guacd) : %w(abiquo-tomcat guacd),
+  'monolithic'     => node['abiquo']['server']['install_frontend'] ? %w(abiquo-tomcat httpd guacd) : %w(abiquo-tomcat guacd),
   'remoteservices' => %w(abiquo-tomcat guacd),
-  'server'         => node['abiquo']['server']['install_frontend'] ? %w(abiquo-tomcat apache2) : %w(abiquo-tomcat),
+  'server'         => node['abiquo']['server']['install_frontend'] ? %w(abiquo-tomcat httpd) : %w(abiquo-tomcat),
   'kvm'            => %w(abiquo-aim),
   'monitoring'     => %w(abiquo-delorean abiquo-emmett),
-  'frontend'       => %w(apache2),
+  'frontend'       => %w(httpd),
   'v2v'            => %w(abiquo-tomcat),
 }
 
