@@ -2,8 +2,8 @@ Abiquo Cookbook
 ===============
 
 [![Build Status](https://travis-ci.org/abiquo/abiquo-cookbook.svg?branch=master)](https://travis-ci.org/abiquo/abiquo-cookbook)
-[![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.13.1-blue.svg?style=flat)](https://supermarket.chef.io/cookbooks/abiquo)
-[![Chef Version](http://img.shields.io/badge/chef-v12.22.5-orange.svg?style=flat)](https://www.chef.io)
+[![Abiquo Cookbook](http://img.shields.io/badge/cookbook-v0.14.1-blue.svg?style=flat)](https://supermarket.chef.io/cookbooks/abiquo)
+[![Chef Version](http://img.shields.io/badge/chef-v14.8-orange.svg?style=flat)](https://www.chef.io)
 
 This cookbook provides several recipes to install and upgrade an Abiquo platform.
 It allows you to provision an Abiquo Server, the Remote Services server, standalone V2V
