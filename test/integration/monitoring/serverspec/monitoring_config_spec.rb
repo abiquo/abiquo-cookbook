@@ -55,8 +55,8 @@ describe 'Monitoring configuration' do
   end
 
   it 'has the ssl certificates installed' do
-    expect(file("/etc/pki/abiquo/#{host_inventory[:hostname]}.crt")).to exist
-    expect(file("/etc/pki/abiquo/#{host_inventory[:hostname]}.key")).to exist
+    expect(file("/etc/pki/abiquo/#{host_inventory[:fqdn]}.crt")).to exist
+    expect(file("/etc/pki/abiquo/#{host_inventory[:fqdn]}.key")).to exist
   end
 
   it 'has executed liquibase' do
