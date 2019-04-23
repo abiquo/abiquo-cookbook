@@ -27,6 +27,10 @@ shared_examples 'mariadb' do
     expect(resource).to subscribe_to('mariadb_configuration[30-replication]').on(:restart).immediately
   end
 
+  it 'installs the MariaDB-shared package' do
+    expect(chef_run).to install_package('MariaDB-shared')
+  end
+
   it 'installs the mysql2 gem' do
     expect(chef_run).to install_mysql2_chef_gem_mariadb('default')
   end

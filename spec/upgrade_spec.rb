@@ -19,12 +19,12 @@ require_relative 'support/stubs'
 
 services = {
   'monolithic' => {
-    'start' => ['abiquo-tomcat', 'apache2', 'guacd'],
+    'start' => ['abiquo-tomcat', 'httpd', 'guacd'],
     'not_start' => ['abiquo-aim', 'abiquo-delorean', 'abiquo-emmett'],
     'runs_liquibase' => true,
     'runs_wt_liquibase' => false },
   'server' => {
-    'start' => ['abiquo-tomcat', 'apache2'],
+    'start' => ['abiquo-tomcat', 'httpd'],
     'not_start' => ['abiquo-aim', 'abiquo-delorean', 'abiquo-emmett'],
     'runs_liquibase' => true,
     'runs_wt_liquibase' => false },
@@ -49,7 +49,7 @@ services = {
     'runs_liquibase' => false,
     'runs_wt_liquibase' => true },
   'frontend' => {
-    'start' => %w(apache2),
+    'start' => %w(httpd),
     'not_start' => ['abiquo-tomcat', 'abiquo-aim', 'abiquo-delorean', 'abiquo-emmett'],
     'runs_liquibase' => false,
     'runs_wt_liquibase' => false },
