@@ -58,11 +58,13 @@ default['redisio']['package_name'] = 'redis'
 default['redisio']['bin_path'] = '/usr/bin'
 
 # RabbitMQ configuration
+default['rabbitmq']['config'] = '/etc/rabbitmq/rabbitmq.config'
 default['rabbitmq']['use_distro_version'] = true
 default['rabbitmq']['ssl'] = false
 default['rabbitmq']['port'] = 5672
 default['rabbitmq']['ssl_port'] = 5671
 default['rabbitmq']['nodename'] = "rabbit@#{node['hostname']}"
+default['rabbitmq']['config-env_template_cookbook'] = 'abiquo'
 default['abiquo']['rabbitmq']['username'] = 'abiquo'
 default['abiquo']['rabbitmq']['password'] = 'abiquo'
 default['abiquo']['rabbitmq']['addresses'] = "localhost:#{node['rabbitmq'][node['rabbitmq']['ssl'] ? 'ssl_port' : 'port']}"
