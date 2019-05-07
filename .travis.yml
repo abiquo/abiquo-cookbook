@@ -12,7 +12,7 @@ script:
 deploy:
   edge: true
   provider: chef-supermarket
-  user_id: nacx
+  user_id: sergikstro
   cookbook_name: abiquo
   cookbook_category: Operating Systems & Virtualization
   client_key: .travis/client.pem

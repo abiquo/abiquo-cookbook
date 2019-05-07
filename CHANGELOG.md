@@ -1,6 +1,32 @@
 CHANGELOG
 =========
 
+## 0.15.0
+
+* Abiquo 4.6
+* Fix rabbitmq ssl configuratio
+* Fix apache service name. Add test for `MariaDB-shared` package
+* Fixed int test for cert presence
+
+## 0.14.1
+
+* New Apache cookbook version requires ports attribute
+* Add deps for MySQL gem install
+* Fix apache service name in upgrade recipe
+* Chef 14, Adds support for Chef >= 13, and drops support for Chef < 13
+* Kairos config can now be built from attrs
+
+## 0.14.0
+
+* Abiquo 4.5
+* Fix helper for upgrade checks
+* Fix grant action
+
+## 0.13.1
+
+* Abiquo 4.4
+* Deprecate database cookbook
+
 ## 0.13.0
 
 * Upgrade OpenStack Neutron support to Pike.
