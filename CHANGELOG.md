@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+## 0.13.2
+
+* Update chef minor version
+* Fix cookbook versions for: selinux_policy and seven_zip
+
 ## 0.13.0
 
 * Upgrade OpenStack Neutron support to Pike.
