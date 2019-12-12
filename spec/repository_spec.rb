@@ -46,7 +46,7 @@ describe 'abiquo::repository' do
     it 'creates the base repository' do
       expect(chef_run).to create_yum_repository('abiquo-base').with(
         description: 'Abiquo base repository',
-        baseurl: 'http://mirror.abiquo.com/el$releasever/4.6/os/x86_64',
+        baseurl: 'http://mirror.abiquo.com/el$releasever/4.7/os/x86_64',
         gpgcheck: true,
         gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
       )
@@ -60,7 +60,7 @@ describe 'abiquo::repository' do
     it 'creates the updates repository' do
       expect(chef_run).to create_yum_repository('abiquo-updates').with(
         description: 'Abiquo updates repository',
-        baseurl: 'http://mirror.abiquo.com/el$releasever/4.6/updates/x86_64',
+        baseurl: 'http://mirror.abiquo.com/el$releasever/4.7/updates/x86_64',
         gpgcheck: true,
         gpgkey: 'file:///etc/pki/rpm-gpg/RPM-GPG-RSA-KEY-Abiquo'
       )
