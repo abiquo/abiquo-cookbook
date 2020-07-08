@@ -223,3 +223,6 @@ default['abiquo']['kairosdb_config']['kairosdb.datastore.remote.remote_url'] = '
 default['abiquo']['kairosdb_config']['kairosdb.datastore.remote.schedule'] = '0 */30 * * * ?'
 default['abiquo']['kairosdb_config']['kairosdb.datastore.remote.random_delay'] = 0
 default['abiquo']['kairosdb_config']['kairosdb.query_cache.cache_file_cleaner_schedule'] = '0 0 12 ? * SUN *'
+
+# Java
+default['java']['oracle']['jce']['8']['checksum'] = '9c64997edfce44e29296bfbd0cf90abf8b6b9ef2ea64733adae3bdac9ae2c5a6'

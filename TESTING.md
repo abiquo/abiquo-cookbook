@@ -1,3 +1,12 @@
+
+## Setup
+**Ubuntu 20.04**
+```
+sudo apt-get install ruby-mysql libmysqlclient-dev
+```
+
+
+
 Testing
 =======
 
