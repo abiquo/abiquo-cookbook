@@ -1,7 +1,7 @@
 language: ruby
 cache: bundler
 rvm:
-- 2.4.5
+- 2.6
 bundler_args: "--without integration"
 before_script:
 - bundle exec berks
@@ -9,12 +9,13 @@ install:
 - travis_wait bundle install
 script:
 - bundle exec rake
+- knife cookbook metadata from file metadata.rb
 deploy:
   edge: true
-  provider: chef-supermarket
+  provider: chef_supermarket
   user_id: sergikstro
-  cookbook_name: abiquo
-  cookbook_category: Operating Systems & Virtualization
+  name: abiquo
+  category: Operating Systems & Virtualization
   client_key: .travis/client.pem
   on:
     tags: true
