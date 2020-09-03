@@ -13,13 +13,13 @@ script:
 deploy:
   edge: true
   provider: chef_supermarket
-  user_id: sergikstro
+  user_id: abiquo
   name: abiquo
   category: Operating Systems & Virtualization
-  client_key: .travis/client.pem
+  client_key: .travis/abiquo.pem
   on:
     tags: true
 before_install:
-- openssl aes-256-cbc -K $encrypted_2721fd63ec23_key -iv $encrypted_2721fd63ec23_iv
-  -in .travis/client.pem.enc -out .travis/client.pem -d
+- openssl aes-256-cbc -K $encrypted_33827f91900e_key -iv $encrypted_33827f91900e_iv 
+  -in .travis/abiquo.pem.enc -out .travis/abiquo.pem -d
 
