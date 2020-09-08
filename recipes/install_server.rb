@@ -21,15 +21,15 @@
   end
 end
 
-include_recipe 'mariadb::client'
-include_recipe 'java::oracle_jce'
-include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
-
-%w(server sosreport-plugins).each do |pkg|
-  package "abiquo-#{pkg}" do
-    action :install
-  end
+package 'abiquo-server' do
+  action :install
 end
+
+package 'abiquo-sosreport-plugins' do
+  action :install
+end
+
+include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
 
 # Add API cert as additional SSL cert if defined
 if node['abiquo']['properties']['abiquo.server.api.location']
@@ -39,5 +39,4 @@ if node['abiquo']['properties']['abiquo.server.api.location']
 end
 include_recipe 'abiquo::certificate'
 
-include_recipe 'abiquo::install_database'
 include_recipe 'abiquo::install_frontend' if node['abiquo']['server']['install_frontend']

@@ -15,6 +15,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# jdk11 keytool fix
+execute 'create-jre-fake' do
+  command "sudo mkdir mkdir -p /usr/java/default/jre/lib/"
+end
+
+execute 'symlink-jre-fake' do
+  command "ln -s /usr/java/default/bin/ /usr/java/default/jre/"
+end
+
+execute 'symlink-cacerts' do
+  command "ln -s /usr/java/default/lib/security/ /usr/java/default/jre/lib/"
+end
+
 directory '/etc/pki/abiquo' do
   recursive true
   action :create

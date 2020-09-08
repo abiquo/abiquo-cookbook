@@ -19,8 +19,6 @@ package 'jdk' do
   action :install
 end
 
-include_recipe 'java::oracle_jce'
-
 %w(v2v sosreport-plugins).each do |pkg|
   package "abiquo-#{pkg}" do
     action :install

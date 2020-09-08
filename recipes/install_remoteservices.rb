@@ -19,7 +19,6 @@ package 'jdk' do
   action :install
 end
 
-include_recipe 'java::oracle_jce'
 include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
 
 # Add API cert as additional SSL cert if defined
