@@ -17,9 +17,19 @@
 
 Chef::Recipe.send(:include, Abiquo::Commands)
 
-include_recipe 'mariadb::client'
+mariadb_client_install 'MariaDB Client install' do
+  action :install
+end
 
-package 'jdk' do
+mariadb_server_install 'MariaDB Server install' do
+  action :install
+end
+
+service 'mariadb' do
+  action :restart
+end
+
+package 'javajdk' do
   action :install
 end
 
@@ -39,9 +49,11 @@ end
 
 service 'kairosdb' do
   action :enable
+  notifies :install, 'package[abiquo-emmett]', :immediately
+  notifies :install, 'package[abiquo-delorean]', :immediately
 end
 
-include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
+#include_recipe 'abiquo::install_ext_services' if node['abiquo']['install_ext_services']
 include_recipe 'abiquo::certificate' if node['abiquo']['monitoring']['emmett']['ssl']
 
 %w(delorean emmett).each do |pkg|
@@ -52,8 +64,13 @@ end
 
 if node['abiquo']['monitoring']['db']['install']
 
+  ## Package MariaDB-devel is required to be able to build the mysql2 gem
+  package 'MariaDB-devel' do
+    action :install
+  end
+
   ## Package MariaDB-shared is required to be able to build the mysql2 gem
-  package 'MariaDB-shared' do
+  yum_package 'MariaDB-shared-10.4.10' do
     action :install
   end
 
@@ -70,6 +87,11 @@ if node['abiquo']['monitoring']['db']['install']
     password: node['abiquo']['monitoring']['db']['password'],
     port: node['abiquo']['monitoring']['db']['port'],
   }
+
+  # MariaDB >10.4.3 introduced unix_sockets auth by default, we need to force root to use password in order for tomcat/JDBC to conncet
+  execute 'update-user-auth' do
+    command "sudo mysql -e 'ALTER USER root@localhost IDENTIFIED VIA mysql_native_password'"
+  end
 
   # Create DB
   abiquo_mysql_database 'watchtower' do
